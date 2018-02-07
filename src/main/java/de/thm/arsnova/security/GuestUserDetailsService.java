@@ -18,54 +18,46 @@
 package de.thm.arsnova.security;
 
 import de.thm.arsnova.entities.UserProfile;
-import de.thm.arsnova.persistance.UserRepository;
 import de.thm.arsnova.services.UserService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import de.thm.arsnova.services.UserService;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
+import java.util.HashSet;
 
 /**
- * Class to load a user based on the username.
+ * Loads UserDetails for a guest user ({@link UserProfile.AuthProvider#ARSNOVA_GUEST}) based on the username (guest
+ * token).
+ *
+ * @author Daniel Gerhardt
  */
 @Service
-public class DbUserDetailsService implements UserDetailsService {
-	@Autowired
-	private UserRepository userRepository;
+public class GuestUserDetailsService implements UserDetailsService {
+	private final UserService userService;
+	private final Collection<GrantedAuthority> grantedAuthorities;
 
-	@Autowired
-	private UserService userService;
-
-	private static final Logger logger = LoggerFactory
-			.getLogger(DbUserDetailsService.class);
+	public GuestUserDetailsService(UserService userService) {
+		this.userService = userService;
+		grantedAuthorities = new HashSet<>();
+		grantedAuthorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+		grantedAuthorities.add(new SimpleGrantedAuthority("ROLE_GUEST_USER"));
+	}
 
 	@Override
-	public UserDetails loadUserByUsername(String username) {
-		String uid = username.toLowerCase();
-		logger.debug("Load user: " + uid);
-		UserProfile userProfile = userRepository.findByAuthProviderAndLoginId(UserProfile.AuthProvider.ARSNOVA, uid);
-		if (null == userProfile) {
-			throw new UsernameNotFoundException("User does not exist.");
-		}
+	public UserDetails loadUserByUsername(final String loginId) throws UsernameNotFoundException {
+		return loadUserByUsername(loginId, false);
+	}
 
-		final List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
-		grantedAuthorities.add(new SimpleGrantedAuthority("ROLE_USER"));
-		grantedAuthorities.add(new SimpleGrantedAuthority("ROLE_DB_USER"));
+	public UserDetails loadUserByUsername(final String loginId, final boolean autoCreate) {
+		return userService.loadUser(UserProfile.AuthProvider.ARSNOVA_GUEST, loginId,
+				grantedAuthorities, autoCreate);
 		if (userService.isAdmin(uid)) {
 			grantedAuthorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
 		}
-
-		return new User(uid, userProfile.getAccount().getPassword(),
-				null == userProfile.getAccount().getActivationKey(),
-				true, true, true, grantedAuthorities);
 	}
 }
