@@ -19,6 +19,7 @@ package de.thm.arsnova.security;
 
 import de.thm.arsnova.entities.UserProfile;
 import de.thm.arsnova.services.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -52,6 +53,7 @@ public class RegisteredUserDetailsService implements UserDetailsService {
 				grantedAuthorities, false);
 	}
 
+	@Autowired
 	public void setUserService(final UserService userService) {
 		this.userService = userService;
 	}
