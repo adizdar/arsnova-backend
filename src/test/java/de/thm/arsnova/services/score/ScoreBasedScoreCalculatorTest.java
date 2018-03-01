@@ -17,8 +17,8 @@
  */
 package de.thm.arsnova.services.score;
 
-import de.thm.arsnova.entities.TestUser;
-import de.thm.arsnova.entities.UserAuthentication;
+import de.thm.arsnova.entities.TestClient;
+import de.thm.arsnova.entities.migration.v2.ClientAuthentication;
 import de.thm.arsnova.entities.transport.ScoreStatistics;
 import de.thm.arsnova.persistance.SessionStatisticsRepository;
 import org.junit.Before;
@@ -42,7 +42,7 @@ public class ScoreBasedScoreCalculatorTest {
 		return questionId;
 	}
 
-	private void addAnswer(String questionId, UserAuthentication user, int points) {
+	private void addAnswer(String questionId, ClientAuthentication user, int points) {
 		final int piRound = 1;
 		courseScore.addAnswer(questionId, piRound, user.getUsername(), points);
 	}
@@ -59,8 +59,8 @@ public class ScoreBasedScoreCalculatorTest {
 	public void shouldFilterBasedOnQuestionVariant() {
 		String q1 = this.addQuestion("lecture", 100);
 		String q2 = this.addQuestion("preparation", 100);
-		UserAuthentication u1 = new TestUser("user1");
-		UserAuthentication u2 = new TestUser("user2");
+		ClientAuthentication u1 = new TestClient("user1");
+		ClientAuthentication u2 = new TestClient("user2");
 		// first question is answered correctly, second one is not
 		this.addAnswer(q1, u1, 100);
 		this.addAnswer(q1, u2, 100);
@@ -86,8 +86,8 @@ public class ScoreBasedScoreCalculatorTest {
 		String q1 = this.addQuestion("lecture", 100);
 		String q2 = this.addQuestion("lecture", 100);
 		String q3 = this.addQuestion("lecture", 100);
-		UserAuthentication u1 = new TestUser("user1");
-		UserAuthentication u2 = new TestUser("user2");
+		ClientAuthentication u1 = new TestClient("user1");
+		ClientAuthentication u2 = new TestClient("user2");
 		// Both users achieve 200 points
 		this.addAnswer(q1, u1, 100);
 		this.addAnswer(q1, u2, 100);
@@ -105,8 +105,8 @@ public class ScoreBasedScoreCalculatorTest {
 
 	@Test
 	public void shouldConsiderAnswersOfSamePiRound() {
-		UserAuthentication u1 = new TestUser("user1");
-		UserAuthentication u2 = new TestUser("user2");
+		ClientAuthentication u1 = new TestClient("user1");
+		ClientAuthentication u2 = new TestClient("user2");
 		// question is in round 2
 		courseScore.addQuestion("q1", "lecture", 2, 100);
 		// 25 points in round 1, 75 points in round two for the first user
@@ -132,9 +132,9 @@ public class ScoreBasedScoreCalculatorTest {
 		String q1 = this.addQuestion("lecture", 10);
 		String q2 = this.addQuestion("lecture", 10);
 		// three users
-		UserAuthentication u1 = new TestUser("user1");
-		UserAuthentication u2 = new TestUser("user2");
-		UserAuthentication u3 = new TestUser("user3");
+		ClientAuthentication u1 = new TestClient("user1");
+		ClientAuthentication u2 = new TestClient("user2");
+		ClientAuthentication u3 = new TestClient("user3");
 		// six answers
 		this.addAnswer(q1, u1, 10);
 		this.addAnswer(q2, u1, 0);
