@@ -67,18 +67,29 @@ package:
 
 tomcat_production:
   stage: deploy
+  when: manual
   only:
-    - production
+    - /^v[0-9]+\.[0-9]+\.[0-9]+$/
+    - /^[0-9]+\.[0-9]+$/
   tags:
     - curl
+  environment:
+    name: production/$PROD_HOST
+    url: https://$PROD_HOST/api/
   script:
-    - curl --fail --upload-file $WAR_FILE "https://$PROD_TOMCAT_USER:$PROD_TOMCAT_PASSWORD@$PROD_TOMCAT_HOST/manager/text/deploy?path=%2Fapi&update=true"
+    - TOMCAT_USER_VAR=PROD_TOMCAT_USER_${PROD_TOMCAT_HOST}
+    - TOMCAT_PASSWORD_VAR=PROD_TOMCAT_PASSWORD_${PROD_TOMCAT_HOST}
+    - curl --fail --upload-file $WAR_FILE "https://${!TOMCAT_USER_VAR}:${!TOMCAT_PASSWORD_VAR}@$PROD_TOMCAT_HOST/manager/text/deploy?path=%2Fapi&update=true"
 
 tomcat_development:
   stage: deploy
-  only:
-    - staging
+  when: manual
   tags:
     - curl
+  environment:
+    name: development/$DEV_TOMCAT_HOST
+    url: https://$DEV_TOMCAT_HOST/api/
   script:
-    - curl --fail --upload-file $WAR_FILE "https://$DEV_TOMCAT_USER:$DEV_TOMCAT_PASSWORD@$DEV_TOMCAT_HOST/manager/text/deploy?path=%2Fapi&update=true"
+    - TOMCAT_USER_VAR=DEV_TOMCAT_USER_${DEV_TOMCAT_HOST}
+    - TOMCAT_PASSWORD_VAR=DEV_TOMCAT_PASSWORD_${DEV_TOMCAT_HOST}
+    - curl --fail --upload-file $WAR_FILE "https://${!TOMCAT_USER_VAR}:${!TOMCAT_PASSWORD_VAR}@$DEV_TOMCAT_HOST/manager/text/deploy?path=%2Fapi&update=true"
