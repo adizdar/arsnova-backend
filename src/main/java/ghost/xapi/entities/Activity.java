@@ -48,4 +48,5 @@ public class Activity {
 	public Definition getDefinition() {
 		return definition;
 	}
+
 }

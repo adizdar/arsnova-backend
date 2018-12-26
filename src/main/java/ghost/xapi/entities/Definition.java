@@ -1,6 +1,7 @@
 package ghost.xapi.entities;
 
 public class Definition {
+
 	private String type;
 	private Translations name;
 	private Translations description;
@@ -54,4 +55,5 @@ public class Definition {
 	public void setDescription(Translations description) {
 		this.description = description;
 	}
+
 }
