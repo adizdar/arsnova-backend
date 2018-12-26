@@ -1,7 +1,5 @@
 package ghost.xapi.entities;
 
-import java.util.HashMap;
-
 public class Activity {
 
 	/**
