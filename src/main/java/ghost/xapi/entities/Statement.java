@@ -39,4 +39,5 @@ public class Statement {
 	public Activity getActivity() {
 		return activity;
 	}
+
 }
