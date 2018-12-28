@@ -1,4 +1,6 @@
-package ghost.xapi.entities;
+package ghost.xapi.entities.activity;
+
+import ghost.xapi.entities.Translations;
 
 public class Activity {
 
@@ -9,7 +11,7 @@ public class Activity {
 	private Definition definition;
 
 	/**
-	 * Minimal information for a Activity are id and type.
+	 * Minimal information for a activity are id and type.
 	 *
 	 * @param id
 	 * @param type
@@ -39,12 +41,17 @@ public class Activity {
 		this.definition = definition;
 	}
 
+	/**
+	 * @return java.lang.String
+	 */
 	public String getId() {
 		return id;
 	}
 
+	/**
+	 * @return ghost.xapi.entities.activity.Definition
+	 */
 	public Definition getDefinition() {
 		return definition;
 	}
-
 }

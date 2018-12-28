@@ -71,7 +71,7 @@ public class UserController extends AbstractController {
 
 			return;
 		}
-
+		// TODO change this to support Request params and not url params
 		response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 	}
 

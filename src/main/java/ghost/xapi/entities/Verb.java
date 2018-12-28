@@ -1,8 +1,11 @@
 package ghost.xapi.entities;
 
+import ghost.xapi.entities.Translations;
+
 public class Verb {
 
-	// TODO add URI formates https://xapi.com/statements-101/
+	private static String baseUrlForVerbsDefinition = "http://adlnet.gov/expapi/verbs/";
+
 	private String id;
 	private Translations display;
 
@@ -10,7 +13,7 @@ public class Verb {
 	 * @param id
 	 */
 	public Verb(String id) {
-		this.id = id;
+		this.id = baseUrlForVerbsDefinition + id;
 		this.display = new Translations();
 	}
 
@@ -19,16 +22,22 @@ public class Verb {
 	 * @param display
 	 */
 	public Verb(String id, Translations display) {
-		this.id = id;
+		this.id = baseUrlForVerbsDefinition + id;
 		this.display = display;
 	}
 
-	public Translations getDisplay() {
-		return display;
-	}
-
+	/**
+	 * @return java.lang.String
+	 */
 	public String getId() {
 		return id;
+	}
+
+	/**
+	 * @return ghost.xapi.entities.Translations
+	 */
+	public Translations getDisplay() {
+		return display;
 	}
 
 	/**

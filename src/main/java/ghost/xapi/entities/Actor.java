@@ -23,16 +23,24 @@ public class Actor {
 		this.name = name;
 	}
 
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
+	/**
+	 * @return java.lang.String
+	 */
 	public String getName() {
 		return name;
 	}
 
+	/**
+	 * @return java.lang.String
+	 */
+	public String getEmail() {
+		return email;
+	}
+
+	/**
+	 * @param email
+	 */
+	public void setEmail(String email) {
+		this.email = email;
+	}
 }

@@ -1,5 +1,10 @@
-package ghost.xapi.entities;
+package ghost.xapi.entities.activity;
 
+import ghost.xapi.entities.Translations;
+
+/**
+ * The type Definition.
+ */
 public class Definition {
 
 	private String type;
@@ -26,20 +31,29 @@ public class Definition {
 		this.description = description;
 	}
 
+	/**
+	 * @return java.lang.String
+	 */
 	public String getType() {
 		return type;
 	}
 
+	/**
+	 * @return ghost.xapi.entities.Translations
+	 */
 	public Translations getName() {
 		return name;
 	}
 
+	/**
+	 * @return ghost.xapi.entities.Translations
+	 */
 	public Translations getDescription() {
 		return description;
 	}
 
 	/**
-	 * The name is a optional parameter for a Activity it has a setter so it can be set latter if needed.
+	 * The name is a optional parameter for a activity it has a setter so it can be set latter if needed.
 	 *
 	 * @param name
 	 */
@@ -48,7 +62,7 @@ public class Definition {
 	}
 
 	/**
-	 * The description is a optional parameter for a Activity it has a setter so it can be set latter if needed.
+	 * The description is a optional parameter for a activity it has a setter so it can be set latter if needed.
 	 *
 	 * @param description
 	 */
