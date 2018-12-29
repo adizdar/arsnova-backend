@@ -2,6 +2,8 @@ package ghost.xapi.entities;
 
 public class Actor {
 
+	static final String ACTOR_PREFIX = "mailto:";
+
 	private String email;
 	private String name;
 
@@ -9,7 +11,7 @@ public class Actor {
 	 * @param email
 	 */
 	public Actor(String email) {
-		this.email = email;
+		this.email = ACTOR_PREFIX + email;
 	}
 
 	/**
@@ -19,7 +21,7 @@ public class Actor {
 	 * @param name
 	 */
 	public Actor(String email, String name) {
-		this.email = email;
+		this.email = ACTOR_PREFIX + email;
 		this.name = name;
 	}
 
@@ -35,13 +37,6 @@ public class Actor {
 	 */
 	public String getEmail() {
 		return email;
-	}
-
-	/**
-	 * @param email
-	 */
-	public void setEmail(String email) {
-		this.email = email;
 	}
 
 }
