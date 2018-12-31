@@ -7,6 +7,9 @@ import ghost.xapi.entities.Translations;
  */
 public class Definition {
 
+	// TODO create arsnova config so it can be changed
+	private final static String BASE_URL_ACTIVITIES = "http://adlnet.gov/expapi/activities/";
+
 	private String type;
 	private Translations name;
 	private Translations description;
@@ -15,7 +18,7 @@ public class Definition {
 	 * @param type
 	 */
 	public Definition(String type) {
-		this.type = type;
+		this.type = BASE_URL_ACTIVITIES + type;
 		this.name = new Translations();
 		this.description = new Translations();
 	}
@@ -26,7 +29,7 @@ public class Definition {
 	 * @param description
 	 */
 	public Definition(String type, Translations name, Translations description) {
-		this.type = type;
+		this.type = BASE_URL_ACTIVITIES + type;
 		this.name = name;
 		this.description = description;
 	}
