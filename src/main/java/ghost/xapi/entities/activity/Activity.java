@@ -5,7 +5,8 @@ import org.springframework.beans.factory.annotation.Value;
 
 public class Activity {
 
-	@Value(value = "${root-url}") private String rootUrl;
+	// TODO fix it is null
+	@Value(value = "${root-url}") private static String rootUrl;
 
 	/**
 	 * @copyright https://watershedlrs.zendesk.com/hc/en-us/articles/214880383-Get-the-Activity-ID-Right
@@ -22,7 +23,7 @@ public class Activity {
 	 * - The Activity ID should be something meaningful when you read it, making it easier for you to identify
 	 *  the activity from the ID.
 	 */
-	private final static String ACTIVIRY_URL = rootUrl + "/xapi/activities/";
+	private final static String ACTIVIRY_URL = rootUrl + "/xapi/activity/";
 
 	private String id;
 	private Definition definition;
@@ -34,7 +35,7 @@ public class Activity {
 	 * @param type
 	 */
 	public Activity(String id, String type) {
-		this.id = id;
+		this.id = ACTIVIRY_URL + id;
 		this.definition = new Definition(type);
 	}
 

@@ -4,6 +4,7 @@ import ghost.xapi.entities.Translations;
 
 public class Verb {
 
+	// TODO add config field
 	private static String baseUrlForVerbsDefinition = "http://adlnet.gov/expapi/verbs/";
 
 	private String id;

@@ -18,11 +18,10 @@
 package de.thm.arsnova.controller;
 
 import de.thm.arsnova.entities.ServiceDescription;
-import de.thm.arsnova.entities.Session;
 import de.thm.arsnova.entities.User;
-import de.thm.arsnova.exceptions.UnauthorizedException;
 import de.thm.arsnova.services.IUserService;
 import de.thm.arsnova.services.UserSessionService;
+import ghost.xapi.entities.actor.Actor;
 import org.pac4j.core.context.J2EContext;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.oauth.client.FacebookClient;
@@ -313,6 +312,10 @@ public class LoginController extends AbstractController {
 		if (auth instanceof CasAuthenticationToken) {
 			return new RedirectView(apiPath + "/j_spring_cas_security_logout");
 		}
+
+		// TODO only temp plachold here
+		request.getSession().removeAttribute(Actor.class.toString());
+
 		return new RedirectView(request.getHeader("referer") != null ? request.getHeader("referer") : "/");
 	}
 
