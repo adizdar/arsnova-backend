@@ -1,8 +1,12 @@
 package ghost.xapi.entities.actor;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 public class Account {
 
 	private String name;
+
+	@JsonInclude(JsonInclude.Include.NON_NULL)
 	private String homePage;
 
 	/**

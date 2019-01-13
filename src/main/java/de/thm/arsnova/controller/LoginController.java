@@ -313,9 +313,6 @@ public class LoginController extends AbstractController {
 			return new RedirectView(apiPath + "/j_spring_cas_security_logout");
 		}
 
-		// TODO only temp plachold here
-		request.getSession().removeAttribute(Actor.class.toString());
-
 		return new RedirectView(request.getHeader("referer") != null ? request.getHeader("referer") : "/");
 	}
 

@@ -1,11 +1,9 @@
 package ghost.xapi.entities;
 
-import ghost.xapi.entities.Translations;
+import org.springframework.beans.factory.annotation.Configurable;
 
+@Configurable
 public class Verb {
-
-	// TODO add config field
-	private static String baseUrlForVerbsDefinition = "http://adlnet.gov/expapi/verbs/";
 
 	private String id;
 	private Translations display;
@@ -14,7 +12,7 @@ public class Verb {
 	 * @param id
 	 */
 	public Verb(String id) {
-		this.id = baseUrlForVerbsDefinition + id;
+		this.id = id;
 		this.display = new Translations();
 	}
 
@@ -23,7 +21,7 @@ public class Verb {
 	 * @param display
 	 */
 	public Verb(String id, Translations display) {
-		this.id = baseUrlForVerbsDefinition + id;
+		this.id = id;
 		this.display = display;
 	}
 

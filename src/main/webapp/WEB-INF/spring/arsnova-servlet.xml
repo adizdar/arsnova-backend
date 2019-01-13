@@ -13,7 +13,7 @@
 
 	<!-- ARSnova Servlet Context -->
 
-	<context:component-scan base-package="de.thm.arsnova.aop,de.thm.arsnova.controller,de.thm.arsnova.web, ghost.xapi.factory,ghost.xapi.interceptor,ghost.xapi.entities" />
+	<context:component-scan base-package="de.thm.arsnova.aop,de.thm.arsnova.controller,de.thm.arsnova.web, ghost.xapi.services,ghost.xapi.config, ghost.xapi.builder, ghost.xapi.factory,ghost.xapi.interceptor,ghost.xapi.entities" />
 
 	<mvc:annotation-driven
 		content-negotiation-manager="mvcContentNegotiationManager" />
@@ -26,6 +26,11 @@
 			<mvc:mapping path="/auth/login"/>
 			<mvc:mapping path="/doLogin"/>
 			<bean class="ghost.xapi.interceptor.LoginInterceptor" />
+		</mvc:interceptor>
+		<mvc:interceptor>
+			<mvc:mapping path="/auth/logout"/>
+			<mvc:mapping path="/logout"/>
+			<bean class="ghost.xapi.interceptor.LogoutInterceptor" />
 		</mvc:interceptor>
 		<mvc:interceptor>
 			<mvc:mapping path="/**"/>

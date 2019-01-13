@@ -1,5 +1,6 @@
 package ghost.xapi.config;
 
+import ghost.xapi.entities.Verb;
 import ghost.xapi.factory.LoginActionFactory;
 import ghost.xapi.factory.StatementBuilderFactory;
 import org.springframework.context.annotation.Bean;

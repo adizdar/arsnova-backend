@@ -23,6 +23,8 @@ public class LoginActionFactory {
 			case "login":
 				case "dologin":
 					return this.loginStatementBuilderService.buildForLoginAction(request);
+			case "logout":
+				return this.loginStatementBuilderService.buildForLogoutAction(request);
 		}
 
 		return null;
