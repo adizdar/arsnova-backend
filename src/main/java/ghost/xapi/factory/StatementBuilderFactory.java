@@ -3,7 +3,9 @@ package ghost.xapi.factory;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import de.thm.arsnova.controller.AudienceQuestionController;
 import ghost.xapi.entities.Statement;
+import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
@@ -14,7 +16,10 @@ import javax.servlet.http.HttpServletRequest;
 public class StatementBuilderFactory {
 
 	@Autowired
-	public LoginActionFactory loginActionFactory;
+	private LoginActionFactory loginActionFactory;
+
+	@Autowired
+	private AudienceQuestionActionFactory audienceQuestionActionFactory;
 
 	/**
 	 * @param handler
@@ -29,14 +34,23 @@ public class StatementBuilderFactory {
 						request,
 						this.getServiceNameFromURI(request.getRequestURI())
 				);
+			case "AudienceQuestionController":
+				this.audienceQuestionActionFactory.getStatementViaServiceName(
+						request,
+						this.getServiceNameFromURI(request.getRequestURI())
+				);
+
 		}
 
 		// todo throw exception to log
 		return null;
 	}
 
-	public String getStatementAsJSONStringForHandler(HandlerMethod handler, HttpServletRequest request) {
-		Statement statement = this.getStatementForHandler(handler, request);
+	/**
+	 * @param statement
+	 * @return String
+	 */
+	public String convertStatementToJson(Statement statement) {
 		ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
 
 		try {
