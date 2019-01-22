@@ -1,6 +1,7 @@
 package ghost.xapi.interceptor;
 
 import ghost.xapi.entities.actor.Actor;
+import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,14 +18,15 @@ public class LogoutInterceptor extends AbstractStatementBuilderInterceptor {
 	 * @return boolean
 	 * @throws Exception
 	 */
-//	@Override
-//	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-//		// Check the session if the User is already logged in.
-//		if (request.getSession().getAttribute(Actor.class.toString()) != null) {
-//			return super.preHandle(request, response, handler);
-//		}
-//
-//		return false;
-//	}
+	@Override
+	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+		// Check the session if the User is already logged in.
+		if (request.getSession().getAttribute(Actor.class.getName()) != null) {
+			this.prepareStatement(request, response, (HandlerMethod) handler);
+
+		}
+
+		return super.preHandle(request, response, handler);
+	}
 
 }

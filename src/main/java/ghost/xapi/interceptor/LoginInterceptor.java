@@ -2,6 +2,7 @@ package ghost.xapi.interceptor;
 
 import ghost.xapi.entities.actor.Actor;
 import org.apache.log4j.Logger;
+import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -26,9 +27,10 @@ public class LoginInterceptor extends AbstractStatementBuilderInterceptor {
 			// TODO probably only use the user service, this should be removed from the session...
 			Actor actor = new Actor(request.getParameter("user"), request.getParameter("type"));
 			request.getSession().setAttribute(Actor.class.getName(), actor);
-
-			super.postHandle(request, response, handler, modelAndView);
+			this.prepareStatement(request, response, (HandlerMethod) handler);
 		}
+
+		super.postHandle(request, response, handler, modelAndView);
 	}
 
 }
