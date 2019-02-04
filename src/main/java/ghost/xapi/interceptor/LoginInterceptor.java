@@ -25,8 +25,8 @@ public class LoginInterceptor extends AbstractStatementBuilderInterceptor {
 	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
 		if (response.getStatus() == STATUS_CODE_SUCCESS) {
 			// TODO probably only use the user service, this should be removed from the session...
-			Actor actor = new Actor(request.getParameter("user"), request.getParameter("type"));
-			request.getSession().setAttribute(Actor.class.getName(), actor);
+//			Actor actor = new Actor(request.getParameter("user"), request.getParameter("type"));
+//			request.getSession().setAttribute(Actor.class.getName(), actor);
 			this.prepareStatement(request, response, (HandlerMethod) handler);
 		}
 

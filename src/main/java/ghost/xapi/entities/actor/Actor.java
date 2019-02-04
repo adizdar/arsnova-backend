@@ -1,31 +1,53 @@
 package ghost.xapi.entities.actor;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+
 public class Actor {
 
 	static final String ACTOR_PREFIX = "mailto:";
 
+	@JsonInclude(JsonInclude.Include.NON_NULL)
 	private String email;
-	private String objectType;
+	private String name;
+	private String objectType = "Agent";
 	private Account account;
 
 	/**
-	 * @param email
+	 * @param userName
 	 */
-	public Actor(String email) {
-		this.email = ACTOR_PREFIX + email;
-		this.account = new Account(this.getNameFromEmail(email));
+	public Actor(String userName) {
+		this.setNameAndEmailViaUsername(userName);
+		this.account = new Account(this.name);
 	}
 
 	/**
-	 * Becasue name is a optional parameter for the xAPI statement.
-	 *
-	 * @param email
+	 * @param userName
 	 * @param type
 	 */
-	public Actor(String email, String type) {
-		this.email = ACTOR_PREFIX + email;
-		this.objectType = type;
-		this.account = new Account(this.getNameFromEmail(email));
+	public Actor(String userName, String type) {
+		this.setNameAndEmailViaUsername(userName);
+		this.account = new Account(this.name, type);
+	}
+
+	/**
+	 * Maps name and email field via userName. The userName can be a email or just a plain name.
+	 * @param userName
+	 */
+	private void setNameAndEmailViaUsername(String userName) {
+		try {
+			InternetAddress internetAddress = new InternetAddress(userName);
+			internetAddress.validate();
+
+			// It is a valid email address.
+			this.email = ACTOR_PREFIX + email;
+			this.name = this.getNameFromEmail(email);
+		} catch (AddressException e) {
+			// No email address so it is a name login.
+			this.name = userName;
+		}
 	}
 
 	/**
@@ -70,6 +92,20 @@ public class Actor {
 	 */
 	public void setAccount(Account account) {
 		this.account = account;
+	}
+
+	/**
+	 * @return java.lang.String
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * @param name
+	 */
+	public void setName(String name) {
+		this.name = name;
 	}
 
 }

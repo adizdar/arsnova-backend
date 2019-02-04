@@ -4,6 +4,7 @@ public class Activity {
 
 	private String id;
 	private Definition definition;
+	private String objectType = "Activity";
 
 	/**
 	 * Minimal information for a activity are id and type.
@@ -30,4 +31,10 @@ public class Activity {
 		return definition;
 	}
 
+	/**
+	 * @return java.lang.String
+	 */
+	public String getObjectType() {
+		return objectType;
+	}
 }

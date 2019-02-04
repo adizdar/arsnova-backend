@@ -31,15 +31,21 @@ public class AbstractStatementBuilderInterceptor extends HandlerInterceptorAdapt
 	 * @param handler
 	 */
 	protected void prepareStatement(HttpServletRequest request, HttpServletResponse response, HandlerMethod handler) {
-		Statement statement = this.statementBuilderFactory.getStatementForHandler(handler, request);
+		try {
+			Statement statement = this.statementBuilderFactory.getStatementForHandler(handler, request);
 
-		// TODO support fo config mode, in dev mode it should always be logged
-		if (request.getParameter(XAPI_PATH) != null) {
-			this.printXApiJson(statement);
+			// TODO support fo config mode, in dev mode it should always be logged
+			if (request.getParameter(XAPI_PATH) != null) {
+				this.printXApiJson(statement);
+			}
+
+			XAPILogger.LOGGER.info("CONNECT");
+			this.xapiConnectorService.send(statement);
+		} catch (Exception e) {
+			// Only log error.
+			XAPILogger.ERROR.error(e.getStackTrace());
+			XAPILogger.ERROR.error(e.getMessage());
 		}
-
-		XAPILogger.LOGGER.info("CONNECT");
-		this.xapiConnectorService.send(statement);
 	}
 
 	/**

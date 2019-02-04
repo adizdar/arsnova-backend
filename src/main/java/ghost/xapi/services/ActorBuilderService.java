@@ -4,6 +4,7 @@ import de.thm.arsnova.controller.SocketController;
 import de.thm.arsnova.entities.User;
 import de.thm.arsnova.services.IUserService;
 import ghost.xapi.entities.actor.Actor;
+import ghost.xapi.log.XAPILogger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +17,6 @@ import javax.servlet.http.HttpSession;
 @Service
 public class ActorBuilderService {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(ActorBuilderService.class);
-
 	@Autowired
 	private IUserService userService;
 
@@ -25,9 +24,10 @@ public class ActorBuilderService {
 	 * @return Actor
 	 */
 	public Actor getActor() {
-		Actor actor = this.getActorFromSession();
+//		Actor actor = this.getActorFromSession();
 
-		return actor != null ? actor : this.createActorViaUserService();
+//		return actor != null ? actor : this.createActorViaUserService();
+		return this.createActorViaUserService();
 	}
 
 	/**
@@ -38,7 +38,7 @@ public class ActorBuilderService {
 		HttpSession session = requestAttributes.getRequest().getSession();
 		Actor actor = (Actor) session.getAttribute(Actor.class.getName());
 
-		return actor != null ? actor : null;
+		return actor;
 	}
 
 	/**
@@ -47,7 +47,7 @@ public class ActorBuilderService {
 	public Actor createActorViaUserService() {
 		User currentUser = this.userService.getCurrentUser();
 		if (currentUser == null) {
-			LOGGER.debug("Current user is null.");
+			XAPILogger.ERROR.error("Current user is null.");
 			throw new NullPointerException("Current user is null.");
 		}
 

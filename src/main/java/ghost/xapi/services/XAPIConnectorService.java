@@ -38,8 +38,9 @@ public class XAPIConnectorService {
 					String.class
 			);
 
-			XAPILogger.LOGGER.info(responseTLA.getStatusCode());
+			XAPILogger.LOGGER.info("Status code: " + responseTLA.getStatusCode());
 		} catch (Exception e) {
+			// Catch the error and loggit only we don't wan't to b reak the user flow.
 			XAPILogger.ERROR.error(e);
 		}
 	}
