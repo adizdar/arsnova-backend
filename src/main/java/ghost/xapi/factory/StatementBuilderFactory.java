@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import ghost.xapi.entities.Statement;
+import ghost.xapi.log.XAPILogger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
@@ -14,7 +15,10 @@ import javax.servlet.http.HttpServletRequest;
 public class StatementBuilderFactory {
 
 	@Autowired
-	public LoginActionFactory loginActionFactory;
+	private LoginActionFactory loginActionFactory;
+
+	@Autowired
+	private AudienceQuestionActionFactory audienceQuestionActionFactory;
 
 	/**
 	 * @param handler
@@ -29,22 +33,34 @@ public class StatementBuilderFactory {
 						request,
 						this.getServiceNameFromURI(request.getRequestURI())
 				);
+			case "AudienceQuestionController":
+				this.audienceQuestionActionFactory.getStatementViaServiceName(
+						request,
+						this.getServiceNameFromURI(request.getRequestURI())
+				);
+
 		}
 
-		// todo throw exception to log
-		return null;
+		// This case should only happen if ARSNOVA registers a new Controller
+		// TODO custom exception
+		throw new NullPointerException();
 	}
 
-	public String getStatementAsJSONStringForHandler(HandlerMethod handler, HttpServletRequest request) {
-		Statement statement = this.getStatementForHandler(handler, request);
+	/**
+	 * @param statement
+	 * @return String
+	 */
+	public String convertStatementToJson(Statement statement) {
 		ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
 
 		try {
 			return ow.writeValueAsString(statement);
 		} catch (JsonProcessingException e) {
-			e.printStackTrace();
-			return null;
+			XAPILogger.ERROR.error(e.getStackTrace());
+			XAPILogger.ERROR.error(e.getMessage());
 		}
+
+		return null;
 	}
 
 	/**
@@ -52,7 +68,7 @@ public class StatementBuilderFactory {
 	 * @return String
 	 */
 	private String getServiceNameFromURI(String requestUri) {
-		if (requestUri.substring(0, requestUri.length() - 1) == "/") {
+		if (requestUri.substring(0, requestUri.length() - 1).equals("/")) {
 			requestUri = requestUri.substring(0, requestUri.length() - 1);
 		}
 
