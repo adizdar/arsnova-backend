@@ -1,6 +1,7 @@
 package ghost.xapi.interceptor;
 
 import ghost.xapi.entities.actor.Actor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.method.HandlerMethod;
 
 import javax.servlet.http.HttpServletRequest;
@@ -18,12 +19,8 @@ public class LogoutInterceptor extends AbstractStatementBuilderInterceptor {
 	 * @throws Exception
 	 */
 	@Override
+	@PreAuthorize("isAuthenticated()")
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-		// Check the session if the User is already logged in.
-		// TODO change the logic to take it from the userService
-//		if (request.getSession().getAttribute(Actor.class.getName()) != null) {
-//			this.prepareStatement(request, response, (HandlerMethod) handler);
-//		}
 		this.prepareStatement(request, response, (HandlerMethod) handler);
 
 		return super.preHandle(request, response, handler);

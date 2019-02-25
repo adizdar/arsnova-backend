@@ -24,27 +24,6 @@ public class ActorBuilderService {
 	 * @return Actor
 	 */
 	public Actor getActor() {
-//		Actor actor = this.getActorFromSession();
-
-//		return actor != null ? actor : this.createActorViaUserService();
-		return this.createActorViaUserService();
-	}
-
-	/**
-	 * @return Actor
-	 */
-	private Actor getActorFromSession() {
-		ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
-		HttpSession session = requestAttributes.getRequest().getSession();
-		Actor actor = (Actor) session.getAttribute(Actor.class.getName());
-
-		return actor;
-	}
-
-	/**
-	 * @return Actor
-	 */
-	public Actor createActorViaUserService() {
 		User currentUser = this.userService.getCurrentUser();
 		if (currentUser == null) {
 			XAPILogger.ERROR.error("Current user is null.");
