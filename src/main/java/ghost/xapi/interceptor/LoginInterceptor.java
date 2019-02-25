@@ -1,6 +1,5 @@
 package ghost.xapi.interceptor;
 
-import ghost.xapi.entities.actor.Actor;
 import org.apache.log4j.Logger;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.ModelAndView;
@@ -23,10 +22,7 @@ public class LoginInterceptor extends AbstractStatementBuilderInterceptor {
 	 */
 	@Override
 	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
-		if (response.getStatus() == STATUS_CODE_SUCCESS) {
-			// TODO probably only use the user service, this should be removed from the session...
-//			Actor actor = new Actor(request.getParameter("user"), request.getParameter("type"));
-//			request.getSession().setAttribute(Actor.class.getName(), actor);
+		if (this.checkStatusCodeIsValid(response.getStatus())) {
 			this.prepareStatement(request, response, (HandlerMethod) handler);
 		}
 

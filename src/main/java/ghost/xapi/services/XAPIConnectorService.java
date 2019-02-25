@@ -3,6 +3,7 @@ package ghost.xapi.services;
 import ghost.xapi.entities.Statement;
 import ghost.xapi.client.RestTemplateWithBasicAuthFactory;
 import ghost.xapi.log.XAPILogger;
+import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -40,7 +41,7 @@ public class XAPIConnectorService {
 
 			XAPILogger.LOGGER.info("Status code: " + responseTLA.getStatusCode());
 		} catch (Exception e) {
-			// Catch the error and loggit only we don't wan't to b reak the user flow.
+			// Only log so the user flow doesn't break.
 			XAPILogger.ERROR.error(e);
 		}
 	}

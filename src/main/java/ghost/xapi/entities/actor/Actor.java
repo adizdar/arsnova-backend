@@ -42,10 +42,10 @@ public class Actor {
 			internetAddress.validate();
 
 			// It is a valid email address.
-			this.email = ACTOR_PREFIX + email;
-			this.name = this.getNameFromEmail(email);
+			this.email = ACTOR_PREFIX + userName;
+			this.name = this.getNameFromEmail(userName);
 		} catch (AddressException e) {
-			// No email address so it is a name login.
+			// No email address so it is a username.
 			this.name = userName;
 		}
 	}

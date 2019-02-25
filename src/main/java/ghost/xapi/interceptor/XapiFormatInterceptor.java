@@ -1,10 +1,12 @@
 package ghost.xapi.interceptor;
 
 import org.springframework.stereotype.Component;
+import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 
 @Component
 public class XapiFormatInterceptor extends AbstractStatementBuilderInterceptor {
@@ -23,6 +25,10 @@ public class XapiFormatInterceptor extends AbstractStatementBuilderInterceptor {
 			Object handler,
 			ModelAndView modelAndView
 	) throws Exception {
+		if (this.checkStatusCodeIsValid(response.getStatus())) {
+			this.prepareStatement(request, response, (HandlerMethod) handler);
+		}
+
 		super.postHandle(request, response, handler, modelAndView);
 	}
 

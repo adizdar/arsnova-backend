@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class ActivityBuilder {
 
+	// TODO create a activity config
 	@Value(value = "${xapi.activity.base-url: URL_MISSING}") private String rootUrl;
 
 	/**
@@ -34,4 +35,13 @@ public class ActivityBuilder {
 	public Activity createActivity(String id, String type) {
 		return new Activity(this.rootUrl + ACTIVIRY_URI + id, type);
 	}
+
+	/**
+	 * @param elements
+	 * @return String
+	 */
+	public String createActivityId(String[] elements) {
+		return String.join("#", elements);
+	}
+
 }
