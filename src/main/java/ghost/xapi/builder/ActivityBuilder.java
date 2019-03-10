@@ -4,6 +4,10 @@ import ghost.xapi.entities.activity.Activity;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 @Component
 public class ActivityBuilder {
 
@@ -25,7 +29,7 @@ public class ActivityBuilder {
 	 * - The Activity ID should be something meaningful when you read it, making it easier for you to identify
 	 *  the activity from the ID.
 	 */
-	private final static String ACTIVIRY_URI = "/xapi/activity/";
+	private final static String ACTIVITY_URI = "/xapi/activity/";
 
 	/**
 	 * @param id
@@ -33,7 +37,7 @@ public class ActivityBuilder {
 	 * @return Activity
 	 */
 	public Activity createActivity(String id, String type) {
-		return new Activity(this.rootUrl + ACTIVIRY_URI + id, type);
+		return new Activity(this.rootUrl + ACTIVITY_URI + id, type);
 	}
 
 	/**

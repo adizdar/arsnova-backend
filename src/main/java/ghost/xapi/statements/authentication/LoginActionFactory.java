@@ -1,4 +1,4 @@
-package ghost.xapi.statments.authentication;
+package ghost.xapi.statements.authentication;
 
 import ghost.xapi.entities.Statement;
 import org.springframework.beans.factory.annotation.Autowired;

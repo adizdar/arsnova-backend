@@ -1,8 +1,7 @@
-package ghost.xapi.statments.audienceQuestions;
+package ghost.xapi.statements.audienceQuestions;
 
 import ghost.xapi.entities.Statement;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerMapping;
 

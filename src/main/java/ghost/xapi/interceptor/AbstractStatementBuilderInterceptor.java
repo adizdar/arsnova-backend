@@ -5,7 +5,7 @@ import ghost.xapi.factory.StatementBuilderFactory;
 import ghost.xapi.log.XAPILogger;
 import ghost.xapi.services.XAPIConnectorService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
@@ -15,15 +15,15 @@ import javax.servlet.http.HttpServletResponse;
 public class AbstractStatementBuilderInterceptor extends HandlerInterceptorAdapter {
 
 	protected final static String XAPI_PATH = "returnxapi";
-	protected final static int STATUS_CODE_SUCCESS = 200;
-
-	protected RestTemplate restTemplate;
 
 	@Autowired
 	private StatementBuilderFactory statementBuilderFactory;
 
 	@Autowired
 	private XAPIConnectorService xapiConnectorService;
+
+	@Value("${root-url}")
+	private String rootUrl;
 
 	/**
 	 * @param request
@@ -32,22 +32,27 @@ public class AbstractStatementBuilderInterceptor extends HandlerInterceptorAdapt
 	 */
 	protected void prepareStatement(HttpServletRequest request, HttpServletResponse response, HandlerMethod handler) {
 		Statement statement = this.statementBuilderFactory.getStatementForHandler(handler, request);
-
 		// TODO support fo config mode, in dev mode it should always be logged
-		if (request.getParameter(XAPI_PATH) != null) {
+		if (request.getParameter(XAPI_PATH) != null || this.rootUrl.contains("localhost")) {
 			this.printXApiJson(statement);
 		}
 
-		this.xapiConnectorService.send(statement);
+		if (statement != null) {
+			this.xapiConnectorService.send(statement);
+		}
 	}
-
+// TODO remove unused interceptors
 	/**
 	 * @param statement
 	 */
 	protected void printXApiJson(Statement statement) {
-		XAPILogger.JSON.info(
-				this.statementBuilderFactory.convertStatementToJson(statement)
-		);
+		if (statement.getFailedStatementCreationException() != null) {
+			//XAPILogger.ERROR.error(this.statementBuilderFactory.convertStatementToJson(statement));
+		} else {
+			XAPILogger.JSON.info(
+					this.statementBuilderFactory.convertStatementToJson(statement)
+			);
+		}
 	}
 
 	/**

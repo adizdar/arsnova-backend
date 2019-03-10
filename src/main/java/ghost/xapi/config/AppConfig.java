@@ -1,6 +1,6 @@
 package ghost.xapi.config;
 
-import ghost.xapi.statments.authentication.LoginActionFactory;
+import ghost.xapi.statements.authentication.LoginActionFactory;
 import ghost.xapi.factory.StatementBuilderFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
