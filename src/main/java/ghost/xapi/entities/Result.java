@@ -1,5 +1,9 @@
 package ghost.xapi.entities;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Map;
+
 public class Result {
 
 	private boolean success = true;
@@ -46,5 +50,16 @@ public class Result {
 	 */
 	public void setCompletion(boolean completion) {
 		this.completion = completion;
+	}
+
+	/**
+	 * @param newObject
+	 *
+	 * @return
+	 */
+	public void appendValue(Object newObject) {
+		ArrayList<Object> temp = new ArrayList<Object>(Arrays.asList(this.response));
+		temp.add(newObject);
+		this.response = temp.toArray();
 	}
 }

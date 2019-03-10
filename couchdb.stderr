@@ -173,3 +173,78 @@ heart_beat_kill_pid = 96522
 heart_beat_timeout = 11
 heart: Sun Jan 13 22:01:24 2019: heart-beat time-out, no activity for 1700 seconds
 heart: Sun Jan 13 22:01:25 2019: Executed "/usr/local/Cellar/couchdb/1.7.1_7/bin/couchdb -k" -> 0. Terminating.
+
+heart_beat_kill_pid = 99115
+heart_beat_timeout = 11
+heart: Sun Jan 13 23:22:07 2019: heart-beat time-out, no activity for 2198 seconds
+heart: Sun Jan 13 23:22:08 2019: Executed "/usr/local/Cellar/couchdb/1.7.1_7/bin/couchdb -k" -> 0. Terminating.
+
+heart_beat_kill_pid = 26201
+heart_beat_timeout = 11
+heart: Sat Jan 19 13:19:05 2019: heart-beat time-out, no activity for 554 seconds
+heart: Sat Jan 19 13:19:06 2019: Executed "/usr/local/Cellar/couchdb/1.7.1_7/bin/couchdb -k" -> 0. Terminating.
+
+heart_beat_kill_pid = 41561
+heart_beat_timeout = 11
+heart: Tue Jan 22 15:42:54 2019: heart-beat time-out, no activity for 163 seconds
+heart: Tue Jan 22 15:42:55 2019: Executed "/usr/local/Cellar/couchdb/1.7.1_7/bin/couchdb -k" -> 0. Terminating.
+
+heart_beat_kill_pid = 50626
+heart_beat_timeout = 11
+heart: Tue Jan 22 16:05:28 2019: heart-beat time-out, no activity for 137 seconds
+heart: Tue Jan 22 16:05:29 2019: Executed "/usr/local/Cellar/couchdb/1.7.1_7/bin/couchdb -k" -> 0. Terminating.
+
+heart_beat_kill_pid = 51821
+heart_beat_timeout = 11
+heart: Tue Jan 22 17:36:12 2019: heart-beat time-out, no activity for 634 seconds
+heart: Tue Jan 22 17:36:13 2019: Executed "/usr/local/Cellar/couchdb/1.7.1_7/bin/couchdb -k" -> 0. Terminating.
+
+heart_beat_kill_pid = 60515
+heart_beat_timeout = 11
+heart: Tue Jan 22 19:57:52 2019: heart-beat time-out, no activity for 6587 seconds
+heart: Tue Jan 22 19:57:53 2019: Executed "/usr/local/Cellar/couchdb/1.7.1_7/bin/couchdb -k" -> 0. Terminating.
+
+heart_beat_kill_pid = 72238
+heart_beat_timeout = 11
+heart: Wed Jan 23 02:41:14 2019: heart-beat time-out, no activity for 7203 seconds
+heart: Wed Jan 23 02:41:15 2019: Executed "/usr/local/Cellar/couchdb/1.7.1_7/bin/couchdb -k" -> 0. Terminating.
+
+heart_beat_kill_pid = 79291
+heart_beat_timeout = 11
+heart: Wed Jan 23 12:13:39 2019: heart-beat time-out, no activity for 2070 seconds
+heart: Wed Jan 23 12:13:40 2019: Executed "/usr/local/Cellar/couchdb/1.7.1_7/bin/couchdb -k" -> 0. Terminating.
+
+heart_beat_kill_pid = 89329
+heart_beat_timeout = 11
+heart: Wed Jan 23 15:11:00 2019: heart-beat time-out, no activity for 2364 seconds
+heart: Wed Jan 23 15:11:01 2019: Executed "/usr/local/Cellar/couchdb/1.7.1_7/bin/couchdb -k" -> 0. Terminating.
+
+heart_beat_kill_pid = 30505
+heart_beat_timeout = 11
+heart: Mon Feb  4 19:32:44 2019: heart-beat time-out, no activity for 6711 seconds
+heart: Mon Feb  4 19:32:45 2019: Executed "/usr/local/Cellar/couchdb/1.7.1_7/bin/couchdb -k" -> 0. Terminating.
+
+heart_beat_kill_pid = 55796
+heart_beat_timeout = 11
+heart: Mon Feb  4 22:43:16 2019: heart-beat time-out, no activity for 496 seconds
+heart: Mon Feb  4 22:43:17 2019: Executed "/usr/local/Cellar/couchdb/1.7.1_7/bin/couchdb -k" -> 0. Terminating.
+
+heart_beat_kill_pid = 65473
+heart_beat_timeout = 11
+heart: Tue Feb  5 09:22:46 2019: heart-beat time-out, no activity for 32813 seconds
+heart: Tue Feb  5 09:22:47 2019: Executed "/usr/local/Cellar/couchdb/1.7.1_7/bin/couchdb -k" -> 0. Terminating.
+
+heart_beat_kill_pid = 71521
+heart_beat_timeout = 11
+heart: Tue Feb  5 10:14:44 2019: heart-beat time-out, no activity for 82 seconds
+heart: Tue Feb  5 10:14:44 2019: Executed "/usr/local/Cellar/couchdb/1.7.1_7/bin/couchdb -k" -> 0. Terminating.
+
+heart_beat_kill_pid = 91183
+heart_beat_timeout = 11
+heart: Tue Feb  5 15:53:30 2019: heart-beat time-out, no activity for 423 seconds
+heart: Tue Feb  5 15:53:31 2019: Executed "/usr/local/Cellar/couchdb/1.7.1_7/bin/couchdb -k" -> 0. Terminating.
+
+heart_beat_kill_pid = 13031
+heart_beat_timeout = 11
+heart: Tue Feb  5 21:20:52 2019: heart-beat time-out, no activity for 789 seconds
+heart: Tue Feb  5 21:20:53 2019: Executed "/usr/local/Cellar/couchdb/1.7.1_7/bin/couchdb -k" -> 0. Terminating.

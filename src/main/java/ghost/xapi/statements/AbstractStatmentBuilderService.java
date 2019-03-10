@@ -1,4 +1,4 @@
-package ghost.xapi.statments;
+package ghost.xapi.statements;
 
 import ghost.xapi.builder.ActivityBuilder;
 import ghost.xapi.builder.VerbBuilder;

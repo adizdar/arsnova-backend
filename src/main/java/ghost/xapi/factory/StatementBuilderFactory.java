@@ -6,8 +6,9 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 import ghost.xapi.entities.FailedStatementCreationException;
 import ghost.xapi.entities.Statement;
 import ghost.xapi.log.XAPILogger;
-import ghost.xapi.statments.audienceQuestions.AudienceQuestionActionFactory;
-import ghost.xapi.statments.authentication.LoginActionFactory;
+import ghost.xapi.statements.audienceQuestions.AudienceQuestionActionFactory;
+import ghost.xapi.statements.authentication.LoginActionFactory;
+import ghost.xapi.statements.lectureQuestions.LectureQuestionsActionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ClassUtils;
@@ -24,6 +25,9 @@ public class StatementBuilderFactory {
 	@Autowired
 	private AudienceQuestionActionFactory audienceQuestionActionFactory;
 
+	@Autowired
+	private LectureQuestionsActionFactory lectureQuestionsActionFactory;
+
 	/**
 	 * @param handler
 	 * @param request
@@ -31,18 +35,27 @@ public class StatementBuilderFactory {
 	 */
 	public Statement getStatementForHandler(HandlerMethod handler, HttpServletRequest request) {
 		try {
-			String className = ClassUtils.getUserClass(handler.getBean().getClass()).getSimpleName();
+			String className = ClassUtils.getUserClass(handler.getBean().getClass()).getSimpleName().toLowerCase();
+			Statement statement = null;
 			switch (className) {
-				case "LoginController":
-					return this.loginActionFactory.getStatementViaServiceName(request);
-				case "AudienceQuestionController":
-					return this.audienceQuestionActionFactory.getStatementViaServiceName(request);
-
+				case "logincontroller":
+					statement = this.loginActionFactory.getStatementViaServiceName(request);
+				case "audiencequestioncontroller":
+					statement = this.audienceQuestionActionFactory.getStatementViaServiceName(request);
+				case "lecturerquestioncontroller":
+					statement = this.lectureQuestionsActionFactory.getStatementViaServiceName(request);
 			}
 
-			throw new NotRegisteredControllerException(
-					"Controller is unhandled for this action type. Maybe a new controller has been added?"
-			);
+			if (statement == null) {
+				throw new NotRegisteredControllerException(
+						"Controller " + className + " is unhandled for this action type. Maybe a new controller has been added?"
+				);
+			}
+
+			// Always set the caller uri, for easier understanding.
+			statement.getActivity().setUri(request.getRequestURI());
+
+			return statement;
 		} catch (Exception e) {
 			XAPILogger.ERROR.error(e.getMessage());
 

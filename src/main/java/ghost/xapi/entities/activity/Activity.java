@@ -5,6 +5,7 @@ public class Activity {
 	private String id;
 	private Definition definition;
 	private String objectType = "Activity";
+	private String uri;
 
 	/**
 	 * Minimal information for a activity are id and type.
@@ -36,5 +37,19 @@ public class Activity {
 	 */
 	public String getObjectType() {
 		return objectType;
+	}
+
+	/**
+	 * @return java.lang.String
+	 */
+	public String getUri() {
+		return uri;
+	}
+
+	/**
+	 * @param uri
+	 */
+	public void setUri(String uri) {
+		this.uri = uri;
 	}
 }

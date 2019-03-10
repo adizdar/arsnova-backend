@@ -1,14 +1,10 @@
-package ghost.xapi.statments.authentication;
+package ghost.xapi.statements.authentication;
 
-import ghost.xapi.builder.ActivityBuilder;
-import ghost.xapi.builder.VerbBuilder;
 import ghost.xapi.entities.Statement;
 import ghost.xapi.entities.Verb;
 import ghost.xapi.entities.activity.Activity;
 import ghost.xapi.entities.actor.Actor;
-import ghost.xapi.services.ActorBuilderService;
-import ghost.xapi.statments.AbstractStatmentBuilderService;
-import org.springframework.beans.factory.annotation.Autowired;
+import ghost.xapi.statements.AbstractStatmentBuilderService;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;

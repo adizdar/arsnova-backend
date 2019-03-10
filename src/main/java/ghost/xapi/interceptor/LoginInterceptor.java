@@ -22,6 +22,7 @@ public class LoginInterceptor extends AbstractStatementBuilderInterceptor {
 	 */
 	@Override
 	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
+// TODO go throught one interceptor here
 		if (this.checkStatusCodeIsValid(response.getStatus())) {
 			this.prepareStatement(request, response, (HandlerMethod) handler);
 		}

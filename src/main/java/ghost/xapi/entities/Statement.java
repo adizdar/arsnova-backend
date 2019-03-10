@@ -81,4 +81,11 @@ public class Statement {
 	public Result getResult() {
 		return result;
 	}
+
+	/**
+	 * @param result
+	 */
+	public void setResult(Result result) {
+		this.result = result;
+	}
 }

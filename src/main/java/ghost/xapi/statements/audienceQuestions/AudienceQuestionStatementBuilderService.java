@@ -1,4 +1,4 @@
-package ghost.xapi.statments.audienceQuestions;
+package ghost.xapi.statements.audienceQuestions;
 
 import de.thm.arsnova.entities.InterposedQuestion;
 import de.thm.arsnova.entities.InterposedReadingCount;
@@ -8,7 +8,7 @@ import de.thm.arsnova.services.ISessionService;
 import ghost.xapi.entities.Result;
 import ghost.xapi.entities.Statement;
 import ghost.xapi.entities.activity.Activity;
-import ghost.xapi.statments.AbstractStatmentBuilderService;
+import ghost.xapi.statements.AbstractStatmentBuilderService;
 import org.apache.commons.lang.NullArgumentException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
