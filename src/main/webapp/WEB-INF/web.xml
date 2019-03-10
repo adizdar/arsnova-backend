@@ -71,6 +71,24 @@
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 
+	<!-- XAPI filter registration  -->
+
+	<filter>
+		<filter-name>MultiReadHttpFilter</filter-name>
+		<filter-class>ghost.xapi.interceptor.MultiReadHttpFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>MultiReadHttpFilter</filter-name>
+		<url-pattern>/lecturerquestion/</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>MultiReadHttpFilter</filter-name>
+		<url-pattern>/lecturerquestion/bulk/</url-pattern>
+	</filter-mapping>
+
+	<!-- END: XAPI filter registration  -->
+
+
 	<mime-mapping>
 		<extension>manifest</extension>
 		<mime-type>text/cache-manifest</mime-type>
