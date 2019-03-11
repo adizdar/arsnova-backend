@@ -8,7 +8,7 @@ import de.thm.arsnova.services.ISessionService;
 import ghost.xapi.entities.Result;
 import ghost.xapi.entities.Statement;
 import ghost.xapi.entities.activity.Activity;
-import ghost.xapi.statements.AbstractStatmentBuilderService;
+import ghost.xapi.statements.AbstractStatementBuilderService;
 import org.apache.commons.lang.NullArgumentException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class AudienceQuestionStatementBuilderService extends AbstractStatmentBuilderService {
+public class AudienceQuestionStatementBuilderService extends AbstractStatementBuilderService {
 
 	@Autowired
 	private IQuestionService questionService;

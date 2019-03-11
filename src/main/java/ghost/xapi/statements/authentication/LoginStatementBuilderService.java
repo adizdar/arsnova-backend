@@ -4,13 +4,13 @@ import ghost.xapi.entities.Statement;
 import ghost.xapi.entities.Verb;
 import ghost.xapi.entities.activity.Activity;
 import ghost.xapi.entities.actor.Actor;
-import ghost.xapi.statements.AbstractStatmentBuilderService;
+import ghost.xapi.statements.AbstractStatementBuilderService;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 
 @Service
-public class LoginStatementBuilderService extends AbstractStatmentBuilderService {
+public class LoginStatementBuilderService extends AbstractStatementBuilderService {
 
 	/**
 	 * @param request

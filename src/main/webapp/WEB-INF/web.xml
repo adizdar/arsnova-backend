@@ -85,6 +85,10 @@
 		<filter-name>MultiReadHttpFilter</filter-name>
 		<url-pattern>/lecturerquestion/bulk/</url-pattern>
 	</filter-mapping>
+	<filter-mapping>
+		<filter-name>MultiReadHttpFilter</filter-name>
+		<url-pattern>/session/import/</url-pattern>
+	</filter-mapping>
 
 	<!-- END: XAPI filter registration  -->
 
