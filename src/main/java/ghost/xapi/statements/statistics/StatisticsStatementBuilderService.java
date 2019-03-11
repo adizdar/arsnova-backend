@@ -1,4 +1,4 @@
-package ghost.xapi.statements.statistics.user;
+package ghost.xapi.statements.statistics;
 
 import de.thm.arsnova.entities.Statistics;
 import de.thm.arsnova.services.IStatisticsService;

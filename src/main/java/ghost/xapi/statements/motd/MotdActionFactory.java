@@ -1,4 +1,4 @@
-package ghost.xapi.statements.statistics.user;
+package ghost.xapi.statements.motd;
 
 import ghost.xapi.entities.Statement;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,12 +11,12 @@ import java.io.IOException;
 import java.util.Map;
 
 @Component
-public class StatisticsActionFactory {
+public class SocketActionFactory {
 
 	private AntPathMatcher patchMatcher = new AntPathMatcher();
 
 	@Autowired
-	private StatisticsStatementBuilderService userStatementBuilderService;
+	private SocketStatementBuilderService socketStatementBuilderService;
 
 	/**
 	 * @param request
@@ -24,17 +24,18 @@ public class StatisticsActionFactory {
 	 * @return Statement
 	 */
 	public Statement getStatementViaServiceName(HttpServletRequest request) throws IOException {
+		Map pathVariables = (Map) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
 		String requestUri = request.getRequestURI().toLowerCase();
 
-		if (this.doesUriMatchWithPattern(request, "/statistics")
-				|| this.doesUriMatchWithPattern(request, "/statistics/")) {
-			return this.userStatementBuilderService.buildForGetStatistics(request);
-		} else if (requestUri.contains("activeusercount")) {
-			return this.userStatementBuilderService.buildForGetActiveUserCount(request);
-		} else if (requestUri.contains("loggedinusercount")) {
-			return this.userStatementBuilderService.buildForGetLogginUserCount(request);
-		} else if (requestUri.contains("sessioncount")) {
-			return this.userStatementBuilderService.buildForGetSessionCount(request);
+		if (requestUri.contains("register")) {
+			return this.socketStatementBuilderService.buildForRegisterUser(request);
+		} else if (requestUri.contains("activate")) {
+			return this.socketStatementBuilderService.buildForActivateUser(request);
+		} else if (requestUri.contains("resetpassword")) {
+			return this.socketStatementBuilderService.buildForResetPassword(request);
+		} else if (this.doesUriMatchWithPattern(request, "/{username}/")
+				|| this.doesUriMatchWithPattern(request, "/{username}")) {
+			return this.socketStatementBuilderService.buildForDeleteUser(request);
 		}
 
 		// This case should only happen if ARSNOVA registers a new action or we don't support the action
@@ -45,14 +46,12 @@ public class StatisticsActionFactory {
 
 	/**
 	 * TODO move to abstract class
-	 *
 	 * @param request
 	 * @param uriToMatch
-	 *
 	 * @return
 	 */
 	protected boolean doesUriMatchWithPattern(HttpServletRequest request, String uriToMatch) {
-		String bestMatchPattern = (String) request.getAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE);
+		String bestMatchPattern = (String ) request.getAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE);
 
 		return bestMatchPattern.equals(uriToMatch);
 	}
