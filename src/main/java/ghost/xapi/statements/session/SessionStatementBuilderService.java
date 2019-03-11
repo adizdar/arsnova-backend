@@ -218,7 +218,7 @@ public class SessionStatementBuilderService extends AbstractStatementBuilderServ
 		});
 
 		ObjectMapper mapper = new ObjectMapper();
-		List<ImportExportSession> importSession = mapper.readValue(request.getInputStream(), List.class);
+		Map importSession = mapper.readValue(request.getInputStream(), Map.class);
 
 		return new Statement(
 				this.actorBuilderService.getActor(),
