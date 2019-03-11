@@ -3,6 +3,7 @@ package ghost.xapi.factory;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import de.thm.arsnova.entities.Statistics;
 import ghost.xapi.entities.FailedStatementCreationException;
 import ghost.xapi.entities.Statement;
 import ghost.xapi.log.XAPILogger;
@@ -10,6 +11,7 @@ import ghost.xapi.statements.audienceQuestions.AudienceQuestionActionFactory;
 import ghost.xapi.statements.authentication.LoginActionFactory;
 import ghost.xapi.statements.lectureQuestions.LectureQuestionsActionFactory;
 import ghost.xapi.statements.session.SessionActionFactory;
+import ghost.xapi.statements.statistics.user.StatisticsActionFactory;
 import ghost.xapi.statements.user.UserActionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -36,6 +38,9 @@ public class StatementBuilderFactory {
 	@Autowired
 	private UserActionFactory userActionFactory;
 
+	@Autowired
+	private StatisticsActionFactory statisticsActionFactory;
+
 	/**
 	 * @param handler
 	 * @param request
@@ -60,6 +65,9 @@ public class StatementBuilderFactory {
 					break;
 				case "usercontroller":
 					statement = this.userActionFactory.getStatementViaServiceName(request);
+					break;
+				case "statisticscontroller":
+					statement = this.statisticsActionFactory.getStatementViaServiceName(request);
 					break;
 			}
 

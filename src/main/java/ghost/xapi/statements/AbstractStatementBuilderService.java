@@ -5,6 +5,7 @@ import ghost.xapi.builder.VerbBuilder;
 import ghost.xapi.services.ActorBuilderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import java.util.UUID;
 
 @Service
 public class AbstractStatementBuilderService {
@@ -25,6 +26,20 @@ public class AbstractStatementBuilderService {
 	 */
 	protected boolean parseParameterToBool(String parameter) {
 		return Boolean.parseBoolean(parameter);
+	}
+
+	/**
+	 * @return String
+	 */
+	protected String generateUUID() {
+		return UUID.randomUUID().toString();
+	}
+
+	/**
+	 * @return String
+	 */
+	protected String getCurrentTimestamp() {
+		return String.valueOf(System.currentTimeMillis());
 	}
 
 }
