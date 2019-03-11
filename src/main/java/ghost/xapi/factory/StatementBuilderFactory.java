@@ -10,6 +10,7 @@ import ghost.xapi.statements.audienceQuestions.AudienceQuestionActionFactory;
 import ghost.xapi.statements.authentication.LoginActionFactory;
 import ghost.xapi.statements.lectureQuestions.LectureQuestionsActionFactory;
 import ghost.xapi.statements.session.SessionActionFactory;
+import ghost.xapi.statements.user.UserActionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ClassUtils;
@@ -31,6 +32,9 @@ public class StatementBuilderFactory {
 
 	@Autowired
 	private SessionActionFactory sessionActionFactory;
+
+	@Autowired
+	private UserActionFactory userActionFactory;
 
 	/**
 	 * @param handler
@@ -54,6 +58,9 @@ public class StatementBuilderFactory {
 				case "sessioncontroller":
 					statement = this.sessionActionFactory.getStatementViaServiceName(request);
 					break;
+				case "usercontroller":
+					statement = this.userActionFactory.getStatementViaServiceName(request);
+					break;
 			}
 
 			if (statement == null) {
@@ -62,6 +69,7 @@ public class StatementBuilderFactory {
 				);
 			}
 
+			// TODO move
 			// Always set the caller uri, for easier tracking.
 			statement.getActivity().setUri(request.getRequestURI());
 			statement.getActivity().setRequestMethod(request.getMethod());

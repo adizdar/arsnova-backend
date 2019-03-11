@@ -17,7 +17,7 @@ public class AppConfig {
 	}
 
 	/**
-	 * @return SessionActionFactory
+	 * @return LoginActionFactory
 	 */
 	@Bean
 	public LoginActionFactory loginActionFactory() {
