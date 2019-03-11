@@ -451,12 +451,4 @@ public class SessionStatementBuilderService extends AbstractStatementBuilderServ
 				})
 		);
 	}
-
-	/**
-	 * TODO new idea for unique ID
-	 * @return String
-	 */
-	private String getCurrentTimestamp() {
-		return String.valueOf(System.currentTimeMillis());
-	}
 }
