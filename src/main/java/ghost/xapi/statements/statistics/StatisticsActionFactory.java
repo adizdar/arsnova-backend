@@ -1,4 +1,4 @@
-package ghost.xapi.statements.statistics.user;
+package ghost.xapi.statements.statistics;
 
 import ghost.xapi.entities.Statement;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +8,6 @@ import org.springframework.web.servlet.HandlerMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.Map;
 
 @Component
 public class StatisticsActionFactory {
