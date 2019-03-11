@@ -9,6 +9,7 @@ import ghost.xapi.log.XAPILogger;
 import ghost.xapi.statements.audienceQuestions.AudienceQuestionActionFactory;
 import ghost.xapi.statements.authentication.LoginActionFactory;
 import ghost.xapi.statements.lectureQuestions.LectureQuestionsActionFactory;
+import ghost.xapi.statements.session.SessionActionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ClassUtils;
@@ -28,6 +29,9 @@ public class StatementBuilderFactory {
 	@Autowired
 	private LectureQuestionsActionFactory lectureQuestionsActionFactory;
 
+	@Autowired
+	private SessionActionFactory sessionActionFactory;
+
 	/**
 	 * @param handler
 	 * @param request
@@ -40,10 +44,16 @@ public class StatementBuilderFactory {
 			switch (className) {
 				case "logincontroller":
 					statement = this.loginActionFactory.getStatementViaServiceName(request);
+					break;
 				case "audiencequestioncontroller":
 					statement = this.audienceQuestionActionFactory.getStatementViaServiceName(request);
+					break;
 				case "lecturerquestioncontroller":
 					statement = this.lectureQuestionsActionFactory.getStatementViaServiceName(request);
+					break;
+				case "sessioncontroller":
+					statement = this.sessionActionFactory.getStatementViaServiceName(request);
+					break;
 			}
 
 			if (statement == null) {
@@ -52,8 +62,9 @@ public class StatementBuilderFactory {
 				);
 			}
 
-			// Always set the caller uri, for easier understanding.
+			// Always set the caller uri, for easier tracking.
 			statement.getActivity().setUri(request.getRequestURI());
+			statement.getActivity().setRequestMethod(request.getMethod());
 
 			return statement;
 		} catch (Exception e) {

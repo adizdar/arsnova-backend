@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class AbstractStatmentBuilderService {
+public class AbstractStatementBuilderService {
 
 	@Autowired
 	protected ActivityBuilder activityBuilder;
@@ -17,5 +17,14 @@ public class AbstractStatmentBuilderService {
 
 	@Autowired
 	protected ActorBuilderService actorBuilderService;
+
+	/**
+	 * @param parameter
+	 *
+	 * @return boolean
+	 */
+	protected boolean parseParameterToBool(String parameter) {
+		return Boolean.parseBoolean(parameter);
+	}
 
 }

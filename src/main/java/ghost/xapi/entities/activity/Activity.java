@@ -6,6 +6,7 @@ public class Activity {
 	private Definition definition;
 	private String objectType = "Activity";
 	private String uri;
+	private String requestMethod;
 
 	/**
 	 * Minimal information for a activity are id and type.
@@ -51,5 +52,19 @@ public class Activity {
 	 */
 	public void setUri(String uri) {
 		this.uri = uri;
+	}
+
+	/**
+	 * @return java.lang.String
+	 */
+	public String getRequestMethod() {
+		return requestMethod;
+	}
+
+	/**
+	 * @param requestMethod
+	 */
+	public void setRequestMethod(String requestMethod) {
+		this.requestMethod = requestMethod;
 	}
 }

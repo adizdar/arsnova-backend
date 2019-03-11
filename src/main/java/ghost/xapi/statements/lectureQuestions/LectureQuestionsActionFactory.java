@@ -3,6 +3,7 @@ package ghost.xapi.statements.lectureQuestions;
 import ghost.xapi.entities.Statement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.servlet.HandlerMapping;
 
 import javax.servlet.http.HttpServletRequest;
@@ -11,6 +12,8 @@ import java.util.Map;
 
 @Component
 public class LectureQuestionsActionFactory {
+
+	private AntPathMatcher patchMatcher = new AntPathMatcher();
 
 	@Autowired
 	private LectureQuestionsStatementBuilderService lectureQuestionsStatementBuilderService;

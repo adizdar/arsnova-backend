@@ -9,21 +9,19 @@ import de.thm.arsnova.services.ISessionService;
 import ghost.xapi.entities.Result;
 import ghost.xapi.entities.Statement;
 import ghost.xapi.entities.activity.Activity;
-import ghost.xapi.statements.AbstractStatmentBuilderService;
+import ghost.xapi.statements.AbstractStatementBuilderService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.servlet.HandlerMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.*;
-import java.security.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service
-public class LectureQuestionsStatementBuilderService extends AbstractStatmentBuilderService {
+public class LectureQuestionsStatementBuilderService extends AbstractStatementBuilderService {
 
 	@Autowired
 	private IQuestionService questionService;
