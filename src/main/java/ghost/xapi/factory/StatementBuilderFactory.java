@@ -8,6 +8,7 @@ import ghost.xapi.entities.Statement;
 import ghost.xapi.log.XAPILogger;
 import ghost.xapi.statements.audienceQuestions.AudienceQuestionActionFactory;
 import ghost.xapi.statements.authentication.LoginActionFactory;
+import ghost.xapi.statements.feedback.CourseActionFactory;
 import ghost.xapi.statements.lectureQuestions.LectureQuestionsActionFactory;
 import ghost.xapi.statements.motd.MotdActionFactory;
 import ghost.xapi.statements.session.SessionActionFactory;
@@ -44,6 +45,9 @@ public class StatementBuilderFactory {
 	@Autowired
 	private MotdActionFactory motdActionFactory;
 
+	@Autowired
+	private CourseActionFactory courseActionFactory;
+
 	/**
 	 * @param handler
 	 * @param request
@@ -74,6 +78,9 @@ public class StatementBuilderFactory {
 					break;
 				case "motdcontroller":
 					statement = this.motdActionFactory.getStatementViaServiceName(request);
+					break;
+				case "coursecontroller":
+					statement = this.courseActionFactory.getStatementViaServiceName(request);
 					break;
 			}
 
