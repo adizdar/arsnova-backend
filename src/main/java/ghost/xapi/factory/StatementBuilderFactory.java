@@ -7,7 +7,7 @@ import ghost.xapi.entities.FailedStatementCreationException;
 import ghost.xapi.entities.Statement;
 import ghost.xapi.log.XAPILogger;
 import ghost.xapi.statements.audienceQuestions.AudienceQuestionActionFactory;
-import ghost.xapi.statements.authentication.LoginActionFactory;
+import ghost.xapi.statements.authentication.AuthenticationActionFactory;
 import ghost.xapi.statements.feedback.CourseActionFactory;
 import ghost.xapi.statements.lectureQuestions.LectureQuestionsActionFactory;
 import ghost.xapi.statements.motd.MotdActionFactory;
@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 public class StatementBuilderFactory {
 
 	@Autowired
-	private LoginActionFactory loginActionFactory;
+	private AuthenticationActionFactory loginActionFactory;
 
 	@Autowired
 	private AudienceQuestionActionFactory audienceQuestionActionFactory;
