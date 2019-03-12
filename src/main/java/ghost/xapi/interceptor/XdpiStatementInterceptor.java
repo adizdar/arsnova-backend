@@ -9,8 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 
 
 @Component
-public class XapiFormatInterceptor extends AbstractStatementBuilderInterceptor {
-
+public class XdpiStatementInterceptor extends AbstractStatementBuilderInterceptor {
 	/**
 	 * @param request
 	 * @param response
@@ -25,7 +24,7 @@ public class XapiFormatInterceptor extends AbstractStatementBuilderInterceptor {
 			Object handler,
 			ModelAndView modelAndView
 	) throws Exception {
-		if (this.checkStatusCodeIsValid(response.getStatus())) {
+		if (this.isXapiSupportActive && this.checkIfStatusCodeIsValid(response.getStatus())) {
 			this.prepareStatement(request, response, (HandlerMethod) handler);
 		}
 
