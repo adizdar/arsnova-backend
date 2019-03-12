@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class AbstractStatementBuilderInterceptor extends HandlerInterceptorAdapter {
-
+// TODO dont call it if the option is not active in the settings
 	protected final static String XAPI_PATH = "returnxapi";
 
 	@Autowired
