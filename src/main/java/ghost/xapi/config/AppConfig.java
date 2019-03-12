@@ -1,6 +1,6 @@
 package ghost.xapi.config;
 
-import ghost.xapi.statements.authentication.LoginActionFactory;
+import ghost.xapi.statements.authentication.AuthenticationActionFactory;
 import ghost.xapi.factory.StatementBuilderFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,8 +20,8 @@ public class AppConfig {
 	 * @return LoginActionFactory
 	 */
 	@Bean
-	public LoginActionFactory loginActionFactory() {
-		return new LoginActionFactory();
+	public AuthenticationActionFactory loginActionFactory() {
+		return new AuthenticationActionFactory();
 	}
 
 }
