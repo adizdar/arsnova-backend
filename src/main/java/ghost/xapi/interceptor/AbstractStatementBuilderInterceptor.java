@@ -33,22 +33,24 @@ public class AbstractStatementBuilderInterceptor extends HandlerInterceptorAdapt
 	 */
 	protected void prepareStatement(HttpServletRequest request, HttpServletResponse response, HandlerMethod handler) {
 		Statement statement = this.statementBuilderFactory.getStatementForHandler(handler, request);
-		// TODO support fo config mode, in dev mode it should always be logged
-		if (request.getParameter(XAPI_PATH) != null || this.rootUrl.contains("localhost")) {
-			this.printXApiJson(statement);
+
+		if (this.rootUrl.contains("localhost")) {
+			this.writeStatementToLog(statement);
 		}
 
 		if (statement != null) {
 			this.xapiConnectorService.send(statement);
 		}
 	}
-// TODO remove unused interceptors
+
 	/**
 	 * @param statement
 	 */
-	protected void printXApiJson(Statement statement) {
+	protected void writeStatementToLog(Statement statement) {
 		if (statement.getFailedStatementCreationException() != null) {
-			//XAPILogger.ERROR.error(this.statementBuilderFactory.convertStatementToJson(statement));
+			XAPILogger.ERROR.error(
+					this.statementBuilderFactory.convertStatementToJson(statement)
+			);
 		} else {
 			XAPILogger.JSON.info(
 					this.statementBuilderFactory.convertStatementToJson(statement)
@@ -60,7 +62,7 @@ public class AbstractStatementBuilderInterceptor extends HandlerInterceptorAdapt
 	 * @param statusCode
 	 * @return
 	 */
-	protected boolean checkStatusCodeIsValid(int statusCode) {
+	protected boolean checkIfStatusCodeIsValid(int statusCode) {
 		int firstDigit = Integer.parseInt(Integer.toString(statusCode).substring(0, 1));
 
 		return firstDigit != 4 && firstDigit != 5;
