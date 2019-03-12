@@ -313,3 +313,30 @@ pp.session-levels.en = General Education,\
 tracking.provider=piwik
 tracking.tracker-url=
 tracking.site-id=
+
+################################################################################
+# XAPI settings - Optional
+################################################################################
+# This settings is optional. If the option xapi.support.activate is set to true
+# it will trigger the support for sending the Requests to the conncotr defined in the
+# xapi.connector.base-url. More info in the Readme.
+
+xapi.support.activate=false
+
+# If the activity id is not set the root-url will be taken as fallback
+xapi.activity.base-url=http://localhost:8080/example/xapi
+
+# If the activity id is not set the http://adlnet.gov/expapi/activities/ will be taken as fallback
+xapi.definition.type.base-url=http://adlnet.gov/expapi/activities/
+
+# If the activity id is not set the root-url will be taken as fallback
+xapi.verb.base-url=http://adlnet.gov/expapi/verbs/
+
+# It should be a POST supported URL.
+xapi.connector.base-url=https://tlacx311.edutec.guru/lrs-backend/resources/systems/xapi/statements
+xapi.connector.host.name=localhost
+xapi.connector.host.port=8080
+xapi.connector.host.scheme=http
+
+xapi.connector.basic-auth.username=arsnova
+xapi.connector.basic-auth.password=W]Ce$.ncPXk2V/6/
