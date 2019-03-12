@@ -12,6 +12,7 @@ import ghost.xapi.statements.feedback.CourseActionFactory;
 import ghost.xapi.statements.lectureQuestions.LectureQuestionsActionFactory;
 import ghost.xapi.statements.motd.MotdActionFactory;
 import ghost.xapi.statements.session.SessionActionFactory;
+import ghost.xapi.statements.socket.SocketActionFactory;
 import ghost.xapi.statements.statistics.StatisticsActionFactory;
 import ghost.xapi.statements.user.UserActionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +49,9 @@ public class StatementBuilderFactory {
 	@Autowired
 	private CourseActionFactory courseActionFactory;
 
+	@Autowired
+	private SocketActionFactory socketActionFactory;
+
 	/**
 	 * @param handler
 	 * @param request
@@ -81,6 +85,9 @@ public class StatementBuilderFactory {
 					break;
 				case "coursecontroller":
 					statement = this.courseActionFactory.getStatementViaServiceName(request);
+					break;
+				case "socketcontroller":
+					statement = this.socketActionFactory.getStatementViaServiceName(request);
 					break;
 			}
 

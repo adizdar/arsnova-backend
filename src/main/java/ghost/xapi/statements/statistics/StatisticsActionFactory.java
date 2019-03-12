@@ -15,7 +15,7 @@ public class StatisticsActionFactory {
 	private AntPathMatcher patchMatcher = new AntPathMatcher();
 
 	@Autowired
-	private StatisticsStatementBuilderService userStatementBuilderService;
+	private StatisticsStatementBuilderService statisticsStatementBuilderService;
 
 	/**
 	 * @param request
@@ -27,13 +27,13 @@ public class StatisticsActionFactory {
 
 		if (this.doesUriMatchWithPattern(request, "/statistics")
 				|| this.doesUriMatchWithPattern(request, "/statistics/")) {
-			return this.userStatementBuilderService.buildForGetStatistics(request);
+			return this.statisticsStatementBuilderService.buildForGetStatistics(request);
 		} else if (requestUri.contains("activeusercount")) {
-			return this.userStatementBuilderService.buildForGetActiveUserCount(request);
+			return this.statisticsStatementBuilderService.buildForGetActiveUserCount(request);
 		} else if (requestUri.contains("loggedinusercount")) {
-			return this.userStatementBuilderService.buildForGetLogginUserCount(request);
+			return this.statisticsStatementBuilderService.buildForGetLogginUserCount(request);
 		} else if (requestUri.contains("sessioncount")) {
-			return this.userStatementBuilderService.buildForGetSessionCount(request);
+			return this.statisticsStatementBuilderService.buildForGetSessionCount(request);
 		}
 
 		// This case should only happen if ARSNOVA registers a new action or we don't support the action
