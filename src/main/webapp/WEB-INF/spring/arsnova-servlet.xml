@@ -31,7 +31,7 @@
 			<mvc:mapping path="/**"/>
 			<mvc:exclude-mapping path="/auth/logout"/>
 			<mvc:exclude-mapping path="/logout"/>
-			<bean class="ghost.xapi.interceptor.XdpiStatementInterceptor" />
+			<bean class="ghost.xapi.interceptor.XapiStatementInterceptor" />
 		</mvc:interceptor>
 	</mvc:interceptors>
 

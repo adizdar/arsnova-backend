@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 
 
 @Component
-public class XdpiStatementInterceptor extends AbstractStatementBuilderInterceptor {
+public class XapiStatementInterceptor extends AbstractStatementBuilderInterceptor {
 	/**
 	 * @param request
 	 * @param response
