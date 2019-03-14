@@ -75,7 +75,7 @@
 
 	<filter>
 		<filter-name>MultiReadHttpFilter</filter-name>
-		<filter-class>ghost.xapi.interceptor.MultiReadHttpFilter</filter-class>
+		<filter-class>ghost.xapi.filter.MultiReadHttpFilter</filter-class>
 	</filter>
 	<filter-mapping>
 		<filter-name>MultiReadHttpFilter</filter-name>

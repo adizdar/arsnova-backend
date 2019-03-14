@@ -1,4 +1,4 @@
-package ghost.xapi.config;
+package ghost.xapi.filter;
 
 import javax.servlet.ReadListener;
 import javax.servlet.ServletInputStream;
@@ -8,8 +8,8 @@ import java.io.*;
 
 
 /**
- * @source https://stackoverflow.com/questions/10210645/http-servlet-request-lose-params-from-post-body-after-read-it-once/17129256#17129256
- * @source https://stackoverflow.com/questions/29208456/httpservletrequestwrapper-example-implementation-for-setreadlistener-isfinish/30748533#30748533
+ * @basedOn https://stackoverflow.com/questions/10210645/http-servlet-request-lose-params-from-post-body-after-read-it-once/17129256#17129256
+ * @basedOn https://stackoverflow.com/questions/29208456/httpservletrequestwrapper-example-implementation-for-setreadlistener-isfinish/30748533#30748533
  */
 public class MultiReadHttpServletRequest extends HttpServletRequestWrapper {
 	private ByteArrayOutputStream cachedBytes;

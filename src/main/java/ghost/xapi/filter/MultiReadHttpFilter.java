@@ -1,8 +1,6 @@
-package ghost.xapi.interceptor;
+package ghost.xapi.filter;
 
-import ghost.xapi.config.MultiReadHttpServletRequest;
 import org.springframework.web.filter.GenericFilterBean;
-import org.springframework.web.servlet.HandlerMapping;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
