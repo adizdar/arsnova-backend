@@ -97,7 +97,7 @@ public class StatementBuilderFactory {
 				);
 			}
 
-			// TODO move
+			// TODO only log in DEV environment
 			// Always set the caller uri, for easier tracking.
 			statement.getActivity().setUri(request.getRequestURI());
 			statement.getActivity().setRequestMethod(request.getMethod());
@@ -105,8 +105,9 @@ public class StatementBuilderFactory {
 			return statement;
 		} catch (Exception e) {
 			XAPILogger.ERROR.error(e.getMessage());
+			XAPILogger.ERROR.error(e.getStackTrace());
 
-			return new Statement(new FailedStatementCreationException(e.getMessage(), e.getCause()));
+			return null;
 		}
 	}
 

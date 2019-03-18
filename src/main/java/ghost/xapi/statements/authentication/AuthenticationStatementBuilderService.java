@@ -94,7 +94,7 @@ public class AuthenticationStatementBuilderService extends AbstractStatementBuil
 		User currentUser = this.userService.getCurrentUser();;
 
 		String activityId = this.activityBuilder.createActivityId(new String[] {
-				"/whoami",
+				"whoami",
 				currentUser.getUsername()
 		});
 

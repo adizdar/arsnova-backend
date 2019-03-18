@@ -79,28 +79,14 @@
 	</filter>
 	<filter-mapping>
 		<filter-name>MultiReadHttpFilter</filter-name>
-		<url-pattern>/lecturerquestion/</url-pattern>
-	</filter-mapping>
-	<filter-mapping>
-		<filter-name>MultiReadHttpFilter</filter-name>
-		<url-pattern>/lecturerquestion/bulk/</url-pattern>
-	</filter-mapping>
-	<filter-mapping>
-		<filter-name>MultiReadHttpFilter</filter-name>
-		<url-pattern>/session/import/</url-pattern>
-	</filter-mapping>
-	<filter-mapping>
-		<filter-name>MultiReadHttpFilter</filter-name>
+		<url-pattern>/socket/assign</url-pattern>
+		<url-pattern>/lecturerquestion/bulk</url-pattern>
+		<url-pattern>/session/import</url-pattern>
+		<url-pattern>/motd/userlist</url-pattern>
 		<url-pattern>/motd/</url-pattern>
+		<url-pattern>*/lecturerquestion/</url-pattern>
 	</filter-mapping>
-	<filter-mapping>
-		<filter-name>MultiReadHttpFilter</filter-name>
-		<url-pattern>/motd/userlist/</url-pattern>
-	</filter-mapping>
-	<filter-mapping>
-		<filter-name>MultiReadHttpFilter</filter-name>
-		<url-pattern>/socket/assign/</url-pattern>
-	</filter-mapping>
+
 	<!-- END: XAPI filter registration  -->
 
 

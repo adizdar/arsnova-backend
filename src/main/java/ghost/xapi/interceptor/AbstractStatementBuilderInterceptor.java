@@ -34,10 +34,11 @@ public class AbstractStatementBuilderInterceptor extends HandlerInterceptorAdapt
 	protected void prepareStatement(HttpServletRequest request, HttpServletResponse response, HandlerMethod handler) {
 		Statement statement = this.statementBuilderFactory.getStatementForHandler(handler, request);
 
-		if (this.rootUrl.contains("localhost")) {
+		if (this.rootUrl.contains("localhost") && statement != null) {
 			this.writeStatementToLog(statement);
 		}
 
+		// TODO don't send exceptions to TLA only log it
 		if (statement != null) {
 			this.xapiConnectorService.send(statement);
 		}
@@ -47,19 +48,14 @@ public class AbstractStatementBuilderInterceptor extends HandlerInterceptorAdapt
 	 * @param statement
 	 */
 	protected void writeStatementToLog(Statement statement) {
-		if (statement.getFailedStatementCreationException() != null) {
-			XAPILogger.ERROR.error(
-					this.statementBuilderFactory.convertStatementToJson(statement)
-			);
-		} else {
-			XAPILogger.JSON.info(
-					this.statementBuilderFactory.convertStatementToJson(statement)
-			);
-		}
+		XAPILogger.JSON.info(
+				this.statementBuilderFactory.convertStatementToJson(statement)
+		);
 	}
 
 	/**
 	 * @param statusCode
+	 *
 	 * @return
 	 */
 	protected boolean checkIfStatusCodeIsValid(int statusCode) {

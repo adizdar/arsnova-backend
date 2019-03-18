@@ -4,11 +4,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import de.thm.arsnova.entities.Answer;
 import de.thm.arsnova.entities.Question;
 import de.thm.arsnova.entities.Session;
+import de.thm.arsnova.entities.User;
 import de.thm.arsnova.services.IQuestionService;
 import de.thm.arsnova.services.ISessionService;
+import de.thm.arsnova.services.IUserService;
 import ghost.xapi.entities.Result;
 import ghost.xapi.entities.Statement;
 import ghost.xapi.entities.activity.Activity;
+import ghost.xapi.entities.actor.Actor;
 import ghost.xapi.statements.AbstractStatementBuilderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,6 +31,9 @@ public class LectureQuestionsStatementBuilderService extends AbstractStatementBu
 
 	@Autowired
 	private ISessionService sessionService;
+
+	@Autowired
+	private IUserService userService;
 
 
 	/**
@@ -105,19 +111,21 @@ public class LectureQuestionsStatementBuilderService extends AbstractStatementBu
 	 * @throws IOException
 	 */
 	public Statement buildForAskedQuestion(HttpServletRequest request) throws IOException {
-		ObjectMapper mapper = new ObjectMapper();
-		Map<String, Object> requestBody = mapper.readValue(request.getInputStream(), Map.class);
+		User user = this.userService.getCurrentUser();
+		String sessionKeyword = this.userService.getSessionForUser(user.getUsername());
+		List<String> unansweredQuestions = this.questionService.getUnAnsweredLectureQuestionIds(sessionKeyword);
+		String lastQuestionId = unansweredQuestions.get(unansweredQuestions.size() - 1);
+		Question question = this.questionService.getQuestion(lastQuestionId);
 		String activityId = this.activityBuilder.createActivityId(new String[]{
 				"question",
-				(String) requestBody.get("sessionKeyword"),
-				(String) requestBody.get("type")
+				question.get_id(),
 		});
 
 		return new Statement(
 				this.actorBuilderService.getActor(),
 				this.verbBuilder.createVerb("asked"),
 				this.activityBuilder.createActivity(activityId, "lectureQuestion"),
-				new Result(new Object[]{requestBody})
+				new Result(new Object[]{question})
 		);
 	}
 
@@ -455,13 +463,13 @@ public class LectureQuestionsStatementBuilderService extends AbstractStatementBu
 
 		String questionId = pathWithQuestionId.substring(0, pathWithQuestionId.indexOf("/"));
 
-		Integer piRound = Integer.parseInt(request.getParameter("piround"));
 		boolean allAnswers = Boolean.parseBoolean(request.getParameter("all"));
 
 		List<Answer> answers;
-		if (allAnswers) {
+		if (allAnswers || request.getParameter("piround") == null) {
 			answers = this.questionService.getAllAnswers(questionId, -1, -1);
 		} else {
+			Integer piRound = Integer.parseInt(request.getParameter("piround"));
 			answers = questionService.getAnswers(questionId, piRound, -1, -1);
 		}
 
@@ -496,8 +504,6 @@ public class LectureQuestionsStatementBuilderService extends AbstractStatementBu
 	}
 
 	/**
-	 * TODO TEST
-	 *
 	 * @param request
 	 *
 	 * @return
@@ -538,8 +544,6 @@ public class LectureQuestionsStatementBuilderService extends AbstractStatementBu
 	}
 
 	/**
-	 * TODO TEST
-	 *
 	 * @param request
 	 *
 	 * @return
@@ -561,8 +565,6 @@ public class LectureQuestionsStatementBuilderService extends AbstractStatementBu
 	}
 
 	/**
-	 * TODO TEST
-	 *
 	 * @param request
 	 *
 	 * @return
@@ -677,7 +679,7 @@ public class LectureQuestionsStatementBuilderService extends AbstractStatementBu
 	 *
 	 * @param request
 	 *
-	 * @return
+	 * @return Statement
 	 */
 	public Statement buildForGetFreeTextAnswers(HttpServletRequest request) {
 		String pathWithQuestionId = new AntPathMatcher().extractPathWithinPattern(
@@ -692,6 +694,33 @@ public class LectureQuestionsStatementBuilderService extends AbstractStatementBu
 				this.verbBuilder.createVerb("retrieve"),
 				this.activityBuilder.createActivity("question#" + questionId, "freeTextAnswersForQuestion"),
 				new Result(new Object[]{this.questionService.getFreetextAnswers(questionId, -1, -1)})
+		);
+	}
+
+	/**
+	 * @param request method GET
+	 *
+	 * path /{questionId}/answer/{answerId}/image
+	 *
+	 * @return Statement
+	 */
+	public Statement buildForGetImage(HttpServletRequest request) {
+		Map pathVariables = (Map) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
+		String questionId = (String) pathVariables.get("questionId");
+		String answerId = (String) pathVariables.get("answerId");
+
+		String activityId = this.activityBuilder.createActivityId(new String[] {
+				"imageFor/question",
+				questionId,
+				"answer",
+				answerId
+		});
+
+		return new Statement(
+				this.actorBuilderService.getActor(),
+				this.verbBuilder.createVerb("retrieve"),
+				this.activityBuilder.createActivity(activityId, "image"),
+				new Result(new Object[]{this.questionService.getImage(questionId, answerId)})
 		);
 	}
 }

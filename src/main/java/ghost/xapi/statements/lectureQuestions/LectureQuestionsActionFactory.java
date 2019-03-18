@@ -46,11 +46,14 @@ public class LectureQuestionsActionFactory {
 			}
 
 			return this.lectureQuestionsStatementBuilderService.buildForPublishQuestion(request);
+		} else if (this.doesUriMatchWithPattern(request, "/lecturerquestion/{questionId}/answer/{answerId}/image") ||
+				this.doesUriMatchWithPattern(request, "/lecturerquestion/{questionId}/answer/{answerId}/image/")) {
+			return this.lectureQuestionsStatementBuilderService.buildForGetImage(request);
 		} else if (requestUri.contains("publishstatistics")) {
 			return this.lectureQuestionsStatementBuilderService.buildForPublishStatistics(request);
 		} else if (requestUri.contains("publishcorrectanswer")) {
 			return this.lectureQuestionsStatementBuilderService.buildForCorrectAnswer(request);
-		}  else if (requestUri.contains("answer")) {
+		}  else if (requestUri.contains("answer") && !requestUri.contains("answercount")) {
 			String methodName = request.getMethod().toLowerCase();
 			switch (methodName) {
 				case "post":
@@ -100,5 +103,17 @@ public class LectureQuestionsActionFactory {
 		// This case should only happen if ARSNOVA registers a new action
 		// TODO custom exception
 		throw new NullPointerException();
+	}
+
+	/**
+	 * TODO move
+	 * @param request
+	 * @param uriToMatch
+	 * @return
+	 */
+	protected boolean doesUriMatchWithPattern(HttpServletRequest request, String uriToMatch) {
+		String bestMatchPattern = (String ) request.getAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE);
+
+		return bestMatchPattern.equals(uriToMatch);
 	}
 }
