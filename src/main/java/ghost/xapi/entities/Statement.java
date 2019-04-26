@@ -3,6 +3,7 @@ package ghost.xapi.entities;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import ghost.xapi.entities.activity.Activity;
 import ghost.xapi.entities.actor.Actor;
+import ghost.xapi.entities.verb.Verb;
 
 public class Statement {
 

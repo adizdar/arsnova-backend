@@ -4,7 +4,7 @@ import de.thm.arsnova.entities.User;
 import de.thm.arsnova.services.IUserService;
 import ghost.xapi.entities.Result;
 import ghost.xapi.entities.Statement;
-import ghost.xapi.entities.Verb;
+import ghost.xapi.entities.verb.Verb;
 import ghost.xapi.entities.activity.Activity;
 import ghost.xapi.entities.actor.Actor;
 import ghost.xapi.statements.AbstractStatementBuilderService;
@@ -47,8 +47,7 @@ public class AuthenticationStatementBuilderService extends AbstractStatementBuil
 	public Statement buildForLogoutAction(HttpServletRequest request) {
 		Actor actor = this.actorBuilderService.getActor();
 		Verb verb = this.verbBuilder.createVerb("loggout");
-		// TODO fix id
-		Activity activity = this.activityBuilder.createActivity(actor.getObjectType(), "application");
+		Activity activity = this.activityBuilder.createActivity("arsnova", "application");
 
 		return new Statement(actor, verb, activity);
 	}

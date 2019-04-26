@@ -1,6 +1,6 @@
 package ghost.xapi.builder;
 
-import ghost.xapi.entities.Verb;
+import ghost.xapi.entities.verb.Verb;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -18,6 +18,10 @@ public class VerbBuilder {
 	 */
 	public Verb createVerb(String id) {
 		this.baseUrl = (this.baseUrl != null && !this.baseUrl.isEmpty()) ? this.baseUrl : this.rootUrl;
-		return new Verb(this.baseUrl + id);
+
+		Verb verb = new Verb(this.baseUrl + id);
+		verb.getDisplay().addNoLanguageTransaltionFromCamelCase(id);
+
+		return verb;
 	}
 }

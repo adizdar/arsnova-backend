@@ -107,4 +107,11 @@ public class Actor {
 		this.name = name;
 	}
 
+	/**
+	 * @return String
+	 */
+	public String getUserName() {
+		return this.email != null ? this.email : this.name;
+	}
+
 }

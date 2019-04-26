@@ -38,7 +38,14 @@ public class ActivityBuilder {
 	 */
 	public Activity createActivity(String id, String type) {
 		this.activityIdBaseUrl = (this.activityIdBaseUrl != null && !this.activityIdBaseUrl.isEmpty()) ? this.activityIdBaseUrl : this.rootUrl;
-		return new Activity(this.activityIdBaseUrl + ACTIVITY_URI + id, this.definitionTypeBaseUrl + type);
+
+		Activity activity = new Activity(
+				this.activityIdBaseUrl + ACTIVITY_URI + id,
+				this.definitionTypeBaseUrl + type
+		);
+		activity.getDefinition().getName().addNoLanguageTransaltionFromCamelCase(id);
+
+		return activity;
 	}
 
 	/**
