@@ -35,11 +35,10 @@ public class AbstractStatementBuilderInterceptor extends HandlerInterceptorAdapt
 		Statement statement = this.statementBuilderFactory.getStatementForHandler(handler, request);
 
 		if (this.rootUrl.contains("localhost") && statement != null) {
-			this.writeStatementToLog(statement);
-		}
+			if (this.rootUrl.contains("localhost")) {
+				this.writeStatementToLog(statement);
+			}
 
-		// TODO don't send exceptions to TLA only log it
-		if (statement != null) {
 			this.xapiConnectorService.send(statement);
 		}
 	}

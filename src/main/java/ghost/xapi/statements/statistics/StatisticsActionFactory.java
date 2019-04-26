@@ -1,10 +1,11 @@
 package ghost.xapi.statements.statistics;
 
 import ghost.xapi.entities.Statement;
+import ghost.xapi.statements.StatementBuilder;
+import ghost.xapi.statements.StatementBuilderBlock;
+import ghost.xapi.statements.UriMatchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.util.AntPathMatcher;
-import org.springframework.web.servlet.HandlerMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -12,48 +13,40 @@ import java.io.IOException;
 @Component
 public class StatisticsActionFactory {
 
-	private AntPathMatcher patchMatcher = new AntPathMatcher();
-
 	@Autowired
 	private StatisticsStatementBuilderService statisticsStatementBuilderService;
+
+	private StatementBuilderBlock block = new StatementBuilderBlock() {
+		@Override
+		public Statement create(String requestUri, HttpServletRequest request) {
+			if (UriMatchService.doesUriMatchWithPattern(request, "/statistics")
+					|| UriMatchService.doesUriMatchWithPattern(request, "/statistics/")) {
+				return statisticsStatementBuilderService.buildForGetStatistics(request);
+			} else if (requestUri.contains("activeusercount")) {
+				return statisticsStatementBuilderService.buildForGetActiveUserCount(request);
+			} else if (requestUri.contains("loggedinusercount")) {
+				return statisticsStatementBuilderService.buildForGetLogginUserCount(request);
+			} else if (requestUri.contains("sessioncount")) {
+				return statisticsStatementBuilderService.buildForGetSessionCount(request);
+			}
+			
+			return null;
+		}
+
+		@Override
+		public Statement createWithIoOperations(String requestUri, HttpServletRequest request) throws IOException {
+			// Only placeholder.
+			return null;
+		}
+	};
 
 	/**
 	 * @param request
 	 *
 	 * @return Statement
 	 */
-	public Statement getStatementViaServiceName(HttpServletRequest request) throws IOException {
-		String requestUri = request.getRequestURI().toLowerCase();
-
-		if (this.doesUriMatchWithPattern(request, "/statistics")
-				|| this.doesUriMatchWithPattern(request, "/statistics/")) {
-			return this.statisticsStatementBuilderService.buildForGetStatistics(request);
-		} else if (requestUri.contains("activeusercount")) {
-			return this.statisticsStatementBuilderService.buildForGetActiveUserCount(request);
-		} else if (requestUri.contains("loggedinusercount")) {
-			return this.statisticsStatementBuilderService.buildForGetLogginUserCount(request);
-		} else if (requestUri.contains("sessioncount")) {
-			return this.statisticsStatementBuilderService.buildForGetSessionCount(request);
-		}
-
-		// This case should only happen if ARSNOVA registers a new action or we don't support the action
-		// TODO custom exception
-		throw new NullPointerException();
-	}
-
-
-	/**
-	 * TODO move to abstract class
-	 *
-	 * @param request
-	 * @param uriToMatch
-	 *
-	 * @return
-	 */
-	protected boolean doesUriMatchWithPattern(HttpServletRequest request, String uriToMatch) {
-		String bestMatchPattern = (String) request.getAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE);
-
-		return bestMatchPattern.equals(uriToMatch);
+	public Statement getStatementViaServiceName(HttpServletRequest request) {
+		return StatementBuilder.createFromRequest(request, this.block);
 	}
 
 }

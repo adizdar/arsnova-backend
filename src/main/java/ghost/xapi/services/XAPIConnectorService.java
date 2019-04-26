@@ -22,7 +22,7 @@ public class XAPIConnectorService {
 	@Autowired
 	private RestTemplateWithBasicAuthFactory restTemplateWithBasicAuthFactory;
 
-	// TODO maybe manual thread connection, investigate what is better
+	// TODO maybe try manual thread connection if it is to slow
 	/**
 	 * @param statement
 	 */

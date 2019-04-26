@@ -55,7 +55,6 @@ public class Actor {
 	 * @return java.lang.String
 	 */
 	private String getNameFromEmail(String email) {
-		// TODO add email validation
 		return email.substring(0, email.indexOf("@"));
 	}
 

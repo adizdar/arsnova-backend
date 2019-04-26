@@ -3,7 +3,6 @@ package ghost.xapi.factory;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
-import ghost.xapi.entities.FailedStatementCreationException;
 import ghost.xapi.entities.Statement;
 import ghost.xapi.log.XAPILogger;
 import ghost.xapi.statements.audienceQuestions.AudienceQuestionActionFactory;
@@ -16,6 +15,7 @@ import ghost.xapi.statements.socket.SocketActionFactory;
 import ghost.xapi.statements.statistics.StatisticsActionFactory;
 import ghost.xapi.statements.user.UserActionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ClassUtils;
 import org.springframework.web.method.HandlerMethod;
@@ -51,6 +51,9 @@ public class StatementBuilderFactory {
 
 	@Autowired
 	private SocketActionFactory socketActionFactory;
+
+	@Value("${root-url}")
+	private String rootUrl;
 
 	/**
 	 * @param handler
@@ -92,15 +95,20 @@ public class StatementBuilderFactory {
 			}
 
 			if (statement == null) {
-				throw new NotRegisteredControllerException(
-						"Controller " + className + " is unhandled for this action type. Maybe a new controller has been added?"
-				);
+				if (this.rootUrl.contains("localhost")) {
+					throw new NotRegisteredControllerException(
+							"Controller " + className + " is unhandled for this action type. Maybe a new controller has been added?"
+					);
+				}
+
+				return null;
 			}
 
-			// TODO only log in DEV environment
-			// Always set the caller uri, for easier tracking.
-			statement.getActivity().setUri(request.getRequestURI());
-			statement.getActivity().setRequestMethod(request.getMethod());
+			if (this.rootUrl.contains("localhost")) {
+				// Set the caller uri, for easier tracking.
+				statement.getActivity().setUri(request.getRequestURI());
+				statement.getActivity().setRequestMethod(request.getMethod());
+			}
 
 			return statement;
 		} catch (Exception e) {

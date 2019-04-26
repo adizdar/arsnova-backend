@@ -86,16 +86,16 @@ public class SessionStatementBuilderService extends AbstractStatementBuilderServ
 		sessionParameters.put("visitedOnly", Boolean.toString(visitedOnly));
 		sessionParameters.put("sortBy", sortBy);
 		sessionParameters.put("username", username);
-		sessionParameters.put("Result", "");
+
+		Map<String, Object> result = new HashMap<>();
+		result.put("sessionParameters", sessionParameters);
+		result.put("sessions", sessions != null ? sessions.toArray() : "No result for search criteria.");
 
 		return new Statement(
 				this.actorBuilderService.getActor(),
 				this.verbBuilder.createVerb("retrieve"),
 				this.activityBuilder.createActivity(activityId, "sessions"),
-				new Result(new Object[]{
-						sessionParameters,
-						sessions != null ? sessions.toArray() : "No result for search criteria.",
-				})
+				new Result(new Object[]{ result })
 		);
 	}
 
@@ -124,16 +124,16 @@ public class SessionStatementBuilderService extends AbstractStatementBuilderServ
 		Map<String, String> sessionParameters = new HashMap<>();
 		sessionParameters.put("visitedOnly", Boolean.toString(visitedOnly));
 		sessionParameters.put("sortBy", sortBy);
-		sessionParameters.put("Result", "");
+
+		Map<String, Object> result = new HashMap<>();
+		result.put("sessionParameters", sessionParameters);
+		result.put("sessions", sessions != null ? sessions.toArray() : "No result for search criteria.");
 
 		return new Statement(
 				this.actorBuilderService.getActor(),
 				this.verbBuilder.createVerb("retrieve"),
 				this.activityBuilder.createActivity(activityId, "sessions"),
-				new Result(new Object[]{
-						sessionParameters,
-						sessions != null ? sessions.toArray() : "No result for search criteria.",
-				})
+				new Result(new Object[]{ result })
 		);
 	}
 
@@ -175,7 +175,7 @@ public class SessionStatementBuilderService extends AbstractStatementBuilderServ
 				this.actorBuilderService.getActor(),
 				this.verbBuilder.createVerb("updated"),
 				this.activityBuilder.createActivity(activityId, "session"),
-				new Result(new Object[]{this.sessionService.getSession(sessionKey)})
+				new Result("session", new Object[]{this.sessionService.getSession(sessionKey)})
 		);
 	}
 
@@ -200,6 +200,7 @@ public class SessionStatementBuilderService extends AbstractStatementBuilderServ
 				this.verbBuilder.createVerb("retrieve"),
 				this.activityBuilder.createActivity(activityId, "sessions"),
 				new Result(new Object[]{
+						"sessions",
 						sessions
 				})
 		);
@@ -224,7 +225,7 @@ public class SessionStatementBuilderService extends AbstractStatementBuilderServ
 				this.actorBuilderService.getActor(),
 				this.verbBuilder.createVerb("import"),
 				this.activityBuilder.createActivity(activityId, "session"),
-				new Result(new Object[] {importSession})
+				new Result("importedSession", new Object[] {importSession})
 		);
 	}
 
@@ -259,7 +260,7 @@ public class SessionStatementBuilderService extends AbstractStatementBuilderServ
 				this.actorBuilderService.getActor(),
 				this.verbBuilder.createVerb("export"),
 				this.activityBuilder.createActivity(activityId, "sessions"),
-				new Result(new Object[] {sessions})
+				new Result("exportedSessions", new Object[] { sessions })
 		);
 	}
 
@@ -283,7 +284,7 @@ public class SessionStatementBuilderService extends AbstractStatementBuilderServ
 				this.actorBuilderService.getActor(),
 				this.verbBuilder.createVerb("updated"),
 				this.activityBuilder.createActivity(activityId, "sessionCreator"),
-				new Result(new Object[]{"New session creator: " + session.getCreator()})
+				new Result("newSessionCreator", new Object[]{session.getCreator()})
 		);
 	}
 
@@ -307,7 +308,7 @@ public class SessionStatementBuilderService extends AbstractStatementBuilderServ
 				this.actorBuilderService.getActor(),
 				this.verbBuilder.createVerb("copy"),
 				this.activityBuilder.createActivity(activityId, "sessionToPublicPool"),
-				new Result(new Object[] {this.sessionService.getPublicPoolSessionsInfo()})
+				new Result("session", new Object[] {this.sessionService.getPublicPoolSessionsInfo()})
 		);
 	}
 
@@ -329,15 +330,15 @@ public class SessionStatementBuilderService extends AbstractStatementBuilderServ
 
 		this.sessionService.getPublicPoolSessionsInfo();
 
+		Map<String, Object> result = new HashMap<>();
+		result.put("isSessionLocked", Boolean.toString(isLocked));
+		result.put("session", this.sessionService.getSession(sessionKey));
+
 		return new Statement(
 				this.actorBuilderService.getActor(),
 				this.verbBuilder.createVerb("lock"),
 				this.activityBuilder.createActivity(activityId, "session"),
-				new Result(new Object[] {
-						// TODO maybe more results or similar stuff
-						"Session locked: " + Boolean.toString(isLocked),
-						this.sessionService.getSession(sessionKey)
-				})
+				new Result(new Object[] {result})
 		);
 	}
 
@@ -364,7 +365,7 @@ public class SessionStatementBuilderService extends AbstractStatementBuilderServ
 				this.actorBuilderService.getActor(),
 				this.verbBuilder.createVerb("retrieve"),
 				this.activityBuilder.createActivity(activityId, "learningProgress"),
-				new Result(new Object[] {
+				new Result("learningProgress", new Object[] {
 		 			this.sessionService.getLearningProgress(sessionKey, progressType, questionVariant)
 				})
 		);
@@ -390,7 +391,7 @@ public class SessionStatementBuilderService extends AbstractStatementBuilderServ
 				this.actorBuilderService.getActor(),
 				this.verbBuilder.createVerb("retrieve"),
 				this.activityBuilder.createActivity(activityId, "sessionFeatures"),
-				new Result(new Object[] {this.sessionService.getSessionFeatures(sessionKey)})
+				new Result("sessionFeatures", new Object[] {this.sessionService.getSessionFeatures(sessionKey)})
 		);
 	}
 
@@ -410,16 +411,13 @@ public class SessionStatementBuilderService extends AbstractStatementBuilderServ
 				sessionKey
 		});
 
-		this.sessionService.getPublicPoolSessionsInfo();
+//		this.sessionService.getPublicPoolSessionsInfo();
 
 		return new Statement(
 				this.actorBuilderService.getActor(),
 				this.verbBuilder.createVerb("lock"),
 				this.activityBuilder.createActivity(activityId, "feedbackInput"),
-				new Result(new Object[] {
-						"Lock feedback input: " + Boolean.toString(isLocked),
-						this.sessionService.lockFeedbackInput(sessionKey, isLocked)
-				})
+				new Result("isFeedbackInputLocked", new Object[] {Boolean.toString(isLocked)})
 		);
 	}
 
@@ -439,14 +437,13 @@ public class SessionStatementBuilderService extends AbstractStatementBuilderServ
 				sessionKey
 		});
 
-		this.sessionService.getPublicPoolSessionsInfo();
+//		this.sessionService.getPublicPoolSessionsInfo();
 
 		return new Statement(
 				this.actorBuilderService.getActor(),
 				this.verbBuilder.createVerb("flip"),
 				this.activityBuilder.createActivity(activityId, "flashCards"),
-				new Result(new Object[] {
-						"Flip flash cards: " + Boolean.toString(shouldFlip),
+				new Result("shouldReturnFlipFlashCards", new Object[] {
 						this.sessionService.flipFlashcards(sessionKey, shouldFlip)
 				})
 		);

@@ -476,7 +476,7 @@
 	</build>
 
 	<name>ARSnova Backend</name>
-	<description>ARSnova is a great audience response system</description>
+	<description>ARSnova is a great audience extension system</description>
 	<url>https://arsnova.github.io</url>
 	<organization>
 		<name>Technische Hochschule Mittelhessen</name>

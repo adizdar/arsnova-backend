@@ -13,32 +13,6 @@ public class Statement {
 	@JsonInclude(JsonInclude.Include.NON_NULL)
 	private Result result;
 
-	// TODO make better
-	@JsonInclude(JsonInclude.Include.NON_NULL)
-	private FailedStatementCreationException failedStatementCreationException;
-
-	@JsonInclude(JsonInclude.Include.NON_NULL)
-	private String errorMessage;
-
-	@JsonInclude(JsonInclude.Include.NON_NULL)
-	private StackTraceElement[] stackTrace;
-
-	/**
-	 * @param failedStatementCreationException
-	 */
-	public Statement(FailedStatementCreationException failedStatementCreationException) {
-		this.failedStatementCreationException = failedStatementCreationException;
-	}
-
-	/**
-	 * @param stackTrace
-	 * @param errorMessage
-	 */
-	public Statement(StackTraceElement[] stackTrace, String errorMessage) {
-		this.stackTrace = stackTrace;
-		this.errorMessage = errorMessage;
-	}
-
 	/**
 	 * @param actor
 	 * @param verb
@@ -85,13 +59,6 @@ public class Statement {
 	}
 
 	/**
-	 * @return ghost.xapi.entities.FailedStatementCreationException
-	 */
-	public FailedStatementCreationException getFailedStatementCreationException() {
-		return failedStatementCreationException;
-	}
-
-	/**
 	 * @return ghost.xapi.entities.Result
 	 */
 	public Result getResult() {
@@ -105,17 +72,4 @@ public class Statement {
 		this.result = result;
 	}
 
-	/**
-	 * @return java.lang.String
-	 */
-	public String getErrorMessage() {
-		return errorMessage;
-	}
-
-	/**
-	 * @return java.lang.StackTraceElement[]
-	 */
-	public StackTraceElement[] getStackTrace() {
-		return stackTrace;
-	}
 }
