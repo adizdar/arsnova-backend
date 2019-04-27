@@ -24,7 +24,11 @@ public class ActorBuilder {
 			throw new NullPointerException("Current user is null.");
 		}
 
-		return new Actor(currentUser.getUsername(), currentUser.getType(), currentUser.getRole().name());
+		return new Actor(
+				currentUser.getUsername(),
+				currentUser.getType(),
+				currentUser.getRole() != null ? currentUser.getRole().name() : null
+		);
 	}
 }
 
