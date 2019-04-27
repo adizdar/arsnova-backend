@@ -29,15 +29,15 @@ public class Translations {
 	/**
 	 * @param value
 	 */
-	public void addNoLanguageTransaltion(String value) {
+	public void addNoLanguageTranslation(String value) {
 		this.translation.put(NO_LANGUAGE_KEY, value);
 	}
 
 	/**
 	 * @param value
 	 */
-	public void addNoLanguageTransaltionFromCamelCase(String value) {
-		this.translation.put(NO_LANGUAGE_KEY, this.convertCamelCaseToSpace(value));
+	public void addNoLanguageTranslationFromCamelCase(String value) {
+		this.addNoLanguageTranslation(this.convertCamelCaseToSpace(value));
 	}
 
 	/**
@@ -45,7 +45,7 @@ public class Translations {
 	 * @return String
 	 */
 	public String convertCamelCaseToSpace(String camelCaseString) {
-		return camelCaseString.replaceAll(
+		String result = camelCaseString.replaceAll(
 				String.format("%s|%s|%s",
 						"(?<=[A-Z])(?=[A-Z][a-z])",
 						"(?<=[^A-Z])(?=[A-Z])",
@@ -53,6 +53,8 @@ public class Translations {
 				),
 				" "
 		);
+
+		return result.trim();
 	}
 
 }

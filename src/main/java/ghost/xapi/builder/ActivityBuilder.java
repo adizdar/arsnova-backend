@@ -43,7 +43,7 @@ public class ActivityBuilder {
 				this.activityIdBaseUrl + ACTIVITY_URI + id,
 				this.definitionTypeBaseUrl + type
 		);
-		activity.getDefinition().getName().addNoLanguageTransaltionFromCamelCase(id);
+		activity.getDefinition().getName().addNoLanguageTranslationFromCamelCase(type);
 
 		return activity;
 	}

@@ -20,7 +20,7 @@ public class VerbBuilder {
 		this.baseUrl = (this.baseUrl != null && !this.baseUrl.isEmpty()) ? this.baseUrl : this.rootUrl;
 
 		Verb verb = new Verb(this.baseUrl + id);
-		verb.getDisplay().addNoLanguageTransaltionFromCamelCase(id);
+		verb.getDisplay().addNoLanguageTranslationFromCamelCase(id);
 
 		return verb;
 	}

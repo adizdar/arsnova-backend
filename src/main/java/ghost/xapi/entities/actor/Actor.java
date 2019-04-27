@@ -10,10 +10,13 @@ public class Actor {
 	static final String ACTOR_PREFIX = "mailto:";
 
 	@JsonInclude(JsonInclude.Include.NON_NULL)
+	private String role;
+	@JsonInclude(JsonInclude.Include.NON_NULL)
 	private String email;
 	private String name;
 	private String objectType = "Agent";
 	private Account account;
+
 
 	/**
 	 * @param userName
@@ -31,6 +34,18 @@ public class Actor {
 		this.setNameAndEmailViaUsername(userName);
 		this.account = new Account(this.name, type);
 	}
+
+	/**
+	 * @param userName
+	 * @param type
+	 * @param role
+	 */
+	public Actor(String userName, String type, String role) {
+		this.setNameAndEmailViaUsername(userName);
+		this.account = new Account(this.name, type);
+		this.role = role;
+	}
+
 
 	/**
 	 * Maps name and email field via userName. The userName can be a email or just a plain name.
@@ -114,4 +129,17 @@ public class Actor {
 		return this.email != null ? this.email : this.name;
 	}
 
+	/**
+	 * @return java.lang.String
+	 */
+	public String getRole() {
+		return role;
+	}
+
+	/**
+	 * @param role
+	 */
+	public void setRole(String role) {
+		this.role = role;
+	}
 }

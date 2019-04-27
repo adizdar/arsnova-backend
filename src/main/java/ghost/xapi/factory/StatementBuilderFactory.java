@@ -89,9 +89,6 @@ public class StatementBuilderFactory {
 				case "coursecontroller":
 					statement = this.courseActionFactory.getStatementViaServiceName(request);
 					break;
-				case "socketcontroller":
-					statement = this.socketActionFactory.getStatementViaServiceName(request);
-					break;
 			}
 
 			if (statement == null) {

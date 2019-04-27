@@ -15,6 +15,11 @@ public class MultiReadHttpFilter extends GenericFilterBean {
 			return;
 		}
 
+		if (!this.checkIfUriIsWhitelisted((HttpServletRequest) servletRequest)) {
+			filterChain.doFilter(servletRequest, servletResponse);
+			return;
+		}
+
 		// Wrap the request in order to read the input stream multiple times.
 		MultiReadHttpServletRequest multiReadRequest = new MultiReadHttpServletRequest(
 				(HttpServletRequest) servletRequest
@@ -45,6 +50,27 @@ public class MultiReadHttpFilter extends GenericFilterBean {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Because we can't specify the request method only the path.
+	 *
+	 * @param request
+	 * @return boolean
+	 */
+	protected boolean checkIfUriIsWhitelisted(HttpServletRequest request) {
+		String requestUri = request.getRequestURI().toLowerCase();
+		String requestMethod = request.getMethod().toLowerCase();
+		if (requestUri.equals("/session/") || requestUri.equals("/session")) {
+			switch (requestMethod) {
+				case "post":
+					return true;
+					default:
+						return false;
+			}
+		}
+
+		return true;
 	}
 
 }

@@ -7,6 +7,7 @@ import ghost.xapi.entities.Statement;
 import ghost.xapi.entities.actor.Actor;
 import ghost.xapi.statements.AbstractStatementBuilderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.HandlerMapping;
 
@@ -30,8 +31,7 @@ public class StatisticsStatementBuilderService extends AbstractStatementBuilderS
 	 */
 	public Statement buildForGetStatistics(HttpServletRequest request) {
 		String activityId = this.activityBuilder.createActivityId(new String[]{
-				"statistics",
-				this.generateUUID()
+				"statistics"
 		});
 
 		Statistics statistics = this.statisticsService.getStatistics();
@@ -40,7 +40,7 @@ public class StatisticsStatementBuilderService extends AbstractStatementBuilderS
 				this.actorBuilderService.getActor(),
 				this.verbBuilder.createVerb("retrieve"),
 				this.activityBuilder.createActivity(activityId, "statistics"),
-				new Result(new Object[] { statistics })
+				new Result("statistics", new Object[] { statistics })
 		);
 	}
 
@@ -60,7 +60,7 @@ public class StatisticsStatementBuilderService extends AbstractStatementBuilderS
 				this.actorBuilderService.getActor(),
 				this.verbBuilder.createVerb("count"),
 				this.activityBuilder.createActivity(activityId, "activeUsers"),
-				new Result(new Object[] { Integer.toString(this.statisticsService.getStatistics().getActiveUsers()) })
+				new Result("activeUserCount", new Object[] { Integer.toString(this.statisticsService.getStatistics().getActiveUsers()) })
 		);
 	}
 
@@ -72,15 +72,14 @@ public class StatisticsStatementBuilderService extends AbstractStatementBuilderS
 	 */
 	public Statement buildForGetLogginUserCount(HttpServletRequest request) {
 		String activityId = this.activityBuilder.createActivityId(new String[]{
-				"loggedinusercount/statistics",
-				this.generateUUID()
+				"loggedinusercount/statistics"
 		});
 
 		return new Statement(
 				this.actorBuilderService.getActor(),
 				this.verbBuilder.createVerb("count"),
 				this.activityBuilder.createActivity(activityId, "loginUsers"),
-				new Result(new Object[] { Integer.toString(this.statisticsService.getStatistics().getLoggedinUsers()) })
+				new Result("loggedInUserCount", new Object[] { Integer.toString(this.statisticsService.getStatistics().getLoggedinUsers()) })
 		);
 	}
 
@@ -92,15 +91,14 @@ public class StatisticsStatementBuilderService extends AbstractStatementBuilderS
 	 */
 	public Statement buildForGetSessionCount(HttpServletRequest request) {
 		String activityId = this.activityBuilder.createActivityId(new String[]{
-				"sessioncount/statistics",
-				this.generateUUID()
+				"sessioncount/statistics"
 		});
 
 		return new Statement(
 				this.actorBuilderService.getActor(),
 				this.verbBuilder.createVerb("count"),
 				this.activityBuilder.createActivity(activityId, "sessions"),
-				new Result(new Object[] { Integer.toString(this.statisticsService.getStatistics().getOpenSessions()
+				new Result("sessionCount", new Object[] { Integer.toString(this.statisticsService.getStatistics().getOpenSessions()
 						+ this.statisticsService.getStatistics().getClosedSessions()) })
 		);
 	}

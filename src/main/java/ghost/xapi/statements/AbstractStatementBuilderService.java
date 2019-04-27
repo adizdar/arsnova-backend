@@ -1,5 +1,9 @@
 package ghost.xapi.statements;
 
+import de.thm.arsnova.entities.Session;
+import de.thm.arsnova.entities.User;
+import de.thm.arsnova.services.ISessionService;
+import de.thm.arsnova.services.IUserService;
 import ghost.xapi.builder.ActivityBuilder;
 import ghost.xapi.builder.VerbBuilder;
 import ghost.xapi.services.ActorBuilderService;
@@ -40,6 +44,39 @@ public class AbstractStatementBuilderService {
 	 */
 	protected String getCurrentTimestamp() {
 		return String.valueOf(System.currentTimeMillis());
+	}
+
+	/**
+	 * @param sessionService
+	 * @param userService
+	 * @return String
+	 */
+	protected String getActivityIdViaSessionOrUUUIDForCurrentUser(ISessionService sessionService, IUserService userService) {
+		User user = userService.getCurrentUser();
+		String sessionKey = userService.getSessionForUser(user.getUsername());
+		Session session = sessionService.getSession(sessionKey);
+
+		return (session == null)
+				? this.activityBuilder.createActivityId(new String[] {
+				this.generateUUID()
+		})
+				: this.activityBuilder.createActivityId(new String[] {
+				"session",
+				session.getName()
+		});
+	}
+
+	/**
+	 * @param sessionService
+	 * @param userService
+	 * @return String
+	 */
+	protected String getSessionNameForCurrentUser(ISessionService sessionService, IUserService userService) {
+		User user = userService.getCurrentUser();
+		String sessionKey = userService.getSessionForUser(user.getUsername());
+		Session session = sessionService.getSession(sessionKey);
+
+		return session != null ? session.getName() : null;
 	}
 
 }

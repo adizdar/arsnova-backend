@@ -11,11 +11,10 @@ import de.thm.arsnova.services.IUserService;
 import ghost.xapi.entities.Result;
 import ghost.xapi.entities.Statement;
 import ghost.xapi.entities.activity.Activity;
-import ghost.xapi.entities.actor.Actor;
 import ghost.xapi.statements.AbstractStatementBuilderService;
+import org.apache.commons.lang.NullArgumentException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.AntPathMatcher;
 import org.springframework.web.servlet.HandlerMapping;
 
 import javax.servlet.http.HttpServletRequest;
@@ -45,14 +44,23 @@ public class LectureQuestionsStatementBuilderService extends AbstractStatementBu
 		Map pathVariables = (Map) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
 
 		String questionId = (String) pathVariables.get("questionId");
-		String activityId = "question#" + questionId;
 		Question question = this.questionService.getQuestion(questionId);
+
+		String activityId = this.activityBuilder.createActivityId(new String[]{
+				"lectureQuestion",
+				questionId
+		});
+
+		Activity activity = this.activityBuilder.createActivity(activityId, "lectureQuestion");
+		activity.getDefinition().getDescription().addNoLanguageTranslation(
+				"Retrieve lecturer question"
+		);
 
 		return new Statement(
 				this.actorBuilderService.getActor(),
-				this.verbBuilder.createVerb("asked"),
-				this.activityBuilder.createActivity(activityId, "lectureQuestion"),
-				new Result(new Object[]{question})
+				this.verbBuilder.createVerb("get"),
+				activity,
+				new Result("question", new Object[]{question})
 		);
 	}
 
@@ -87,13 +95,14 @@ public class LectureQuestionsStatementBuilderService extends AbstractStatementBu
 		Session activeSession = this.sessionService.getSession(sessionKey);
 
 		String activityId = this.activityBuilder.createActivityId(new String[]{
-				"lectureQuestions",
-				sessionKey,
-				activeSession.getCourseType(),
-				Long.toString(activeSession.getCreationTime())
+				"lectureQuestions/session",
+				activeSession.getName()
 		});
-		Result result = new Result(questions.toArray());
+		Result result = new Result("questions", questions.toArray());
 		Activity activity = this.activityBuilder.createActivity(activityId, "lectureQuestions");
+		activity.getDefinition().getDescription().addNoLanguageTranslation(
+				"Retrieve all questions for session " + activeSession.getName()
+		);
 
 		return new Statement(
 				this.actorBuilderService.getActor(),
@@ -108,24 +117,33 @@ public class LectureQuestionsStatementBuilderService extends AbstractStatementBu
 	 * @param request
 	 *
 	 * @return Statement
-	 * @throws IOException
 	 */
-	public Statement buildForAskedQuestion(HttpServletRequest request) throws IOException {
+	public Statement buildForAskedQuestion(HttpServletRequest request) {
 		User user = this.userService.getCurrentUser();
 		String sessionKeyword = this.userService.getSessionForUser(user.getUsername());
+
 		List<String> unansweredQuestions = this.questionService.getUnAnsweredLectureQuestionIds(sessionKeyword);
 		String lastQuestionId = unansweredQuestions.get(unansweredQuestions.size() - 1);
 		Question question = this.questionService.getQuestion(lastQuestionId);
+		if (question == null) {
+			throw new NullArgumentException("Asked lecturer question was not retrieved.");
+		}
+
+		Activity activity = this.activityBuilder.createActivity(question.get_id(), "lectureQuestion");
+		activity.getDefinition().getDescription().addNoLanguageTranslation(
+				"User " + user.getUsername() + " asked a question."
+		);
+
 		String activityId = this.activityBuilder.createActivityId(new String[]{
-				"question",
-				question.get_id(),
+				"lectureQuestion",
+				question.get_id()
 		});
 
 		return new Statement(
 				this.actorBuilderService.getActor(),
 				this.verbBuilder.createVerb("asked"),
 				this.activityBuilder.createActivity(activityId, "lectureQuestion"),
-				new Result(new Object[]{question})
+				new Result("question", new Object[]{question})
 		);
 	}
 
@@ -139,16 +157,17 @@ public class LectureQuestionsStatementBuilderService extends AbstractStatementBu
 		ObjectMapper mapper = new ObjectMapper();
 		List<Question> questions = mapper.readValue(request.getInputStream(), List.class);
 
+		String sessionName = this.getSessionNameForCurrentUser(this.sessionService, this.userService);
 		String activityId = this.activityBuilder.createActivityId(new String[]{
-				"questions",
-				String.valueOf(System.currentTimeMillis())
+				"bulk/lectureQuestions" + (sessionName != null ? "session" : ""),
+				(sessionName != null ? sessionName : this.generateUUID())
 		});
 
 		return new Statement(
 				this.actorBuilderService.getActor(),
 				this.verbBuilder.createVerb("asked"),
 				this.activityBuilder.createActivity(activityId, "multipleLectureQuestions"),
-				new Result(new Object[]{questions})
+				new Result("questions", new Object[]{questions})
 		);
 	}
 
@@ -158,14 +177,10 @@ public class LectureQuestionsStatementBuilderService extends AbstractStatementBu
 	 * @return Statement
 	 */
 	public Statement buildForQuestionImage(HttpServletRequest request) {
-		String pathWithQuestionId = new AntPathMatcher().extractPathWithinPattern(
-				"/{questionId}/**",
-				request.getRequestURI()
-		);
+		Map pathVariables = (Map) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
+		String questionId = (String) pathVariables.get("questionId");
 
 		boolean fcImage = Boolean.parseBoolean(request.getParameter("fcImage"));
-
-		String questionId = pathWithQuestionId.substring(0, pathWithQuestionId.indexOf("/"));
 
 		String questionImage = "";
 		if (fcImage) {
@@ -174,11 +189,16 @@ public class LectureQuestionsStatementBuilderService extends AbstractStatementBu
 			questionImage = this.questionService.getQuestionImage(questionId);
 		}
 
+		String activityId = this.activityBuilder.createActivityId(new String[] {
+				"lectureQuestion/image",
+				questionId
+		});
+
 		return new Statement(
 				this.actorBuilderService.getActor(),
 				this.verbBuilder.createVerb("retrieve"),
-				this.activityBuilder.createActivity("question#" + questionId, "questionImage"),
-				new Result(new Object[]{questionImage})
+				this.activityBuilder.createActivity(activityId, "questionImage"),
+				new Result("questionImage", new Object[]{questionImage})
 		);
 	}
 
@@ -188,22 +208,23 @@ public class LectureQuestionsStatementBuilderService extends AbstractStatementBu
 	 * @return Statement
 	 */
 	public Statement buildForNewPiRound(HttpServletRequest request) {
-		String pathWithQuestionId = new AntPathMatcher().extractPathWithinPattern(
-				"/{questionId}/**",
-				request.getRequestURI()
-		);
+		Map pathVariables = (Map) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
+		String questionId = (String) pathVariables.get("questionId");
 
-		String questionId = pathWithQuestionId.substring(0, pathWithQuestionId.indexOf("/"));
+		String activityId = this.activityBuilder.createActivityId(new String[] {
+				"piRound/lectureQuestion",
+				questionId
+		});
 
 		Statement statement = new Statement(
 				this.actorBuilderService.getActor(),
 				this.verbBuilder.createVerb("started"),
-				this.activityBuilder.createActivity("question#" + questionId, "newPiRoundForQuestion")
+				this.activityBuilder.createActivity(activityId, "newPiRoundForQuestion")
 		);
 
 		String timeForNewPiRound = request.getParameter("time");
 		if (!timeForNewPiRound.isEmpty()) {
-			statement.setResult(new Result(new Object[]{"Delayed time: " + timeForNewPiRound}));
+			statement.setResult(new Result("timeForNewPiRound", new Object[]{timeForNewPiRound}));
 		}
 
 		return statement;
@@ -217,17 +238,28 @@ public class LectureQuestionsStatementBuilderService extends AbstractStatementBu
 	 * @return Statement
 	 */
 	public Statement buildForCancelPiRound(HttpServletRequest request) {
-		String pathWithQuestionId = new AntPathMatcher().extractPathWithinPattern(
-				"/{questionId}/**",
-				request.getRequestURI()
-		);
+		Map pathVariables = (Map) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
+		String questionId = (String) pathVariables.get("questionId");
 
-		String questionId = pathWithQuestionId.substring(0, pathWithQuestionId.indexOf("/"));
+		String activityId = this.activityBuilder.createActivityId(new String[] {
+				"piRound/lectureQuestion",
+				questionId
+		});
+
+		Activity activity = this.activityBuilder.createActivity(activityId, "piRoundForQuestion");
+		String activityDescription = "Pi round canceled for question";
+
+		Question question = this.questionService.getQuestion(questionId);
+		if (question != null) {
+			activityDescription += " subject " + question.getSubject();
+		}
+
+		activity.getDefinition().getDescription().addNoLanguageTranslation(activityDescription);
 
 		return new Statement(
 				this.actorBuilderService.getActor(),
 				this.verbBuilder.createVerb("canceled"),
-				this.activityBuilder.createActivity("question#" + questionId, "piRoundForQuestion")
+				activity
 		);
 	}
 
@@ -237,18 +269,35 @@ public class LectureQuestionsStatementBuilderService extends AbstractStatementBu
 	 * @return Statement
 	 */
 	public Statement buildForResetPiRound(HttpServletRequest request) {
-		String pathWithQuestionId = new AntPathMatcher().extractPathWithinPattern(
-				"/{questionId}/**",
-				request.getRequestURI()
-		);
+		Map pathVariables = (Map) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
+		String questionId = (String) pathVariables.get("questionId");
 
-		String questionId = pathWithQuestionId.substring(0, pathWithQuestionId.indexOf("/"));
+		String activityId = this.activityBuilder.createActivityId(new String[] {
+				"piRound/lectureQuestion",
+				questionId
+		});
 
-		return new Statement(
+		Activity activity = this.activityBuilder.createActivity(activityId, "piRoundForQuestion");
+		String activityDescription = "Pi round reset for question";
+
+		Question question = this.questionService.getQuestion(questionId);
+		if (question != null) {
+			activityDescription += " subject " + question.getSubject();
+		}
+
+		activity.getDefinition().getDescription().addNoLanguageTranslation(activityDescription);
+
+		Statement statement = new Statement(
 				this.actorBuilderService.getActor(),
 				this.verbBuilder.createVerb("reset"),
-				this.activityBuilder.createActivity("question#" + questionId, "piRoundForQuestion")
+				activity
 		);
+
+		if (question != null) {
+			statement.setResult(new Result("newPiRound", new Object[] { question.getPiRound() }));
+		}
+
+		return statement;
 	}
 
 	/**
@@ -257,19 +306,21 @@ public class LectureQuestionsStatementBuilderService extends AbstractStatementBu
 	 * @return Statement
 	 */
 	public Statement buildForDisableVote(HttpServletRequest request) {
-		String pathWithQuestionId = new AntPathMatcher().extractPathWithinPattern(
-				"/{questionId}/**",
-				request.getRequestURI()
-		);
+		Map pathVariables = (Map) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
+		String questionId = (String) pathVariables.get("questionId");
 
-		String questionId = pathWithQuestionId.substring(0, pathWithQuestionId.indexOf("/"));
 		boolean disableVote = Boolean.parseBoolean(request.getParameter("disableVote"));
+
+		String activityId = this.activityBuilder.createActivityId(new String[] {
+				"voting/lectureQuestion",
+				questionId
+		});
 
 		return new Statement(
 				this.actorBuilderService.getActor(),
 				this.verbBuilder.createVerb("disable"),
-				this.activityBuilder.createActivity("question#" + questionId, "votingForQuestion"),
-				new Result(new Object[]{"Disable voting: " + disableVote})
+				this.activityBuilder.createActivity(activityId, "votingForQuestion"),
+				new Result("isVotingDisabled", new Object[]{disableVote})
 		);
 	}
 
@@ -290,10 +341,12 @@ public class LectureQuestionsStatementBuilderService extends AbstractStatementBu
 			questionTypesToDisable.put("Disable all", disableVote);
 		}
 
+		String activityId = this.getActivityIdViaSessionOrUUUIDForCurrentUser(this.sessionService, this.userService);
+
 		return new Statement(
 				this.actorBuilderService.getActor(),
 				this.verbBuilder.createVerb("disable"),
-				this.activityBuilder.createActivity("time#" + String.valueOf(System.currentTimeMillis()), "votingForAllQuestions"),
+				this.activityBuilder.createActivity(activityId, "votingForAllQuestions"),
 				new Result(new Object[]{questionTypesToDisable})
 		);
 	}
@@ -304,23 +357,20 @@ public class LectureQuestionsStatementBuilderService extends AbstractStatementBu
 	 * @return Statement
 	 */
 	public Statement buildForPublishQuestion(HttpServletRequest request) {
-		String pathWithQuestionId = new AntPathMatcher().extractPathWithinPattern(
-				"/{questionId}/**",
-				request.getRequestURI()
-		);
-
-		String questionId = pathWithQuestionId.substring(0, pathWithQuestionId.indexOf("/"));
-		boolean publish = Boolean.parseBoolean(request.getParameter("publish"));
-
+		Map pathVariables = (Map) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
+		String questionId = (String) pathVariables.get("questionId");
 		Question question = this.questionService.getQuestion(questionId);
-		Result result = new Result(new Object[]{"Publish: " + publish});
-		result.appendValue(question);
+
+		String activityId = this.activityBuilder.createActivityId(new String[]{
+				"lectureQuestion",
+				questionId
+		});
 
 		return new Statement(
 				this.actorBuilderService.getActor(),
 				this.verbBuilder.createVerb("publish"),
-				this.activityBuilder.createActivity("question#" + questionId, "questionViaID"),
-				result
+				this.activityBuilder.createActivity(activityId, "questionViaID"),
+				new Result("question", new Object[] {question})
 		);
 	}
 
@@ -341,57 +391,54 @@ public class LectureQuestionsStatementBuilderService extends AbstractStatementBu
 			questionTypesToPublish.put("Publish all", publish);
 		}
 
-		String activityId = this.activityBuilder.createActivityId(new String[]{
-				"publishedOn",
-				new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date())
-		});
+		String activityId = this.getActivityIdViaSessionOrUUUIDForCurrentUser(this.sessionService, this.userService);
+
+		Activity activity = this.activityBuilder.createActivity(activityId, "allQuestions");
+		activity.getDefinition().getDescription().addNoLanguageTranslation(
+				"Lecturer questions published on " + new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date())
+		);
 
 		return new Statement(
 				this.actorBuilderService.getActor(),
 				this.verbBuilder.createVerb("publish"),
-				this.activityBuilder.createActivity(activityId, "allQuestions"),
-				new Result(new Object[]{questionTypesToPublish})
+				activity,
+				new Result("questionTypesToPublish", new Object[]{questionTypesToPublish})
 		);
 	}
 
 	/**
-	 * TODO TEST
-	 *
 	 * @param request
 	 *
 	 * @return
 	 */
 	public Statement buildForPublishStatistics(HttpServletRequest request) {
-		String pathWithQuestionId = new AntPathMatcher().extractPathWithinPattern(
-				"/{questionId}/**",
-				request.getRequestURI()
-		);
+		Map pathVariables = (Map) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
+		String questionId = (String) pathVariables.get("questionId");
 
-		String questionId = pathWithQuestionId.substring(0, pathWithQuestionId.indexOf("/"));
 		boolean showStatistics = Boolean.parseBoolean(request.getParameter("showStatistics"));
+
+		String activityId = this.activityBuilder.createActivityId(new String[]{
+				"statistics/lectureQuestion",
+				questionId
+		});
 
 		return new Statement(
 				this.actorBuilderService.getActor(),
 				this.verbBuilder.createVerb("show"),
-				this.activityBuilder.createActivity("question#" + questionId, "statisticsForQuestion"),
-				new Result(new Object[]{"Show statistics: " + showStatistics})
+				this.activityBuilder.createActivity(activityId, "statisticsForQuestion"),
+				new Result("showStatistics", new Object[]{showStatistics})
 		);
 	}
 
 	/**
-	 * TODO TEST
-	 *
 	 * @param request
 	 *
 	 * @return
 	 */
 	public Statement buildForCorrectAnswer(HttpServletRequest request) {
-		String pathWithQuestionId = new AntPathMatcher().extractPathWithinPattern(
-				"/{questionId}/**",
-				request.getRequestURI()
-		);
+		Map pathVariables = (Map) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
+		String questionId = (String) pathVariables.get("questionId");
 
-		String questionId = pathWithQuestionId.substring(0, pathWithQuestionId.indexOf("/"));
 		boolean showCorrectAnswer = Boolean.parseBoolean(request.getParameter("showCorrectAnswer"));
 
 		Question question = this.questionService.getQuestion(questionId);
@@ -399,21 +446,22 @@ public class LectureQuestionsStatementBuilderService extends AbstractStatementBu
 
 		Map<String, String> result = new HashMap<>();
 		result.put("Show correct answer", String.valueOf(showCorrectAnswer));
-		if (showCorrectAnswer) {
-			result.put("Correct answer", correctAnswer);
-		}
+		result.put("Correct answer", correctAnswer);
+
+		String activityId = this.activityBuilder.createActivityId(new String[]{
+				"correctAnswer/lectureQuestion",
+				questionId
+		});
 
 		return new Statement(
 				this.actorBuilderService.getActor(),
 				this.verbBuilder.createVerb("publish"),
-				this.activityBuilder.createActivity("question#" + questionId, "correctAnswerForQuestion"),
-				new Result(new Object[]{result})
+				this.activityBuilder.createActivity(activityId, "correctAnswerForQuestion"),
+				new Result("answer", new Object[]{result})
 		);
 	}
 
 	/**
-	 * TODO TEST
-	 *
 	 * @param request
 	 *
 	 * @return
@@ -433,35 +481,33 @@ public class LectureQuestionsStatementBuilderService extends AbstractStatementBu
 			questionTypesToDelete.put("Delete all", true);
 		}
 
+		Session activeSession = this.sessionService.getSession(sessionKey);
+
 		String activityId = this.activityBuilder.createActivityId(new String[]{
-				"forSession",
-				sessionKey,
-				"on",
-				new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date())
+				"lectureQuestionTypes/session",
+				activeSession.getName()
 		});
+		Activity activity = this.activityBuilder.createActivity(activityId, "skillQuestions");
+		activity.getDefinition().getDescription().addNoLanguageTranslation(
+				"Skill questions deleted on " + new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date())
+		);
 
 		return new Statement(
 				this.actorBuilderService.getActor(),
 				this.verbBuilder.createVerb("delete"),
 				this.activityBuilder.createActivity(activityId, "skillQuestions"),
-				new Result(new Object[]{questionTypesToDelete})
+				new Result("questionTypesToDelete", new Object[]{questionTypesToDelete})
 		);
 	}
 
 	/**
-	 * TODO TEST
-	 *
 	 * @param request
 	 *
 	 * @return
 	 */
 	public Statement buildForGetAnswersForQuestion(HttpServletRequest request) {
-		String pathWithQuestionId = new AntPathMatcher().extractPathWithinPattern(
-				"/{questionId}/**",
-				request.getRequestURI()
-		);
-
-		String questionId = pathWithQuestionId.substring(0, pathWithQuestionId.indexOf("/"));
+		Map pathVariables = (Map) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
+		String questionId = (String) pathVariables.get("questionId");
 
 		boolean allAnswers = Boolean.parseBoolean(request.getParameter("all"));
 
@@ -473,11 +519,16 @@ public class LectureQuestionsStatementBuilderService extends AbstractStatementBu
 			answers = questionService.getAnswers(questionId, piRound, -1, -1);
 		}
 
+		String activityId = this.activityBuilder.createActivityId(new String[]{
+				"answers/lectureQuestion",
+				questionId
+		});
+
 		return new Statement(
 				this.actorBuilderService.getActor(),
 				this.verbBuilder.createVerb("retrieve"),
-				this.activityBuilder.createActivity("question#" + questionId, "answersForQuestion"),
-				new Result(new Object[]{answers})
+				this.activityBuilder.createActivity(activityId, "answersForQuestion"),
+				new Result("answers", new Object[]{answers})
 		);
 	}
 
@@ -487,19 +538,20 @@ public class LectureQuestionsStatementBuilderService extends AbstractStatementBu
 	 * @return
 	 */
 	public Statement buildForSaveAnswerForQuestion(HttpServletRequest request) {
-		String pathWithQuestionId = new AntPathMatcher().extractPathWithinPattern(
-				"/{questionId}/**",
-				request.getRequestURI()
-		);
-
-		String questionId = pathWithQuestionId.substring(0, pathWithQuestionId.indexOf("/"));
+		Map pathVariables = (Map) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
+		String questionId = (String) pathVariables.get("questionId");
 		List<Answer> savedAnswer = this.questionService.getAnswers(questionId, 0, 1);
+
+		String activityId = this.activityBuilder.createActivityId(new String[]{
+				"lectureQuestion",
+				questionId
+		});
 
 		return new Statement(
 				this.actorBuilderService.getActor(),
 				this.verbBuilder.createVerb("save"),
-				this.activityBuilder.createActivity("question#" + questionId, "answerForQuestion"),
-				new Result(new Object[]{savedAnswer})
+				this.activityBuilder.createActivity(activityId, "answerForQuestion"),
+				new Result("answer", new Object[]{savedAnswer})
 		);
 	}
 
@@ -509,19 +561,20 @@ public class LectureQuestionsStatementBuilderService extends AbstractStatementBu
 	 * @return
 	 */
 	public Statement buildForUpdateAnswerForQuestion(HttpServletRequest request) {
-		String pathWithQuestionId = new AntPathMatcher().extractPathWithinPattern(
-				"/{questionId}/**",
-				request.getRequestURI()
-		);
-
-		String questionId = pathWithQuestionId.substring(0, pathWithQuestionId.indexOf("/"));
+		Map pathVariables = (Map) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
+		String questionId = (String) pathVariables.get("questionId");
 		List<Answer> savedAnswer = this.questionService.getAnswers(questionId, 0, 1);
+
+		String activityId = this.activityBuilder.createActivityId(new String[]{
+				"lectureQuestion",
+				questionId
+		});
 
 		return new Statement(
 				this.actorBuilderService.getActor(),
-				this.verbBuilder.createVerb("update"),
-				this.activityBuilder.createActivity("question#" + questionId, "answerForQuestion"),
-				new Result(new Object[]{savedAnswer})
+				this.verbBuilder.createVerb("updated"),
+				this.activityBuilder.createActivity(activityId, "answerForQuestion"),
+				new Result("updatedAnswer", new Object[]{savedAnswer})
 		);
 	}
 
@@ -531,14 +584,18 @@ public class LectureQuestionsStatementBuilderService extends AbstractStatementBu
 	 * @return
 	 */
 	public Statement buildForDeleteAnswerForQuestion(HttpServletRequest request) {
-		// TODO change to use this logic for question id
 		Map pathVariables = (Map) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
 		String questionId = (String) pathVariables.get("questionId");
+
+		String activityId = this.activityBuilder.createActivityId(new String[]{
+				"lectureQuestion",
+				questionId
+		});
 
 		return new Statement(
 				this.actorBuilderService.getActor(),
 				this.verbBuilder.createVerb("deleted"),
-				this.activityBuilder.createActivity("question#" + questionId, "answerForQuestion"),
+				this.activityBuilder.createActivity(activityId, "answerForQuestion"),
 				new Result(new Object[] { this.questionService.getQuestion(questionId) })
 		);
 	}
@@ -549,17 +606,18 @@ public class LectureQuestionsStatementBuilderService extends AbstractStatementBu
 	 * @return
 	 */
 	public Statement buildForDeleteAllAnswersForQuestion(HttpServletRequest request) {
-		String pathWithQuestionId = new AntPathMatcher().extractPathWithinPattern(
-				"/{questionId}/**",
-				request.getRequestURI()
-		);
+		Map pathVariables = (Map) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
+		String questionId = (String) pathVariables.get("questionId");
 
-		String questionId = pathWithQuestionId.substring(0, pathWithQuestionId.indexOf("/"));
+		String activityId = this.activityBuilder.createActivityId(new String[]{
+				"lectureQuestion",
+				questionId
+		});
 
 		return new Statement(
 				this.actorBuilderService.getActor(),
 				this.verbBuilder.createVerb("deleted"),
-				this.activityBuilder.createActivity("question#" + questionId, "allAnswersForQuestion"),
+				this.activityBuilder.createActivity(activityId, "allAnswersForQuestion"),
 				new Result(new Object[]{this.questionService.getQuestion(questionId)})
 		);
 	}
@@ -582,40 +640,39 @@ public class LectureQuestionsStatementBuilderService extends AbstractStatementBu
 			questionTypesToDelete.put("Delete all questions and answers from session", true);
 		}
 
+		Session activeSession = this.sessionService.getSession(sessionKey);
+
 		String activityId = this.activityBuilder.createActivityId(new String[]{
-				"forSession",
-				sessionKey,
-				"on",
-				new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date())
+				"deleteAllQuestionsAndAnswers/session",
+				activeSession.getName()
 		});
 
 		return new Statement(
 				this.actorBuilderService.getActor(),
 				this.verbBuilder.createVerb("deleted"),
 				this.activityBuilder.createActivity(activityId, "allAnswersAndQuestionForSession"),
-				new Result(new Object[]{questionTypesToDelete})
+				new Result("questionTypesToDelete", new Object[]{questionTypesToDelete})
 		);
 	}
 
 	/**
-	 * TODO TEST ALSO CHANGE THE NAMES TO HAVE GET PUT POST DELETE
-	 *
 	 * @param request
 	 *
 	 * @return
 	 */
 	public Statement buildForGetAllRoundAnswersCountForQuestion(HttpServletRequest request) {
-		String pathWithQuestionId = new AntPathMatcher().extractPathWithinPattern(
-				"/{questionId}/**",
-				request.getRequestURI()
-		);
+		Map pathVariables = (Map) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
+		String questionId = (String) pathVariables.get("questionId");
 
-		String questionId = pathWithQuestionId.substring(0, pathWithQuestionId.indexOf("/"));
+		String activityId = this.activityBuilder.createActivityId(new String[]{
+				"lectureQuestion",
+				questionId
+		});
 
 		return new Statement(
 				this.actorBuilderService.getActor(),
 				this.verbBuilder.createVerb("count"),
-				this.activityBuilder.createActivity("question#" + questionId, "totalAnswersForQuestion"),
+				this.activityBuilder.createActivity(activityId, "totalAnswersForQuestion"),
 				new Result(new Object[]{
 						Arrays.asList(
 								this.questionService.getAnswerCount(questionId, 1),
@@ -625,48 +682,46 @@ public class LectureQuestionsStatementBuilderService extends AbstractStatementBu
 	}
 
 	/**
-	 * TODO TEST ALSO CHANGE THE NAMES TO HAVE GET PUT POST DELETE
-	 *
 	 * @param request
 	 *
 	 * @return
 	 */
 	public Statement buildForGetTotalAmountOfAnswersForQuestion(HttpServletRequest request) {
-		String pathWithQuestionId = new AntPathMatcher().extractPathWithinPattern(
-				"/{questionId}/**",
-				request.getRequestURI()
-		);
+		Map pathVariables = (Map) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
+		String questionId = (String) pathVariables.get("questionId");
 
-		String questionId = pathWithQuestionId.substring(0, pathWithQuestionId.indexOf("/"));
+		String activityId = this.activityBuilder.createActivityId(new String[]{
+				"lectureQuestion",
+				questionId
+		});
 
 		return new Statement(
 				this.actorBuilderService.getActor(),
 				this.verbBuilder.createVerb("count"),
-				this.activityBuilder.createActivity("question#" + questionId, "totalAnswersForQuestion"),
-				new Result(new Object[]{this.questionService.getTotalAnswerCountByQuestion(questionId)})
+				this.activityBuilder.createActivity(activityId, "totalNumberOfAnswersForQuestion"),
+				new Result("total", new Object[]{this.questionService.getTotalAnswerCountByQuestion(questionId)})
 		);
 	}
 
 	/**
-	 * TODO TEST ALSO CHANGE THE NAMES TO HAVE GET PUT POST DELETE
-	 *
 	 * @param request
 	 *
 	 * @return
 	 */
 	public Statement buildForGetTotalAmountOfAnswersAndAbstiantForQuestion(HttpServletRequest request) {
-		String pathWithQuestionId = new AntPathMatcher().extractPathWithinPattern(
-				"/{questionId}/**",
-				request.getRequestURI()
-		);
+		Map pathVariables = (Map) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
+		String questionId = (String) pathVariables.get("questionId");
 
-		String questionId = pathWithQuestionId.substring(0, pathWithQuestionId.indexOf("/"));
+		String activityId = this.activityBuilder.createActivityId(new String[]{
+				"lectureQuestion",
+				questionId
+		});
 
 		return new Statement(
 				this.actorBuilderService.getActor(),
 				this.verbBuilder.createVerb("count"),
-				this.activityBuilder.createActivity("question#" + questionId, "totalAnswersAndAbstentionAnswersForQuestion"),
-				new Result(new Object[]{
+				this.activityBuilder.createActivity(activityId, "totalNumberOfAnswersAndAbstentionAnswersForQuestion"),
+				new Result("total", new Object[]{
 						Arrays.asList(
 								this.questionService.getAnswerCount(questionId),
 								this.questionService.getAbstentionAnswerCount(questionId)
@@ -675,25 +730,24 @@ public class LectureQuestionsStatementBuilderService extends AbstractStatementBu
 	}
 
 	/**
-	 * TODO TEST ALSO CHANGE THE NAMES TO HAVE GET PUT POST DELETE
-	 *
 	 * @param request
 	 *
 	 * @return Statement
 	 */
 	public Statement buildForGetFreeTextAnswers(HttpServletRequest request) {
-		String pathWithQuestionId = new AntPathMatcher().extractPathWithinPattern(
-				"/{questionId}/**",
-				request.getRequestURI()
-		);
+		Map pathVariables = (Map) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
+		String questionId = (String) pathVariables.get("questionId");
 
-		String questionId = pathWithQuestionId.substring(0, pathWithQuestionId.indexOf("/"));
+		String activityId = this.activityBuilder.createActivityId(new String[]{
+				"lectureQuestion",
+				questionId
+		});
 
 		return new Statement(
 				this.actorBuilderService.getActor(),
 				this.verbBuilder.createVerb("retrieve"),
-				this.activityBuilder.createActivity("question#" + questionId, "freeTextAnswersForQuestion"),
-				new Result(new Object[]{this.questionService.getFreetextAnswers(questionId, -1, -1)})
+				this.activityBuilder.createActivity(activityId, "freeTextAnswersForQuestion"),
+				new Result("answers", new Object[]{this.questionService.getFreetextAnswers(questionId, -1, -1)})
 		);
 	}
 
@@ -710,7 +764,7 @@ public class LectureQuestionsStatementBuilderService extends AbstractStatementBu
 		String answerId = (String) pathVariables.get("answerId");
 
 		String activityId = this.activityBuilder.createActivityId(new String[] {
-				"imageFor/question",
+				"imageFor/lectureQuestion",
 				questionId,
 				"answer",
 				answerId
@@ -720,7 +774,7 @@ public class LectureQuestionsStatementBuilderService extends AbstractStatementBu
 				this.actorBuilderService.getActor(),
 				this.verbBuilder.createVerb("retrieve"),
 				this.activityBuilder.createActivity(activityId, "image"),
-				new Result(new Object[]{this.questionService.getImage(questionId, answerId)})
+				new Result("image", new Object[]{this.questionService.getImage(questionId, answerId)})
 		);
 	}
 }

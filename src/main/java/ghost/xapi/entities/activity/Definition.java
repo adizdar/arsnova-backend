@@ -1,5 +1,6 @@
 package ghost.xapi.entities.activity;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import ghost.xapi.entities.Translations;
 
 /**
@@ -8,7 +9,9 @@ import ghost.xapi.entities.Translations;
 public class Definition {
 
 	private String type;
+	@JsonInclude(JsonInclude.Include.NON_NULL)
 	private Translations name;
+	@JsonInclude(JsonInclude.Include.NON_NULL)
 	private Translations description;
 
 	/**

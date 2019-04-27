@@ -3,10 +3,13 @@ package ghost.xapi.statements.motd;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.thm.arsnova.entities.Motd;
 import de.thm.arsnova.entities.MotdList;
+import de.thm.arsnova.entities.Session;
 import de.thm.arsnova.entities.transport.ImportExportSession;
 import de.thm.arsnova.services.IMotdService;
+import de.thm.arsnova.services.ISessionService;
 import ghost.xapi.entities.Result;
 import ghost.xapi.entities.Statement;
+import ghost.xapi.entities.activity.Activity;
 import ghost.xapi.entities.actor.Actor;
 import ghost.xapi.statements.AbstractStatementBuilderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +31,9 @@ public class MotdStatementBuilderService extends AbstractStatementBuilderService
 
 	@Autowired
 	private IMotdService motdService;
+
+	@Autowired
+	private ISessionService sessionService;
 
 	/**
 	 * @param request method GET
@@ -56,16 +62,23 @@ public class MotdStatementBuilderService extends AbstractStatementBuilderService
 			motds = this.motdService.getCurrentMotds(client, audience, sessionKey);
 		}
 
+		Session session = this.sessionService.getSession(sessionKey);
+
 		String activityId = this.activityBuilder.createActivityId(new String[]{
 				"motd/session",
 				sessionKey
 		});
 
+		Activity activity = this.activityBuilder.createActivity(activityId, "motd");
+		activity.getDefinition().getDescription().addNoLanguageTranslation(
+				"Messages of the day for session " + session.getName()
+		);
+
 		return new Statement(
 				this.actorBuilderService.getActor(),
 				this.verbBuilder.createVerb("retreive"),
-				this.activityBuilder.createActivity(activityId, "motd"),
-				new Result(new Object[] { motds })
+				activity,
+				new Result("motd", new Object[] { motds })
 		);
 	}
 
@@ -79,16 +92,23 @@ public class MotdStatementBuilderService extends AbstractStatementBuilderService
 		ObjectMapper mapper = new ObjectMapper();
 		Map motd = mapper.readValue(request.getInputStream(), Map.class);
 
+		Session session = this.sessionService.getSession((String) motd.get("sessionkey"));
+
 		String activityId = this.activityBuilder.createActivityId(new String[]{
-				"motd/create",
-				this.generateUUID()
+				"motd/session",
+				(String) motd.get("sessionkey")
 		});
+
+		Activity activity = this.activityBuilder.createActivity(activityId, "createMotd");
+		activity.getDefinition().getDescription().addNoLanguageTranslation(
+				"Created message of the day for session " + session.getName()
+		);
 
 		return new Statement(
 				this.actorBuilderService.getActor(),
 				this.verbBuilder.createVerb("create"),
-				this.activityBuilder.createActivity(activityId, "motd"),
-				new Result(new Object[] { motd })
+				activity,
+				new Result("motd", new Object[] { motd })
 		);
 	}
 
@@ -103,15 +123,15 @@ public class MotdStatementBuilderService extends AbstractStatementBuilderService
 		String motdKey = (String) pathVariables.get("motdkey");
 
 		String activityId = this.activityBuilder.createActivityId(new String[]{
-				"motd/update",
+				"motdKey",
 				motdKey
 		});
 
 		return new Statement(
 				this.actorBuilderService.getActor(),
 				this.verbBuilder.createVerb("update"),
-				this.activityBuilder.createActivity(activityId, "motd"),
-				new Result(new Object[] { this.motdService.getMotd(motdKey) })
+				this.activityBuilder.createActivity(activityId, "updateMotd"),
+				new Result("motd", new Object[] { this.motdService.getMotd(motdKey)})
 		);
 	}
 
@@ -126,14 +146,14 @@ public class MotdStatementBuilderService extends AbstractStatementBuilderService
 		String motdKey = (String) pathVariables.get("motdkey");
 
 		String activityId = this.activityBuilder.createActivityId(new String[]{
-				"motd/delete",
+				"motdKey",
 				motdKey
 		});
 
 		return new Statement(
 				this.actorBuilderService.getActor(),
 				this.verbBuilder.createVerb("delete"),
-				this.activityBuilder.createActivity(activityId, "motd")
+				this.activityBuilder.createActivity(activityId, "deleteMotd")
 		);
 	}
 
@@ -147,15 +167,20 @@ public class MotdStatementBuilderService extends AbstractStatementBuilderService
 		String username = request.getParameter("username");
 
 		String activityId = this.activityBuilder.createActivityId(new String[]{
-				"userlist",
-				username,
+				"motd/list/user",
+				username
 		});
+
+		Activity activity = this.activityBuilder.createActivity(activityId, "motd");
+		activity.getDefinition().getDescription().addNoLanguageTranslation(
+				"All messages of the day for user " + username
+		);
 
 		return new Statement(
 				this.actorBuilderService.getActor(),
 				this.verbBuilder.createVerb("retrieve"),
-				this.activityBuilder.createActivity(activityId, "userList"),
-				new Result(new Object[] { this.motdService.getMotdListForUser(username) })
+				activity,
+				new Result("motds", new Object[] { this.motdService.getMotdListForUser(username) })
 		);
 	}
 
@@ -170,15 +195,15 @@ public class MotdStatementBuilderService extends AbstractStatementBuilderService
 		Map motdList = mapper.readValue(request.getInputStream(), Map.class);
 
 		String activityId = this.activityBuilder.createActivityId(new String[]{
-				"create/userlist",
-				this.generateUUID()
+				"motd/list/user",
+				(String) motdList.get("username")
 		});
 
 		return new Statement(
 				this.actorBuilderService.getActor(),
 				this.verbBuilder.createVerb("create"),
-				this.activityBuilder.createActivity(activityId, "userList"),
-				new Result(new Object[] { motdList })
+				this.activityBuilder.createActivity(activityId, "newMotdList"),
+				new Result("motdList", new Object[] { motdList })
 		);
 	}
 
@@ -193,15 +218,15 @@ public class MotdStatementBuilderService extends AbstractStatementBuilderService
 		Map motdList = mapper.readValue(request.getInputStream(), Map.class);
 
 		String activityId = this.activityBuilder.createActivityId(new String[]{
-				"update/userlist",
-				this.generateUUID()
+				"motd/list/user",
+				(String) motdList.get("username")
 		});
 
 		return new Statement(
 				this.actorBuilderService.getActor(),
 				this.verbBuilder.createVerb("update"),
-				this.activityBuilder.createActivity(activityId, "userList"),
-				new Result(new Object[] { motdList })
+				this.activityBuilder.createActivity(activityId, "updateMotdList"),
+				new Result("motdList", new Object[] { motdList })
 		);
 	}
 }

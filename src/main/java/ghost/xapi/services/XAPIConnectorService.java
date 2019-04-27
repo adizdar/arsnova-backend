@@ -3,7 +3,6 @@ package ghost.xapi.services;
 import ghost.xapi.entities.Statement;
 import ghost.xapi.client.RestTemplateWithBasicAuthFactory;
 import ghost.xapi.log.XAPILogger;
-import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;

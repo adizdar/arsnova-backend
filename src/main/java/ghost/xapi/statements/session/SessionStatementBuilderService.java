@@ -3,6 +3,7 @@ package ghost.xapi.statements.session;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
+import de.thm.arsnova.entities.Question;
 import de.thm.arsnova.entities.Session;
 import de.thm.arsnova.entities.SessionInfo;
 import de.thm.arsnova.entities.transport.ImportExportSession;
@@ -10,6 +11,7 @@ import de.thm.arsnova.services.ISessionService;
 import de.thm.arsnova.services.IUserService;
 import ghost.xapi.entities.Result;
 import ghost.xapi.entities.Statement;
+import ghost.xapi.entities.activity.Activity;
 import ghost.xapi.statements.AbstractStatementBuilderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,16 +38,26 @@ public class SessionStatementBuilderService extends AbstractStatementBuilderServ
 	 *
 	 * @return
 	 */
-	public Statement buildForPostNewSession(HttpServletRequest request) {
+	public Statement buildForPostNewSession(HttpServletRequest request) throws IOException {
+		ObjectMapper mapper = new ObjectMapper();
+		Session session = mapper.readValue(request.getInputStream(), Session.class);
+
 		String activityId = this.activityBuilder.createActivityId(new String[]{
-				"on",
-				this.getCurrentTimestamp()
+				"session/name",
+				session.getName()
 		});
+
+		Activity activity = this.activityBuilder.createActivity(activityId, "session");
+		activity.getDefinition().getName().addNoLanguageTranslation("New session");
+		activity.getDefinition().getDescription().addNoLanguageTranslation(
+				"New session created"
+		);
 
 		return new Statement(
 				this.actorBuilderService.getActor(),
 				this.verbBuilder.createVerb("create"),
-				this.activityBuilder.createActivity(activityId, "newSession")
+				activity,
+				new Result("session", new Object[] {session})
 		);
 	}
 
@@ -62,8 +74,8 @@ public class SessionStatementBuilderService extends AbstractStatementBuilderServ
 		String username = request.getParameter("username");
 
 		String activityId = this.activityBuilder.createActivityId(new String[]{
-				"on",
-				this.getCurrentTimestamp()
+				"session/list",
+				this.generateUUID()
 		});
 
 		List<Session> sessions = null;
@@ -91,11 +103,17 @@ public class SessionStatementBuilderService extends AbstractStatementBuilderServ
 		result.put("sessionParameters", sessionParameters);
 		result.put("sessions", sessions != null ? sessions.toArray() : "No result for search criteria.");
 
+		Activity activity = this.activityBuilder.createActivity(activityId, "sessions");
+		activity.getDefinition().getName().addNoLanguageTranslation("Session list");
+		activity.getDefinition().getDescription().addNoLanguageTranslation(
+				"Get session list"
+		);
+
 		return new Statement(
 				this.actorBuilderService.getActor(),
 				this.verbBuilder.createVerb("retrieve"),
-				this.activityBuilder.createActivity(activityId, "sessions"),
-				new Result(new Object[]{ result })
+				activity,
+				new Result("sessions", new Object[]{ result })
 		);
 	}
 
@@ -110,8 +128,8 @@ public class SessionStatementBuilderService extends AbstractStatementBuilderServ
 		String sortBy = request.getParameter("sortby");
 
 		String activityId = this.activityBuilder.createActivityId(new String[]{
-				"on",
-				this.getCurrentTimestamp()
+				"sessions/list/user",
+				this.userService.getCurrentUser().getUsername()
 		});
 
 		List<SessionInfo> sessions;
@@ -129,10 +147,16 @@ public class SessionStatementBuilderService extends AbstractStatementBuilderServ
 		result.put("sessionParameters", sessionParameters);
 		result.put("sessions", sessions != null ? sessions.toArray() : "No result for search criteria.");
 
+		Activity activity = this.activityBuilder.createActivity(activityId, "sessions");
+		activity.getDefinition().getName().addNoLanguageTranslation("Session list");
+		activity.getDefinition().getDescription().addNoLanguageTranslation(
+				"User session list"
+		);
+
 		return new Statement(
 				this.actorBuilderService.getActor(),
 				this.verbBuilder.createVerb("retrieve"),
-				this.activityBuilder.createActivity(activityId, "sessions"),
+				activity,
 				new Result(new Object[]{ result })
 		);
 	}
@@ -147,14 +171,17 @@ public class SessionStatementBuilderService extends AbstractStatementBuilderServ
 	public Statement buildForDeleteSession(HttpServletRequest request, Map pathVariables) {
 		String sessionKey = (String) pathVariables.get("sessionkey");
 		String activityId = this.activityBuilder.createActivityId(new String[]{
-				"delete/session",
+				"session",
 				sessionKey
 		});
+
+		Activity activity = this.activityBuilder.createActivity(activityId, "session");
+		activity.getDefinition().getName().addNoLanguageTranslation("Delete session");
 
 		return new Statement(
 				this.actorBuilderService.getActor(),
 				this.verbBuilder.createVerb("delete"),
-				this.activityBuilder.createActivity(activityId, "session")
+				activity
 		);
 	}
 
@@ -167,21 +194,22 @@ public class SessionStatementBuilderService extends AbstractStatementBuilderServ
 	public Statement buildForUpdateSession(HttpServletRequest request, Map pathVariables) {
 		String sessionKey = (String) pathVariables.get("sessionkey");
 		String activityId = this.activityBuilder.createActivityId(new String[]{
-				"update/session",
+				"session",
 				sessionKey
 		});
+
+		Activity activity = this.activityBuilder.createActivity(activityId, "session");
+		activity.getDefinition().getName().addNoLanguageTranslation("Update session");
 
 		return new Statement(
 				this.actorBuilderService.getActor(),
 				this.verbBuilder.createVerb("updated"),
-				this.activityBuilder.createActivity(activityId, "session"),
+				activity,
 				new Result("session", new Object[]{this.sessionService.getSession(sessionKey)})
 		);
 	}
 
 	/**
-	 * TODO Test
-	 *
 	 * @param request method GET
 	 * path /publicpool
 	 *
@@ -189,16 +217,22 @@ public class SessionStatementBuilderService extends AbstractStatementBuilderServ
 	 */
 	public Statement buildForGetMyPublicPoolSessions(HttpServletRequest request) {
 		String activityId = this.activityBuilder.createActivityId(new String[]{
-				"publicpool/created",
-				this.getCurrentTimestamp()
+				"publicPool/user",
+				this.userService.getCurrentUser().getUsername()
 		});
-		// TODO BETTER IDEA FOR ID's
+
 		List<SessionInfo> sessions = this.sessionService.getMyPublicPoolSessionsInfo();
+
+		Activity activity = this.activityBuilder.createActivity(activityId, "sessions");
+		activity.getDefinition().getName().addNoLanguageTranslation("Public session pool");
+		activity.getDefinition().getDescription().addNoLanguageTranslation(
+				"Retrieve session pool"
+		);
 
 		return new Statement(
 				this.actorBuilderService.getActor(),
 				this.verbBuilder.createVerb("retrieve"),
-				this.activityBuilder.createActivity(activityId, "sessions"),
+				activity,
 				new Result(new Object[]{
 						"sessions",
 						sessions
@@ -213,13 +247,13 @@ public class SessionStatementBuilderService extends AbstractStatementBuilderServ
 	 * @return
 	 */
 	public Statement buildForImportSession(HttpServletRequest request) throws IOException {
-		String activityId = this.activityBuilder.createActivityId(new String[]{
-				"import/created",
-				this.getCurrentTimestamp()
-		});
-
 		ObjectMapper mapper = new ObjectMapper();
 		Map importSession = mapper.readValue(request.getInputStream(), Map.class);
+
+		String activityId = this.activityBuilder.createActivityId(new String[]{
+				"import/session",
+				!((String) importSession.get("keyword")).isEmpty() ? (String) importSession.get("keyword") : (String) importSession.get("name")
+		});
 
 		return new Statement(
 				this.actorBuilderService.getActor(),
@@ -244,7 +278,7 @@ public class SessionStatementBuilderService extends AbstractStatementBuilderServ
 
 		String activityId = this.activityBuilder.createActivityId(new String[]{
 				"export/sessions",
-				sessionKeysAsString
+				sessionKeysAsString.length() > 16 ? sessionKeysAsString.substring(0, 16) : sessionKeysAsString
 		});
 
 		List<ImportExportSession> sessions = new ArrayList<>();
@@ -256,10 +290,13 @@ public class SessionStatementBuilderService extends AbstractStatementBuilderServ
 			}
 		}
 
+		Activity activity = this.activityBuilder.createActivity(activityId, "sessions");
+		activity.getDefinition().getName().addNoLanguageTranslation("Export sessions");
+
 		return new Statement(
 				this.actorBuilderService.getActor(),
 				this.verbBuilder.createVerb("export"),
-				this.activityBuilder.createActivity(activityId, "sessions"),
+				activity,
 				new Result("exportedSessions", new Object[] { sessions })
 		);
 	}
@@ -280,10 +317,14 @@ public class SessionStatementBuilderService extends AbstractStatementBuilderServ
 				session.getCreator()
 		});
 
+		Activity activity = this.activityBuilder.createActivity(activityId, "sessionCreator");
+		activity.getDefinition().getName().addNoLanguageTranslation("Session");
+		activity.getDefinition().getDescription().addNoLanguageTranslation("Update session creator");
+
 		return new Statement(
 				this.actorBuilderService.getActor(),
 				this.verbBuilder.createVerb("updated"),
-				this.activityBuilder.createActivity(activityId, "sessionCreator"),
+				activity,
 				new Result("newSessionCreator", new Object[]{session.getCreator()})
 		);
 	}
@@ -298,16 +339,17 @@ public class SessionStatementBuilderService extends AbstractStatementBuilderServ
 	public Statement buildForCopyToPublicPool(HttpServletRequest request, Map pathVariables) {
 		String sessionKey = (String) pathVariables.get("sessionkey");
 		String activityId = this.activityBuilder.createActivityId(new String[]{
-				"copytopublicpool/session",
+				"publicPool/session",
 				sessionKey
 		});
 
-		this.sessionService.getPublicPoolSessionsInfo();
+		Activity activity = this.activityBuilder.createActivity(activityId, "sessionToPublicPool");
+		activity.getDefinition().getDescription().addNoLanguageTranslation("Copy session to public pool");
 
 		return new Statement(
 				this.actorBuilderService.getActor(),
 				this.verbBuilder.createVerb("copy"),
-				this.activityBuilder.createActivity(activityId, "sessionToPublicPool"),
+				activity,
 				new Result("session", new Object[] {this.sessionService.getPublicPoolSessionsInfo()})
 		);
 	}
@@ -359,12 +401,13 @@ public class SessionStatementBuilderService extends AbstractStatementBuilderServ
 				sessionKey
 		});
 
-		this.sessionService.getPublicPoolSessionsInfo();
+		Activity activity = this.activityBuilder.createActivity(activityId, "learningProgress");
+		activity.getDefinition().getDescription().addNoLanguageTranslation("Learning progress retrieved");
 
 		return new Statement(
 				this.actorBuilderService.getActor(),
 				this.verbBuilder.createVerb("retrieve"),
-				this.activityBuilder.createActivity(activityId, "learningProgress"),
+				activity,
 				new Result("learningProgress", new Object[] {
 		 			this.sessionService.getLearningProgress(sessionKey, progressType, questionVariant)
 				})
@@ -381,7 +424,7 @@ public class SessionStatementBuilderService extends AbstractStatementBuilderServ
 	public Statement buildForGetSessionFeatures(HttpServletRequest request, Map pathVariables) {
 		String sessionKey = (String) pathVariables.get("sessionkey");
 		String activityId = this.activityBuilder.createActivityId(new String[]{
-				"features/session",
+				"session",
 				sessionKey
 		});
 
@@ -411,8 +454,6 @@ public class SessionStatementBuilderService extends AbstractStatementBuilderServ
 				sessionKey
 		});
 
-//		this.sessionService.getPublicPoolSessionsInfo();
-
 		return new Statement(
 				this.actorBuilderService.getActor(),
 				this.verbBuilder.createVerb("lock"),
@@ -437,12 +478,15 @@ public class SessionStatementBuilderService extends AbstractStatementBuilderServ
 				sessionKey
 		});
 
-//		this.sessionService.getPublicPoolSessionsInfo();
+		Activity activity = this.activityBuilder.createActivity(activityId, "flashCards");
+		activity.getDefinition().getDescription().addNoLanguageTranslation(
+				"Flash cards retrieved for session " + this.sessionService.getSession(sessionKey).getName()
+		);
 
 		return new Statement(
 				this.actorBuilderService.getActor(),
 				this.verbBuilder.createVerb("flip"),
-				this.activityBuilder.createActivity(activityId, "flashCards"),
+				activity,
 				new Result("shouldReturnFlipFlashCards", new Object[] {
 						this.sessionService.flipFlashcards(sessionKey, shouldFlip)
 				})
