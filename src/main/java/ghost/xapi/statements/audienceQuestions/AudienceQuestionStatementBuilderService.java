@@ -46,7 +46,7 @@ public class AudienceQuestionStatementBuilderService extends AbstractStatementBu
 		);
 
 		return new Statement(
-				this.actorBuilderService.getActor(),
+				this.actorBuilder.getActor(),
 				this.verbBuilder.createVerb("asked"),
 				activity,
 				new Result("question", new Object[] {question})
@@ -117,7 +117,7 @@ public class AudienceQuestionStatementBuilderService extends AbstractStatementBu
 		);
 
 		return new Statement(
-				this.actorBuilderService.getActor(),
+				this.actorBuilder.getActor(),
 				this.verbBuilder.createVerb("retrieve"),
 				activity,
 				result
@@ -141,7 +141,7 @@ public class AudienceQuestionStatementBuilderService extends AbstractStatementBu
 		activity.getDefinition().getDescription().addNoLanguageTranslation("Retrieve one question.");
 
 		return new Statement(
-				this.actorBuilderService.getActor(),
+				this.actorBuilder.getActor(),
 				this.verbBuilder.createVerb("retrieve"),
 				this.activityBuilder.createActivity(activityId, "interposedQuestion"),
 				new Result("question", new InterposedQuestion[]{question})
@@ -168,7 +168,7 @@ public class AudienceQuestionStatementBuilderService extends AbstractStatementBu
 		);
 
 		return new Statement(
-				this.actorBuilderService.getActor(),
+				this.actorBuilder.getActor(),
 				this.verbBuilder.createVerb("deleted"),
 				activity
 		);
@@ -193,7 +193,7 @@ public class AudienceQuestionStatementBuilderService extends AbstractStatementBu
 		});
 
 		return new Statement(
-				this.actorBuilderService.getActor(),
+				this.actorBuilder.getActor(),
 				this.verbBuilder.createVerb("unread"),
 				this.activityBuilder.createActivity(activityId, "unreadCount"),
 				new Result("unreadCount", new InterposedReadingCount[] {unredQuestionsCount})

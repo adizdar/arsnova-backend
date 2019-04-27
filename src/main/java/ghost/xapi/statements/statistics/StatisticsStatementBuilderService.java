@@ -4,15 +4,11 @@ import de.thm.arsnova.entities.Statistics;
 import de.thm.arsnova.services.IStatisticsService;
 import ghost.xapi.entities.Result;
 import ghost.xapi.entities.Statement;
-import ghost.xapi.entities.actor.Actor;
 import ghost.xapi.statements.AbstractStatementBuilderService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.HandlerMapping;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Map;
 
 /**
  * Mapping path: "/statistics"
@@ -37,7 +33,7 @@ public class StatisticsStatementBuilderService extends AbstractStatementBuilderS
 		Statistics statistics = this.statisticsService.getStatistics();
 
 		return new Statement(
-				this.actorBuilderService.getActor(),
+				this.actorBuilder.getActor(),
 				this.verbBuilder.createVerb("retrieve"),
 				this.activityBuilder.createActivity(activityId, "statistics"),
 				new Result("statistics", new Object[] { statistics })
@@ -57,7 +53,7 @@ public class StatisticsStatementBuilderService extends AbstractStatementBuilderS
 		});
 
 		return new Statement(
-				this.actorBuilderService.getActor(),
+				this.actorBuilder.getActor(),
 				this.verbBuilder.createVerb("count"),
 				this.activityBuilder.createActivity(activityId, "activeUsers"),
 				new Result("activeUserCount", new Object[] { Integer.toString(this.statisticsService.getStatistics().getActiveUsers()) })
@@ -76,7 +72,7 @@ public class StatisticsStatementBuilderService extends AbstractStatementBuilderS
 		});
 
 		return new Statement(
-				this.actorBuilderService.getActor(),
+				this.actorBuilder.getActor(),
 				this.verbBuilder.createVerb("count"),
 				this.activityBuilder.createActivity(activityId, "loginUsers"),
 				new Result("loggedInUserCount", new Object[] { Integer.toString(this.statisticsService.getStatistics().getLoggedinUsers()) })
@@ -95,7 +91,7 @@ public class StatisticsStatementBuilderService extends AbstractStatementBuilderS
 		});
 
 		return new Statement(
-				this.actorBuilderService.getActor(),
+				this.actorBuilder.getActor(),
 				this.verbBuilder.createVerb("count"),
 				this.activityBuilder.createActivity(activityId, "sessions"),
 				new Result("sessionCount", new Object[] { Integer.toString(this.statisticsService.getStatistics().getOpenSessions()

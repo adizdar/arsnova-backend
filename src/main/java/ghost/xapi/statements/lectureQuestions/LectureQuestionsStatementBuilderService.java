@@ -57,7 +57,7 @@ public class LectureQuestionsStatementBuilderService extends AbstractStatementBu
 		);
 
 		return new Statement(
-				this.actorBuilderService.getActor(),
+				this.actorBuilder.getActor(),
 				this.verbBuilder.createVerb("get"),
 				activity,
 				new Result("question", new Object[]{question})
@@ -105,7 +105,7 @@ public class LectureQuestionsStatementBuilderService extends AbstractStatementBu
 		);
 
 		return new Statement(
-				this.actorBuilderService.getActor(),
+				this.actorBuilder.getActor(),
 				this.verbBuilder.createVerb("retrieve"),
 				activity,
 				result
@@ -140,7 +140,7 @@ public class LectureQuestionsStatementBuilderService extends AbstractStatementBu
 		});
 
 		return new Statement(
-				this.actorBuilderService.getActor(),
+				this.actorBuilder.getActor(),
 				this.verbBuilder.createVerb("asked"),
 				this.activityBuilder.createActivity(activityId, "lectureQuestion"),
 				new Result("question", new Object[]{question})
@@ -164,7 +164,7 @@ public class LectureQuestionsStatementBuilderService extends AbstractStatementBu
 		});
 
 		return new Statement(
-				this.actorBuilderService.getActor(),
+				this.actorBuilder.getActor(),
 				this.verbBuilder.createVerb("asked"),
 				this.activityBuilder.createActivity(activityId, "multipleLectureQuestions"),
 				new Result("questions", new Object[]{questions})
@@ -195,7 +195,7 @@ public class LectureQuestionsStatementBuilderService extends AbstractStatementBu
 		});
 
 		return new Statement(
-				this.actorBuilderService.getActor(),
+				this.actorBuilder.getActor(),
 				this.verbBuilder.createVerb("retrieve"),
 				this.activityBuilder.createActivity(activityId, "questionImage"),
 				new Result("questionImage", new Object[]{questionImage})
@@ -217,7 +217,7 @@ public class LectureQuestionsStatementBuilderService extends AbstractStatementBu
 		});
 
 		Statement statement = new Statement(
-				this.actorBuilderService.getActor(),
+				this.actorBuilder.getActor(),
 				this.verbBuilder.createVerb("started"),
 				this.activityBuilder.createActivity(activityId, "newPiRoundForQuestion")
 		);
@@ -257,7 +257,7 @@ public class LectureQuestionsStatementBuilderService extends AbstractStatementBu
 		activity.getDefinition().getDescription().addNoLanguageTranslation(activityDescription);
 
 		return new Statement(
-				this.actorBuilderService.getActor(),
+				this.actorBuilder.getActor(),
 				this.verbBuilder.createVerb("canceled"),
 				activity
 		);
@@ -288,7 +288,7 @@ public class LectureQuestionsStatementBuilderService extends AbstractStatementBu
 		activity.getDefinition().getDescription().addNoLanguageTranslation(activityDescription);
 
 		Statement statement = new Statement(
-				this.actorBuilderService.getActor(),
+				this.actorBuilder.getActor(),
 				this.verbBuilder.createVerb("reset"),
 				activity
 		);
@@ -317,7 +317,7 @@ public class LectureQuestionsStatementBuilderService extends AbstractStatementBu
 		});
 
 		return new Statement(
-				this.actorBuilderService.getActor(),
+				this.actorBuilder.getActor(),
 				this.verbBuilder.createVerb("disable"),
 				this.activityBuilder.createActivity(activityId, "votingForQuestion"),
 				new Result("isVotingDisabled", new Object[]{disableVote})
@@ -344,7 +344,7 @@ public class LectureQuestionsStatementBuilderService extends AbstractStatementBu
 		String activityId = this.getActivityIdViaSessionOrUUUIDForCurrentUser(this.sessionService, this.userService);
 
 		return new Statement(
-				this.actorBuilderService.getActor(),
+				this.actorBuilder.getActor(),
 				this.verbBuilder.createVerb("disable"),
 				this.activityBuilder.createActivity(activityId, "votingForAllQuestions"),
 				new Result(new Object[]{questionTypesToDisable})
@@ -367,7 +367,7 @@ public class LectureQuestionsStatementBuilderService extends AbstractStatementBu
 		});
 
 		return new Statement(
-				this.actorBuilderService.getActor(),
+				this.actorBuilder.getActor(),
 				this.verbBuilder.createVerb("publish"),
 				this.activityBuilder.createActivity(activityId, "questionViaID"),
 				new Result("question", new Object[] {question})
@@ -399,7 +399,7 @@ public class LectureQuestionsStatementBuilderService extends AbstractStatementBu
 		);
 
 		return new Statement(
-				this.actorBuilderService.getActor(),
+				this.actorBuilder.getActor(),
 				this.verbBuilder.createVerb("publish"),
 				activity,
 				new Result("questionTypesToPublish", new Object[]{questionTypesToPublish})
@@ -423,7 +423,7 @@ public class LectureQuestionsStatementBuilderService extends AbstractStatementBu
 		});
 
 		return new Statement(
-				this.actorBuilderService.getActor(),
+				this.actorBuilder.getActor(),
 				this.verbBuilder.createVerb("show"),
 				this.activityBuilder.createActivity(activityId, "statisticsForQuestion"),
 				new Result("showStatistics", new Object[]{showStatistics})
@@ -454,7 +454,7 @@ public class LectureQuestionsStatementBuilderService extends AbstractStatementBu
 		});
 
 		return new Statement(
-				this.actorBuilderService.getActor(),
+				this.actorBuilder.getActor(),
 				this.verbBuilder.createVerb("publish"),
 				this.activityBuilder.createActivity(activityId, "correctAnswerForQuestion"),
 				new Result("answer", new Object[]{result})
@@ -493,7 +493,7 @@ public class LectureQuestionsStatementBuilderService extends AbstractStatementBu
 		);
 
 		return new Statement(
-				this.actorBuilderService.getActor(),
+				this.actorBuilder.getActor(),
 				this.verbBuilder.createVerb("delete"),
 				this.activityBuilder.createActivity(activityId, "skillQuestions"),
 				new Result("questionTypesToDelete", new Object[]{questionTypesToDelete})
@@ -525,7 +525,7 @@ public class LectureQuestionsStatementBuilderService extends AbstractStatementBu
 		});
 
 		return new Statement(
-				this.actorBuilderService.getActor(),
+				this.actorBuilder.getActor(),
 				this.verbBuilder.createVerb("retrieve"),
 				this.activityBuilder.createActivity(activityId, "answersForQuestion"),
 				new Result("answers", new Object[]{answers})
@@ -548,7 +548,7 @@ public class LectureQuestionsStatementBuilderService extends AbstractStatementBu
 		});
 
 		return new Statement(
-				this.actorBuilderService.getActor(),
+				this.actorBuilder.getActor(),
 				this.verbBuilder.createVerb("save"),
 				this.activityBuilder.createActivity(activityId, "answerForQuestion"),
 				new Result("answer", new Object[]{savedAnswer})
@@ -571,7 +571,7 @@ public class LectureQuestionsStatementBuilderService extends AbstractStatementBu
 		});
 
 		return new Statement(
-				this.actorBuilderService.getActor(),
+				this.actorBuilder.getActor(),
 				this.verbBuilder.createVerb("updated"),
 				this.activityBuilder.createActivity(activityId, "answerForQuestion"),
 				new Result("updatedAnswer", new Object[]{savedAnswer})
@@ -593,7 +593,7 @@ public class LectureQuestionsStatementBuilderService extends AbstractStatementBu
 		});
 
 		return new Statement(
-				this.actorBuilderService.getActor(),
+				this.actorBuilder.getActor(),
 				this.verbBuilder.createVerb("deleted"),
 				this.activityBuilder.createActivity(activityId, "answerForQuestion"),
 				new Result(new Object[] { this.questionService.getQuestion(questionId) })
@@ -615,7 +615,7 @@ public class LectureQuestionsStatementBuilderService extends AbstractStatementBu
 		});
 
 		return new Statement(
-				this.actorBuilderService.getActor(),
+				this.actorBuilder.getActor(),
 				this.verbBuilder.createVerb("deleted"),
 				this.activityBuilder.createActivity(activityId, "allAnswersForQuestion"),
 				new Result(new Object[]{this.questionService.getQuestion(questionId)})
@@ -648,7 +648,7 @@ public class LectureQuestionsStatementBuilderService extends AbstractStatementBu
 		});
 
 		return new Statement(
-				this.actorBuilderService.getActor(),
+				this.actorBuilder.getActor(),
 				this.verbBuilder.createVerb("deleted"),
 				this.activityBuilder.createActivity(activityId, "allAnswersAndQuestionForSession"),
 				new Result("questionTypesToDelete", new Object[]{questionTypesToDelete})
@@ -670,7 +670,7 @@ public class LectureQuestionsStatementBuilderService extends AbstractStatementBu
 		});
 
 		return new Statement(
-				this.actorBuilderService.getActor(),
+				this.actorBuilder.getActor(),
 				this.verbBuilder.createVerb("count"),
 				this.activityBuilder.createActivity(activityId, "totalAnswersForQuestion"),
 				new Result(new Object[]{
@@ -696,7 +696,7 @@ public class LectureQuestionsStatementBuilderService extends AbstractStatementBu
 		});
 
 		return new Statement(
-				this.actorBuilderService.getActor(),
+				this.actorBuilder.getActor(),
 				this.verbBuilder.createVerb("count"),
 				this.activityBuilder.createActivity(activityId, "totalNumberOfAnswersForQuestion"),
 				new Result("total", new Object[]{this.questionService.getTotalAnswerCountByQuestion(questionId)})
@@ -718,7 +718,7 @@ public class LectureQuestionsStatementBuilderService extends AbstractStatementBu
 		});
 
 		return new Statement(
-				this.actorBuilderService.getActor(),
+				this.actorBuilder.getActor(),
 				this.verbBuilder.createVerb("count"),
 				this.activityBuilder.createActivity(activityId, "totalNumberOfAnswersAndAbstentionAnswersForQuestion"),
 				new Result("total", new Object[]{
@@ -744,7 +744,7 @@ public class LectureQuestionsStatementBuilderService extends AbstractStatementBu
 		});
 
 		return new Statement(
-				this.actorBuilderService.getActor(),
+				this.actorBuilder.getActor(),
 				this.verbBuilder.createVerb("retrieve"),
 				this.activityBuilder.createActivity(activityId, "freeTextAnswersForQuestion"),
 				new Result("answers", new Object[]{this.questionService.getFreetextAnswers(questionId, -1, -1)})
@@ -771,7 +771,7 @@ public class LectureQuestionsStatementBuilderService extends AbstractStatementBu
 		});
 
 		return new Statement(
-				this.actorBuilderService.getActor(),
+				this.actorBuilder.getActor(),
 				this.verbBuilder.createVerb("retrieve"),
 				this.activityBuilder.createActivity(activityId, "image"),
 				new Result("image", new Object[]{this.questionService.getImage(questionId, answerId)})

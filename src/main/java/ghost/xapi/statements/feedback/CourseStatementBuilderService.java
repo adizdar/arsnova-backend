@@ -55,7 +55,7 @@ public class CourseStatementBuilderService extends AbstractStatementBuilderServi
 		);
 
 		return new Statement(
-				this.actorBuilderService.getActor(),
+				this.actorBuilder.getActor(),
 				this.verbBuilder.createVerb("retrieve"),
 				this.activityBuilder.createActivity(activityId, "userCourses"),
 				new Result("courses", new Object[] { result })

@@ -1,8 +1,6 @@
 package ghost.xapi.statements.socket;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import de.thm.arsnova.entities.Statistics;
-import de.thm.arsnova.services.IStatisticsService;
 import de.thm.arsnova.services.IUserService;
 import de.thm.arsnova.services.UserSessionService;
 import de.thm.arsnova.socket.ARSnovaSocket;
@@ -48,7 +46,7 @@ public class SocketStatementBuilderService extends AbstractStatementBuilderServi
 		});
 
 		return new Statement(
-				this.actorBuilderService.getActor(),
+				this.actorBuilder.getActor(),
 				this.verbBuilder.createVerb("assign"),
 				this.activityBuilder.createActivity(activityId, "websocket"),
 				new Result(new Object[] { sessionMap })
@@ -69,7 +67,7 @@ public class SocketStatementBuilderService extends AbstractStatementBuilderServi
 		});
 
 		return new Statement(
-				this.actorBuilderService.getActor(),
+				this.actorBuilder.getActor(),
 				this.verbBuilder.createVerb("get"),
 				this.activityBuilder.createActivity(activityId, "socketUrl"),
 				new Result(new Object[] {

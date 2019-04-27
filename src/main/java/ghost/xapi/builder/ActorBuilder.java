@@ -1,4 +1,4 @@
-package ghost.xapi.services;
+package ghost.xapi.builder;
 
 import de.thm.arsnova.entities.User;
 import de.thm.arsnova.services.IUserService;
@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ActorBuilderService {
+public class ActorBuilder {
 
 	@Autowired
 	private IUserService userService;
@@ -19,7 +19,7 @@ public class ActorBuilderService {
 	public Actor getActor() {
 		User currentUser = this.userService.getCurrentUser();
 		if (currentUser == null) {
-			XAPILogger.ERROR.error("Current user is null in ActorBuilderService.");
+			XAPILogger.ERROR.error("Current user is null in ActorBuilder.");
 
 			throw new NullPointerException("Current user is null.");
 		}

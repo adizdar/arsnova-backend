@@ -3,7 +3,6 @@ package ghost.xapi.statements.session;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
-import de.thm.arsnova.entities.Question;
 import de.thm.arsnova.entities.Session;
 import de.thm.arsnova.entities.SessionInfo;
 import de.thm.arsnova.entities.transport.ImportExportSession;
@@ -54,7 +53,7 @@ public class SessionStatementBuilderService extends AbstractStatementBuilderServ
 		);
 
 		return new Statement(
-				this.actorBuilderService.getActor(),
+				this.actorBuilder.getActor(),
 				this.verbBuilder.createVerb("create"),
 				activity,
 				new Result("session", new Object[] {session})
@@ -110,7 +109,7 @@ public class SessionStatementBuilderService extends AbstractStatementBuilderServ
 		);
 
 		return new Statement(
-				this.actorBuilderService.getActor(),
+				this.actorBuilder.getActor(),
 				this.verbBuilder.createVerb("retrieve"),
 				activity,
 				new Result("sessions", new Object[]{ result })
@@ -154,7 +153,7 @@ public class SessionStatementBuilderService extends AbstractStatementBuilderServ
 		);
 
 		return new Statement(
-				this.actorBuilderService.getActor(),
+				this.actorBuilder.getActor(),
 				this.verbBuilder.createVerb("retrieve"),
 				activity,
 				new Result(new Object[]{ result })
@@ -179,7 +178,7 @@ public class SessionStatementBuilderService extends AbstractStatementBuilderServ
 		activity.getDefinition().getName().addNoLanguageTranslation("Delete session");
 
 		return new Statement(
-				this.actorBuilderService.getActor(),
+				this.actorBuilder.getActor(),
 				this.verbBuilder.createVerb("delete"),
 				activity
 		);
@@ -202,7 +201,7 @@ public class SessionStatementBuilderService extends AbstractStatementBuilderServ
 		activity.getDefinition().getName().addNoLanguageTranslation("Update session");
 
 		return new Statement(
-				this.actorBuilderService.getActor(),
+				this.actorBuilder.getActor(),
 				this.verbBuilder.createVerb("updated"),
 				activity,
 				new Result("session", new Object[]{this.sessionService.getSession(sessionKey)})
@@ -230,7 +229,7 @@ public class SessionStatementBuilderService extends AbstractStatementBuilderServ
 		);
 
 		return new Statement(
-				this.actorBuilderService.getActor(),
+				this.actorBuilder.getActor(),
 				this.verbBuilder.createVerb("retrieve"),
 				activity,
 				new Result(new Object[]{
@@ -256,7 +255,7 @@ public class SessionStatementBuilderService extends AbstractStatementBuilderServ
 		});
 
 		return new Statement(
-				this.actorBuilderService.getActor(),
+				this.actorBuilder.getActor(),
 				this.verbBuilder.createVerb("import"),
 				this.activityBuilder.createActivity(activityId, "session"),
 				new Result("importedSession", new Object[] {importSession})
@@ -294,7 +293,7 @@ public class SessionStatementBuilderService extends AbstractStatementBuilderServ
 		activity.getDefinition().getName().addNoLanguageTranslation("Export sessions");
 
 		return new Statement(
-				this.actorBuilderService.getActor(),
+				this.actorBuilder.getActor(),
 				this.verbBuilder.createVerb("export"),
 				activity,
 				new Result("exportedSessions", new Object[] { sessions })
@@ -322,7 +321,7 @@ public class SessionStatementBuilderService extends AbstractStatementBuilderServ
 		activity.getDefinition().getDescription().addNoLanguageTranslation("Update session creator");
 
 		return new Statement(
-				this.actorBuilderService.getActor(),
+				this.actorBuilder.getActor(),
 				this.verbBuilder.createVerb("updated"),
 				activity,
 				new Result("newSessionCreator", new Object[]{session.getCreator()})
@@ -347,7 +346,7 @@ public class SessionStatementBuilderService extends AbstractStatementBuilderServ
 		activity.getDefinition().getDescription().addNoLanguageTranslation("Copy session to public pool");
 
 		return new Statement(
-				this.actorBuilderService.getActor(),
+				this.actorBuilder.getActor(),
 				this.verbBuilder.createVerb("copy"),
 				activity,
 				new Result("session", new Object[] {this.sessionService.getPublicPoolSessionsInfo()})
@@ -377,7 +376,7 @@ public class SessionStatementBuilderService extends AbstractStatementBuilderServ
 		result.put("session", this.sessionService.getSession(sessionKey));
 
 		return new Statement(
-				this.actorBuilderService.getActor(),
+				this.actorBuilder.getActor(),
 				this.verbBuilder.createVerb("lock"),
 				this.activityBuilder.createActivity(activityId, "session"),
 				new Result(new Object[] {result})
@@ -405,7 +404,7 @@ public class SessionStatementBuilderService extends AbstractStatementBuilderServ
 		activity.getDefinition().getDescription().addNoLanguageTranslation("Learning progress retrieved");
 
 		return new Statement(
-				this.actorBuilderService.getActor(),
+				this.actorBuilder.getActor(),
 				this.verbBuilder.createVerb("retrieve"),
 				activity,
 				new Result("learningProgress", new Object[] {
@@ -431,7 +430,7 @@ public class SessionStatementBuilderService extends AbstractStatementBuilderServ
 		this.sessionService.getPublicPoolSessionsInfo();
 
 		return new Statement(
-				this.actorBuilderService.getActor(),
+				this.actorBuilder.getActor(),
 				this.verbBuilder.createVerb("retrieve"),
 				this.activityBuilder.createActivity(activityId, "sessionFeatures"),
 				new Result("sessionFeatures", new Object[] {this.sessionService.getSessionFeatures(sessionKey)})
@@ -455,7 +454,7 @@ public class SessionStatementBuilderService extends AbstractStatementBuilderServ
 		});
 
 		return new Statement(
-				this.actorBuilderService.getActor(),
+				this.actorBuilder.getActor(),
 				this.verbBuilder.createVerb("lock"),
 				this.activityBuilder.createActivity(activityId, "feedbackInput"),
 				new Result("isFeedbackInputLocked", new Object[] {Boolean.toString(isLocked)})
@@ -484,7 +483,7 @@ public class SessionStatementBuilderService extends AbstractStatementBuilderServ
 		);
 
 		return new Statement(
-				this.actorBuilderService.getActor(),
+				this.actorBuilder.getActor(),
 				this.verbBuilder.createVerb("flip"),
 				activity,
 				new Result("shouldReturnFlipFlashCards", new Object[] {

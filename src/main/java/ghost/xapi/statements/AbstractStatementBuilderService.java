@@ -6,7 +6,7 @@ import de.thm.arsnova.services.ISessionService;
 import de.thm.arsnova.services.IUserService;
 import ghost.xapi.builder.ActivityBuilder;
 import ghost.xapi.builder.VerbBuilder;
-import ghost.xapi.services.ActorBuilderService;
+import ghost.xapi.builder.ActorBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.UUID;
@@ -21,7 +21,7 @@ public class AbstractStatementBuilderService {
 	protected VerbBuilder verbBuilder;
 
 	@Autowired
-	protected ActorBuilderService actorBuilderService;
+	protected ActorBuilder actorBuilder;
 
 	/**
 	 * @param parameter

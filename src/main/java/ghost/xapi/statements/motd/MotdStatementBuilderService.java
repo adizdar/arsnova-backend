@@ -2,15 +2,12 @@ package ghost.xapi.statements.motd;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.thm.arsnova.entities.Motd;
-import de.thm.arsnova.entities.MotdList;
 import de.thm.arsnova.entities.Session;
-import de.thm.arsnova.entities.transport.ImportExportSession;
 import de.thm.arsnova.services.IMotdService;
 import de.thm.arsnova.services.ISessionService;
 import ghost.xapi.entities.Result;
 import ghost.xapi.entities.Statement;
 import ghost.xapi.entities.activity.Activity;
-import ghost.xapi.entities.actor.Actor;
 import ghost.xapi.statements.AbstractStatementBuilderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -75,7 +72,7 @@ public class MotdStatementBuilderService extends AbstractStatementBuilderService
 		);
 
 		return new Statement(
-				this.actorBuilderService.getActor(),
+				this.actorBuilder.getActor(),
 				this.verbBuilder.createVerb("retreive"),
 				activity,
 				new Result("motd", new Object[] { motds })
@@ -105,7 +102,7 @@ public class MotdStatementBuilderService extends AbstractStatementBuilderService
 		);
 
 		return new Statement(
-				this.actorBuilderService.getActor(),
+				this.actorBuilder.getActor(),
 				this.verbBuilder.createVerb("create"),
 				activity,
 				new Result("motd", new Object[] { motd })
@@ -128,7 +125,7 @@ public class MotdStatementBuilderService extends AbstractStatementBuilderService
 		});
 
 		return new Statement(
-				this.actorBuilderService.getActor(),
+				this.actorBuilder.getActor(),
 				this.verbBuilder.createVerb("update"),
 				this.activityBuilder.createActivity(activityId, "updateMotd"),
 				new Result("motd", new Object[] { this.motdService.getMotd(motdKey)})
@@ -151,7 +148,7 @@ public class MotdStatementBuilderService extends AbstractStatementBuilderService
 		});
 
 		return new Statement(
-				this.actorBuilderService.getActor(),
+				this.actorBuilder.getActor(),
 				this.verbBuilder.createVerb("delete"),
 				this.activityBuilder.createActivity(activityId, "deleteMotd")
 		);
@@ -177,7 +174,7 @@ public class MotdStatementBuilderService extends AbstractStatementBuilderService
 		);
 
 		return new Statement(
-				this.actorBuilderService.getActor(),
+				this.actorBuilder.getActor(),
 				this.verbBuilder.createVerb("retrieve"),
 				activity,
 				new Result("motds", new Object[] { this.motdService.getMotdListForUser(username) })
@@ -200,7 +197,7 @@ public class MotdStatementBuilderService extends AbstractStatementBuilderService
 		});
 
 		return new Statement(
-				this.actorBuilderService.getActor(),
+				this.actorBuilder.getActor(),
 				this.verbBuilder.createVerb("create"),
 				this.activityBuilder.createActivity(activityId, "newMotdList"),
 				new Result("motdList", new Object[] { motdList })
@@ -223,7 +220,7 @@ public class MotdStatementBuilderService extends AbstractStatementBuilderService
 		});
 
 		return new Statement(
-				this.actorBuilderService.getActor(),
+				this.actorBuilder.getActor(),
 				this.verbBuilder.createVerb("update"),
 				this.activityBuilder.createActivity(activityId, "updateMotdList"),
 				new Result("motdList", new Object[] { motdList })

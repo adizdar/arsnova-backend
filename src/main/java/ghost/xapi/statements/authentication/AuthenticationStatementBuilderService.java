@@ -36,7 +36,7 @@ public class AuthenticationStatementBuilderService extends AbstractStatementBuil
 	 * @return Statement
 	 */
 	public Statement buildForLoginAction(HttpServletRequest request) {
-		Actor actor = this.actorBuilderService.getActor();
+		Actor actor = this.actorBuilder.getActor();
 		Verb verb = this.verbBuilder.createVerb("loggedin");
 		Activity activity = this.activityBuilder.createActivity(actor.getObjectType(), "application");
 
@@ -61,7 +61,7 @@ public class AuthenticationStatementBuilderService extends AbstractStatementBuil
 	 * @return Statement
 	 */
 	public Statement buildForLogoutAction(HttpServletRequest request) {
-		Actor actor = this.actorBuilderService.getActor();
+		Actor actor = this.actorBuilder.getActor();
 		Verb verb = this.verbBuilder.createVerb("logOut");
 		Activity activity = this.activityBuilder.createActivity("arsnova", "application");
 
@@ -126,7 +126,7 @@ public class AuthenticationStatementBuilderService extends AbstractStatementBuil
 		});
 
 		return new Statement(
-				this.actorBuilderService.getActor(),
+				this.actorBuilder.getActor(),
 				this.verbBuilder.createVerb("retrieve"),
 				this.activityBuilder.createActivity(activityId ,"currentUserInformation"),
 				new Result("userInformation", new Object[] { currentUser })
