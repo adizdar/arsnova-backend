@@ -1,5 +1,6 @@
 package ghost.xapi.statements.motd;
 
+import de.thm.arsnova.services.IUserService;
 import ghost.xapi.entities.Statement;
 import ghost.xapi.statements.StatementBuilder;
 import ghost.xapi.statements.StatementBuilderBlock;
@@ -15,6 +16,9 @@ public class MotdActionFactory {
 
 	@Autowired
 	private MotdStatementBuilderService motdStatementBuilderService;
+
+	@Autowired
+	private IUserService userService;
 
 	private StatementBuilderBlock block = new StatementBuilderBlock() {
 		@Override
@@ -64,7 +68,10 @@ public class MotdActionFactory {
 	 * @return Statement
 	 */
 	public Statement getStatementViaServiceName(HttpServletRequest request) throws IOException {
-		return StatementBuilder.createFromRequestWithIOOperations(request, this.block);
+		Statement statement = StatementBuilder.createFromRequestWithIOOperations(request, this.block);
+		statement.addUserRoleToContext(this.userService.getCurrentUser());
+
+		return statement;
 	}
 
 }

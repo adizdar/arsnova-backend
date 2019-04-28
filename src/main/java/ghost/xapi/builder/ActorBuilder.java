@@ -26,8 +26,7 @@ public class ActorBuilder {
 
 		return new Actor(
 				currentUser.getUsername(),
-				currentUser.getType(),
-				currentUser.getRole() != null ? currentUser.getRole().name() : null
+				currentUser.getType()
 		);
 	}
 }

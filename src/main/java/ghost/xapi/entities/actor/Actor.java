@@ -1,5 +1,6 @@
 package ghost.xapi.entities.actor;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import javax.mail.internet.AddressException;
@@ -9,8 +10,6 @@ public class Actor {
 
 	static final String ACTOR_PREFIX = "mailto:";
 
-	@JsonInclude(JsonInclude.Include.NON_NULL)
-	private String role;
 	@JsonInclude(JsonInclude.Include.NON_NULL)
 	private String email;
 	private String name;
@@ -33,17 +32,6 @@ public class Actor {
 	public Actor(String userName, String type) {
 		this.setNameAndEmailViaUsername(userName);
 		this.account = new Account(this.name, type);
-	}
-
-	/**
-	 * @param userName
-	 * @param type
-	 * @param role
-	 */
-	public Actor(String userName, String type, String role) {
-		this.setNameAndEmailViaUsername(userName);
-		this.account = new Account(this.name, type);
-		this.role = role;
 	}
 
 
@@ -125,21 +113,9 @@ public class Actor {
 	/**
 	 * @return String
 	 */
+	@JsonIgnore
 	public String getUserName() {
 		return this.email != null ? this.email : this.name;
 	}
 
-	/**
-	 * @return java.lang.String
-	 */
-	public String getRole() {
-		return role;
-	}
-
-	/**
-	 * @param role
-	 */
-	public void setRole(String role) {
-		this.role = role;
-	}
 }

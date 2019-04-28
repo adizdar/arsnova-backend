@@ -4,6 +4,7 @@ import de.thm.arsnova.entities.Session;
 import de.thm.arsnova.entities.User;
 import de.thm.arsnova.services.ISessionService;
 import de.thm.arsnova.services.IUserService;
+import ghost.xapi.entities.Context;
 import ghost.xapi.entities.Result;
 import ghost.xapi.entities.Statement;
 import ghost.xapi.entities.verb.Verb;
@@ -38,20 +39,26 @@ public class AuthenticationStatementBuilderService extends AbstractStatementBuil
 	public Statement buildForLoginAction(HttpServletRequest request) {
 		Actor actor = this.actorBuilder.getActor();
 		Verb verb = this.verbBuilder.createVerb("loggedin");
-		Activity activity = this.activityBuilder.createActivity(actor.getObjectType(), "application");
+		Activity activity = this.activityBuilder.createActivity("arsnova", "application");
 
 		verb.getDisplay().addNoLanguageTranslation("logged in");
 
-		String activityName = "Arsnova";
+		String activityDescription = "Logged in to Arsnova";
 		String sessionKey = this.userService.getSessionForUser(this.userService.getCurrentUser().getUsername());
 		if (sessionKey != null && !sessionKey.isEmpty()) {
 			Session session = this.sessionService.getSession(sessionKey);
-			activityName += "-" + session.getPpUniversity();
+			if (session.getPpUniversity() != null) {
+				activityDescription += "-" + session.getPpUniversity();
+			}
 		}
 
-		activity.getDefinition().getName().addNoLanguageTranslation(activityName);
+		activity.getDefinition().getDescription().addNoLanguageTranslation(activityDescription);
+		activity.getDefinition().getName().addNoLanguageTranslation("Arsnova");
 
-		return new Statement(actor, verb, activity);
+		Statement statement =  new Statement(actor, verb, activity);
+		statement.addUserRoleToContext(this.userService.getCurrentUser());
+
+		return statement;
 	}
 
 	/**
@@ -125,11 +132,15 @@ public class AuthenticationStatementBuilderService extends AbstractStatementBuil
 				currentUser.getUsername()
 		});
 
+		Context context = new Context();
+		context.addRole(currentUser.getRole());
+
 		return new Statement(
 				this.actorBuilder.getActor(),
 				this.verbBuilder.createVerb("retrieve"),
 				this.activityBuilder.createActivity(activityId ,"currentUserInformation"),
-				new Result("userInformation", new Object[] { currentUser })
+				new Result("userInformation", new Object[] { currentUser }),
+				context
 		);
 	}
 

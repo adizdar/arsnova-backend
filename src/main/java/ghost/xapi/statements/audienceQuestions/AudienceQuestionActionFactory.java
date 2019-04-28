@@ -1,5 +1,8 @@
 package ghost.xapi.statements.audienceQuestions;
 
+import de.thm.arsnova.entities.User;
+import de.thm.arsnova.services.IUserService;
+import ghost.xapi.entities.Context;
 import ghost.xapi.entities.Statement;
 import ghost.xapi.statements.StatementBuilder;
 import ghost.xapi.statements.StatementBuilderBlock;
@@ -16,6 +19,9 @@ public class AudienceQuestionActionFactory {
 
 	@Autowired
 	private AudienceQuestionStatementBuilderService audienceQuestionStatmentBuilderService;
+
+	@Autowired
+	private IUserService userService;
 
 	private StatementBuilderBlock block = new StatementBuilderBlock() {
 		@Override
@@ -54,7 +60,10 @@ public class AudienceQuestionActionFactory {
 	 * @return Statement
 	 */
 	public Statement getStatementViaServiceName(HttpServletRequest request) {
-		return StatementBuilder.createFromRequest(request, this.block);
+		Statement statement =  StatementBuilder.createFromRequest(request, this.block);
+		statement.addUserRoleToContext(this.userService.getCurrentUser());
+
+		return statement;
 	}
 
 }

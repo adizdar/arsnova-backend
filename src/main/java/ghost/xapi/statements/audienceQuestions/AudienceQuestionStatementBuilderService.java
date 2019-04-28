@@ -1,10 +1,13 @@
 package ghost.xapi.statements.audienceQuestions;
 
+import de.thm.arsnova.entities.DbUser;
 import de.thm.arsnova.entities.InterposedQuestion;
 import de.thm.arsnova.entities.InterposedReadingCount;
 import de.thm.arsnova.entities.Session;
 import de.thm.arsnova.services.IQuestionService;
 import de.thm.arsnova.services.ISessionService;
+import de.thm.arsnova.services.IUserService;
+import ghost.xapi.entities.Context;
 import ghost.xapi.entities.Result;
 import ghost.xapi.entities.Statement;
 import ghost.xapi.entities.activity.Activity;
@@ -27,6 +30,9 @@ public class AudienceQuestionStatementBuilderService extends AbstractStatementBu
 	@Autowired
 	private ISessionService sessionService;
 
+	@Autowired
+	private IUserService userService;
+
 	/**
 	 * @param request
 	 * @return Statement
@@ -45,11 +51,15 @@ public class AudienceQuestionStatementBuilderService extends AbstractStatementBu
 				"An audience question asked during the session " + session.getName()
 		);
 
+		Context context = new Context();
+		context.setInstructor(session.getCreator());
+
 		return new Statement(
 				this.actorBuilder.getActor(),
 				this.verbBuilder.createVerb("asked"),
 				activity,
-				new Result("question", new Object[] {question})
+				new Result("question", new Object[] {question}),
+				context
 		);
 	}
 
@@ -116,11 +126,15 @@ public class AudienceQuestionStatementBuilderService extends AbstractStatementBu
 				"All questions asked in the session " + session.getName()
 		);
 
+		Context context = new Context();
+		context.setInstructor(session.getCreator());
+
 		return new Statement(
 				this.actorBuilder.getActor(),
 				this.verbBuilder.createVerb("retrieve"),
 				activity,
-				result
+				result,
+				context
 		);
 	}
 
@@ -192,11 +206,15 @@ public class AudienceQuestionStatementBuilderService extends AbstractStatementBu
 				username
 		});
 
+		Context context = new Context();
+		context.setInstructor(session.getCreator());
+
 		return new Statement(
 				this.actorBuilder.getActor(),
 				this.verbBuilder.createVerb("unread"),
 				this.activityBuilder.createActivity(activityId, "unreadCount"),
-				new Result("unreadCount", new InterposedReadingCount[] {unredQuestionsCount})
+				new Result("unreadCount", new InterposedReadingCount[] {unredQuestionsCount}),
+				context
 		);
 
 	}

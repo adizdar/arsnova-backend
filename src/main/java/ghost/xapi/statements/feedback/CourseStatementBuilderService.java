@@ -5,6 +5,7 @@ import de.thm.arsnova.connector.model.Course;
 import de.thm.arsnova.connector.model.UserRole;
 import de.thm.arsnova.entities.User;
 import de.thm.arsnova.services.IUserService;
+import ghost.xapi.entities.Context;
 import ghost.xapi.entities.Result;
 import ghost.xapi.entities.Statement;
 import ghost.xapi.entities.activity.Activity;
@@ -54,11 +55,15 @@ public class CourseStatementBuilderService extends AbstractStatementBuilderServi
 				"All courses from user " + currentUser.getUsername()
 		);
 
-		return new Statement(
+		Statement statement = new Statement(
 				this.actorBuilder.getActor(),
 				this.verbBuilder.createVerb("retrieve"),
 				this.activityBuilder.createActivity(activityId, "userCourses"),
-				new Result("courses", new Object[] { result })
+				new Result("courses", new Object[]{result})
 		);
+
+		statement.addUserRoleToContext(currentUser);
+
+		return statement;
 	}
 }
