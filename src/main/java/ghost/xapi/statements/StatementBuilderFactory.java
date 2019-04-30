@@ -1,11 +1,8 @@
-package ghost.xapi.factory;
+package ghost.xapi.statements;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
-import de.thm.arsnova.entities.User;
-import de.thm.arsnova.services.IUserService;
-import ghost.xapi.entities.Context;
 import ghost.xapi.entities.Statement;
 import ghost.xapi.log.XAPILogger;
 import ghost.xapi.statements.audienceQuestions.AudienceQuestionActionFactory;

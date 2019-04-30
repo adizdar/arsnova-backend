@@ -1,4 +1,4 @@
-package ghost.xapi.services;
+package ghost.xapi.client;
 
 import ghost.xapi.entities.Statement;
 import ghost.xapi.client.RestTemplateWithBasicAuthFactory;

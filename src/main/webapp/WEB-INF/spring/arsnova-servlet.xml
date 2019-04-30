@@ -13,7 +13,7 @@
 
 	<!-- ARSnova Servlet Context -->
 
-	<context:component-scan base-package="de.thm.arsnova.aop,de.thm.arsnova.controller,de.thm.arsnova.web, ghost.xapi.services,ghost.xapi.config, ghost.xapi.builder, ghost.xapi.filter, ghost.xapi.interceptor, ghost.xapi.factory, ghost.xapi.entities, ghost.xapi.client, ghost.xapi.statements" />
+	<context:component-scan base-package="de.thm.arsnova.aop,de.thm.arsnova.controller,de.thm.arsnova.web, ghost.xapi.builder, ghost.xapi.filter, ghost.xapi.interceptor, ghost.xapi.entities, ghost.xapi.client, ghost.xapi.statements" />
 
 	<mvc:annotation-driven
 		content-negotiation-manager="mvcContentNegotiationManager" />

@@ -1,9 +1,9 @@
 package ghost.xapi.interceptor;
 
 import ghost.xapi.entities.Statement;
-import ghost.xapi.factory.StatementBuilderFactory;
+import ghost.xapi.statements.StatementBuilderFactory;
 import ghost.xapi.log.XAPILogger;
-import ghost.xapi.services.XAPIConnectorService;
+import ghost.xapi.client.XAPIConnectorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.method.HandlerMethod;
