@@ -43,7 +43,7 @@ public class SessionStatementBuilderService extends AbstractStatementBuilderServ
 
 		String activityId = this.activityBuilder.createActivityId(new String[]{
 				"session/name",
-				session.getName()
+				session.getShortName().replaceAll(" ", "_")
 		});
 
 		Activity activity = this.activityBuilder.createActivity(activityId, "session");

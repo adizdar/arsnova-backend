@@ -110,7 +110,7 @@ public class Statement {
 	 * @param user
 	 */
 	public void addUserRoleToContext(User user) {
-		if (user == null && user.getRole() == null) {
+		if (user == null || user.getRole() == null) {
 			return;
 		}
 

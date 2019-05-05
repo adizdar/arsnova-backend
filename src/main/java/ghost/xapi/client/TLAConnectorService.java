@@ -17,7 +17,7 @@ import java.util.MissingFormatArgumentException;
 @Service
 public class TLAConnectorService {
 
-	@Value(value = "${xapi.connector.base-url}")
+	@Value(value = "${xapi.connector.base-url: https://tlacx311.edutec.guru/lrs-backend/resources/systems/xapi/statements}")
 	private String url;
 
 	@Autowired
