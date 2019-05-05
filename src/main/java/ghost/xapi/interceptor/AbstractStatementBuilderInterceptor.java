@@ -34,7 +34,7 @@ public class AbstractStatementBuilderInterceptor extends HandlerInterceptorAdapt
 	protected void prepareStatement(HttpServletRequest request, HttpServletResponse response, HandlerMethod handler) {
 		Statement statement = this.statementBuilderFactory.getStatementForHandler(handler, request);
 
-		if (this.rootUrl.contains("localhost") && statement != null) {
+		if (statement != null) {
 			if (this.rootUrl.contains("localhost")) {
 				this.writeStatementToLog(statement);
 			}
