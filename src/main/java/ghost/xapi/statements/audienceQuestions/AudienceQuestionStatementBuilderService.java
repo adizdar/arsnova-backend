@@ -1,6 +1,5 @@
 package ghost.xapi.statements.audienceQuestions;
 
-import de.thm.arsnova.entities.DbUser;
 import de.thm.arsnova.entities.InterposedQuestion;
 import de.thm.arsnova.entities.InterposedReadingCount;
 import de.thm.arsnova.entities.Session;
