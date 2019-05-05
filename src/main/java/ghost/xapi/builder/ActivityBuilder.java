@@ -12,8 +12,6 @@ public class ActivityBuilder {
 	private String rootUrl;
 	@Value(value = "${xapi.activity.base-url}")
 	private String activityIdBaseUrl;
-	@Value(value = "${xapi.definition.type.base-url: http://adlnet.gov/expapi/activities/}")
-	private String definitionTypeBaseUrl;
 
 	/**
 	 * @copyright https://watershedlrs.zendesk.com/hc/en-us/articles/214880383-Get-the-Activity-ID-Right

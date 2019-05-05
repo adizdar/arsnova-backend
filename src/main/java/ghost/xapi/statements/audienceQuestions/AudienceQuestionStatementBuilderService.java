@@ -51,7 +51,7 @@ public class AudienceQuestionStatementBuilderService extends AbstractStatementBu
 		);
 
 		Context context = new Context();
-		context.setInstructor(this.getCreatorFromSessionDao(request.getParameter("sessionkey")));
+		context.setInstructor(!session.getPpAuthorName().isEmpty() ? session.getPpAuthorName() : null);
 
 		return new Statement(
 				this.actorBuilder.getActor(),
@@ -126,7 +126,7 @@ public class AudienceQuestionStatementBuilderService extends AbstractStatementBu
 		);
 
 		Context context = new Context();
-		context.setInstructor(this.getCreatorFromSessionDao(request.getParameter("sessionkey")));
+		context.setInstructor(!session.getPpAuthorName().isEmpty() ? session.getPpAuthorName() : null);
 
 		return new Statement(
 				this.actorBuilder.getActor(),
@@ -206,7 +206,7 @@ public class AudienceQuestionStatementBuilderService extends AbstractStatementBu
 		});
 
 		Context context = new Context();
-		context.setInstructor(this.getCreatorFromSessionDao(request.getParameter("sessionkey")));
+		context.setInstructor(!session.getPpAuthorName().isEmpty() ? session.getPpAuthorName() : null);
 
 		return new Statement(
 				this.actorBuilder.getActor(),
