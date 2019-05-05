@@ -321,10 +321,12 @@ tracking.site-id=
 # it will trigger the support for sending the Requests to the connector defined in the
 # xapi.connector.base-url.
 
+# Allowed values true/false.
 xapi.support.activate=false
 
 # If the activity id is not set the root-url will be taken as fallback
-#xapi.activity.base-url=http://localhost:8080/example/xapi
+#xapi.activity.base-url=http://localhost/xapi/activity
+#xapi.definition.type.base-url=http://adlnet.gov/expapi/activities/
 
 # If the activity id is not set the root-url will be taken as fallback
 #xapi.verb.base-url=http://adlnet.gov/expapi/verbs/
