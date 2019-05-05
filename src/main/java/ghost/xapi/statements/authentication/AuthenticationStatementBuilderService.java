@@ -41,7 +41,7 @@ public class AuthenticationStatementBuilderService extends AbstractStatementBuil
 		Verb verb = this.verbBuilder.createVerb("loggedin");
 		Activity activity = this.activityBuilder.createActivity("arsnova", "application");
 
-		verb.getDisplay().addNoLanguageTranslation("logged in");
+		verb.getDisplay().addDefaultLanguageKey("logged in");
 
 		String activityDescription = "Logged in to Arsnova";
 		String sessionKey = this.userService.getSessionForUser(this.userService.getCurrentUser().getUsername());
@@ -52,8 +52,8 @@ public class AuthenticationStatementBuilderService extends AbstractStatementBuil
 			}
 		}
 
-		activity.getDefinition().getDescription().addNoLanguageTranslation(activityDescription);
-		activity.getDefinition().getName().addNoLanguageTranslation("Arsnova");
+		activity.getDefinition().getDescription().addDefaultLanguageKey(activityDescription);
+		activity.getDefinition().getName().addDefaultLanguageKey("Arsnova");
 
 		Statement statement =  new Statement(actor, verb, activity);
 		statement.addUserRoleToContext(this.userService.getCurrentUser());
@@ -72,7 +72,7 @@ public class AuthenticationStatementBuilderService extends AbstractStatementBuil
 		Verb verb = this.verbBuilder.createVerb("logOut");
 		Activity activity = this.activityBuilder.createActivity("arsnova", "application");
 
-		verb.getDisplay().addNoLanguageTranslation("logged out of");
+		verb.getDisplay().addDefaultLanguageKey("logged out of");
 
 		String activityName = "Arsnova session";
 
@@ -82,7 +82,7 @@ public class AuthenticationStatementBuilderService extends AbstractStatementBuil
 			activityName += " " + session.getName();
 		}
 
-		activity.getDefinition().getName().addNoLanguageTranslation(activityName);
+		activity.getDefinition().getName().addDefaultLanguageKey(activityName);
 
 		return new Statement(actor, verb, activity);
 	}

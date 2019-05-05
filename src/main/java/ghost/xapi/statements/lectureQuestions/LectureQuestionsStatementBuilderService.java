@@ -52,7 +52,7 @@ public class LectureQuestionsStatementBuilderService extends AbstractStatementBu
 		});
 
 		Activity activity = this.activityBuilder.createActivity(activityId, "lectureQuestion");
-		activity.getDefinition().getDescription().addNoLanguageTranslation(
+		activity.getDefinition().getDescription().addDefaultLanguageKey(
 				"Retrieve lecturer question"
 		);
 
@@ -100,7 +100,7 @@ public class LectureQuestionsStatementBuilderService extends AbstractStatementBu
 		});
 		Result result = new Result("questions", questions.toArray());
 		Activity activity = this.activityBuilder.createActivity(activityId, "lectureQuestions");
-		activity.getDefinition().getDescription().addNoLanguageTranslation(
+		activity.getDefinition().getDescription().addDefaultLanguageKey(
 				"Retrieve all questions for session " + activeSession.getName()
 		);
 
@@ -130,7 +130,7 @@ public class LectureQuestionsStatementBuilderService extends AbstractStatementBu
 		}
 
 		Activity activity = this.activityBuilder.createActivity(question.get_id(), "lectureQuestion");
-		activity.getDefinition().getDescription().addNoLanguageTranslation(
+		activity.getDefinition().getDescription().addDefaultLanguageKey(
 				"User " + user.getUsername() + " asked a question."
 		);
 
@@ -254,7 +254,7 @@ public class LectureQuestionsStatementBuilderService extends AbstractStatementBu
 			activityDescription += " subject " + question.getSubject();
 		}
 
-		activity.getDefinition().getDescription().addNoLanguageTranslation(activityDescription);
+		activity.getDefinition().getDescription().addDefaultLanguageKey(activityDescription);
 
 		return new Statement(
 				this.actorBuilder.getActor(),
@@ -285,7 +285,7 @@ public class LectureQuestionsStatementBuilderService extends AbstractStatementBu
 			activityDescription += " subject " + question.getSubject();
 		}
 
-		activity.getDefinition().getDescription().addNoLanguageTranslation(activityDescription);
+		activity.getDefinition().getDescription().addDefaultLanguageKey(activityDescription);
 
 		Statement statement = new Statement(
 				this.actorBuilder.getActor(),
@@ -394,7 +394,7 @@ public class LectureQuestionsStatementBuilderService extends AbstractStatementBu
 		String activityId = this.getActivityIdViaSessionOrUUUIDForCurrentUser(this.sessionService, this.userService);
 
 		Activity activity = this.activityBuilder.createActivity(activityId, "allQuestions");
-		activity.getDefinition().getDescription().addNoLanguageTranslation(
+		activity.getDefinition().getDescription().addDefaultLanguageKey(
 				"Lecturer questions published on " + new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date())
 		);
 
@@ -488,7 +488,7 @@ public class LectureQuestionsStatementBuilderService extends AbstractStatementBu
 				activeSession.getName()
 		});
 		Activity activity = this.activityBuilder.createActivity(activityId, "skillQuestions");
-		activity.getDefinition().getDescription().addNoLanguageTranslation(
+		activity.getDefinition().getDescription().addDefaultLanguageKey(
 				"Skill questions deleted on " + new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date())
 		);
 

@@ -9,7 +9,7 @@ public class VerbBuilder {
 
 	@Value(value = "${root-url}")
 	private String rootUrl;
-	@Value(value = "${xapi.verb.base-url: http://adlnet.gov/expapi/verbs/}")
+	@Value(value = "${xapi.verb.base-url}")
 	private String baseUrl;
 
 	/**
@@ -20,7 +20,7 @@ public class VerbBuilder {
 		this.baseUrl = (this.baseUrl != null && !this.baseUrl.isEmpty()) ? this.baseUrl : this.rootUrl;
 
 		Verb verb = new Verb(this.baseUrl + id);
-		verb.getDisplay().addNoLanguageTranslationFromCamelCase(id);
+		verb.getDisplay().addDefaultLanguageKey(id);
 
 		return verb;
 	}
