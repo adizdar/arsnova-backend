@@ -1,5 +1,6 @@
 package ghost.xapi.entities.actor;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import javax.mail.internet.AddressException;
@@ -14,6 +15,7 @@ public class Actor {
 	private String name;
 	private String objectType = "Agent";
 	private Account account;
+
 
 	/**
 	 * @param userName
@@ -31,6 +33,7 @@ public class Actor {
 		this.setNameAndEmailViaUsername(userName);
 		this.account = new Account(this.name, type);
 	}
+
 
 	/**
 	 * Maps name and email field via userName. The userName can be a email or just a plain name.
@@ -55,7 +58,6 @@ public class Actor {
 	 * @return java.lang.String
 	 */
 	private String getNameFromEmail(String email) {
-		// TODO add email validation
 		return email.substring(0, email.indexOf("@"));
 	}
 
@@ -106,6 +108,14 @@ public class Actor {
 	 */
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	/**
+	 * @return String
+	 */
+	@JsonIgnore
+	public String getUserName() {
+		return this.email != null ? this.email : this.name;
 	}
 
 }

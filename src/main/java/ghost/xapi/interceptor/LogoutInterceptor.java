@@ -1,6 +1,5 @@
 package ghost.xapi.interceptor;
 
-import ghost.xapi.entities.actor.Actor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.method.HandlerMethod;
 
@@ -21,7 +20,9 @@ public class LogoutInterceptor extends AbstractStatementBuilderInterceptor {
 	@Override
 	@PreAuthorize("isAuthenticated()")
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-		this.prepareStatement(request, response, (HandlerMethod) handler);
+		if (this.isXapiSupportActive) {
+			this.prepareStatement(request, response, (HandlerMethod) handler);
+		}
 
 		return super.preHandle(request, response, handler);
 	}

@@ -1,5 +1,7 @@
-package ghost.xapi.entities;
+package ghost.xapi.entities.verb;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import ghost.xapi.entities.Translations;
 import org.springframework.beans.factory.annotation.Configurable;
 
 @Configurable
@@ -35,16 +37,9 @@ public class Verb {
 	/**
 	 * @return ghost.xapi.entities.Translations
 	 */
+	@JsonProperty("display")
 	public Translations getDisplay() {
 		return display;
-	}
-
-	/**
-	 * @param language The display language that is supported like: en-US, de, es...
-	 * @param verb The defined action between the actor and activity in the supported language.
-	 */
-	public void addTranslation(String language, String verb) {
-		this.display.addTranslation(language, verb);
 	}
 
 }

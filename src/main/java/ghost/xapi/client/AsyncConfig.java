@@ -1,4 +1,4 @@
-package ghost.xapi.config;
+package ghost.xapi.client;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

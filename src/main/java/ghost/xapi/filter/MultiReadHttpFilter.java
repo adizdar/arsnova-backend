@@ -1,8 +1,6 @@
-package ghost.xapi.interceptor;
+package ghost.xapi.filter;
 
-import ghost.xapi.config.MultiReadHttpServletRequest;
 import org.springframework.web.filter.GenericFilterBean;
-import org.springframework.web.servlet.HandlerMapping;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
@@ -13,6 +11,11 @@ public class MultiReadHttpFilter extends GenericFilterBean {
 	@Override
 	public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
 		if (this.checkIfUriIsBlacklisted((HttpServletRequest) servletRequest)) {
+			filterChain.doFilter(servletRequest, servletResponse);
+			return;
+		}
+
+		if (!this.checkIfUriIsWhitelisted((HttpServletRequest) servletRequest)) {
 			filterChain.doFilter(servletRequest, servletResponse);
 			return;
 		}
@@ -47,6 +50,27 @@ public class MultiReadHttpFilter extends GenericFilterBean {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Because we can't specify the request method only the path.
+	 *
+	 * @param request
+	 * @return boolean
+	 */
+	protected boolean checkIfUriIsWhitelisted(HttpServletRequest request) {
+		String requestUri = request.getRequestURI().toLowerCase();
+		String requestMethod = request.getMethod().toLowerCase();
+		if (requestUri.equals("/session/") || requestUri.equals("/session")) {
+			switch (requestMethod) {
+				case "post":
+					return true;
+					default:
+						return false;
+			}
+		}
+
+		return true;
 	}
 
 }

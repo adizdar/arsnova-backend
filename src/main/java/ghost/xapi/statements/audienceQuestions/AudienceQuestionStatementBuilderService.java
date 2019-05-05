@@ -5,6 +5,8 @@ import de.thm.arsnova.entities.InterposedReadingCount;
 import de.thm.arsnova.entities.Session;
 import de.thm.arsnova.services.IQuestionService;
 import de.thm.arsnova.services.ISessionService;
+import de.thm.arsnova.services.IUserService;
+import ghost.xapi.entities.Context;
 import ghost.xapi.entities.Result;
 import ghost.xapi.entities.Statement;
 import ghost.xapi.entities.activity.Activity;
@@ -27,23 +29,36 @@ public class AudienceQuestionStatementBuilderService extends AbstractStatementBu
 	@Autowired
 	private ISessionService sessionService;
 
+	@Autowired
+	private IUserService userService;
+
 	/**
 	 * @param request
 	 * @return Statement
 	 */
 	public Statement buildForAskedInterposedQuestion(HttpServletRequest request) {
 		InterposedQuestion question = this.getInterposedQuestionOfUserViaSessionKey(request.getParameter("sessionkey"));
+		Session session = this.sessionService.getSession(request.getParameter("sessionkey"));
 
-		Session activeSession = this.sessionService.getSession(request.getParameter("sessionkey"));
+		String activityId = this.activityBuilder.createActivityId(new String[]{
+				"audienceQuestion",
+				question.get_id()
+		});
 
-		Activity activity = this.activityBuilder.createActivity(question.getType(), "interposedQuestion");
-		activity.getDefinition().getName().addTranslation("de", question.getSubject());
-		activity.getDefinition().getDescription().addTranslation("de", question.getText());
+		Activity activity = this.activityBuilder.createActivity(activityId, "interposedQuestion");
+		activity.getDefinition().getDescription().addNoLanguageTranslation(
+				"An audience question asked during the session " + session.getName()
+		);
+
+		Context context = new Context();
+		context.setInstructor(session.getCreator());
 
 		return new Statement(
-				this.actorBuilderService.getActor(),
+				this.actorBuilder.getActor(),
 				this.verbBuilder.createVerb("asked"),
-				activity
+				activity,
+				new Result("question", new Object[] {question}),
+				context
 		);
 	}
 
@@ -52,10 +67,8 @@ public class AudienceQuestionStatementBuilderService extends AbstractStatementBu
 	 * @return InterposedQuestion
 	 */
 	private InterposedQuestion getInterposedQuestionOfUserViaSessionKey(String sessionKey) {
-		// Retrieve the last question from the user aka the one that is posted.
-		// The reason for this is, we can't read the input stream anymore.
-		// TODO if it is not working than use https://www.baeldung.com/spring-http-logging for prehanlde
-		// TODO maybe a service to retrieve the last question
+		// Retrieve the last question from the user aka the one that is posted, so we don;t need to cache the
+		// input stream to read him twice.
 		List<InterposedQuestion> interposedQuestions = this.questionService.getInterposedQuestions(
 				sessionKey,
 				0,
@@ -70,12 +83,10 @@ public class AudienceQuestionStatementBuilderService extends AbstractStatementBu
 	}
 
 	/**
-	 * @param request
+	 * @param sessionKey
 	 * @return Statement
 	 */
-	public Statement buildForGetInterposedQuestion(HttpServletRequest request) {
-		String sessionKey = request.getParameter("sessionkey");
-
+	private List<InterposedQuestion> getAllInterposedQuestionOfUserViaSessionKey(String sessionKey) {
 		// Retrieve all question for session.
 		List<InterposedQuestion> interposedQuestions = this.questionService.getInterposedQuestions(
 				sessionKey,
@@ -83,38 +94,70 @@ public class AudienceQuestionStatementBuilderService extends AbstractStatementBu
 				0
 		);
 
+		if (interposedQuestions.isEmpty()) {
+			throw new NullArgumentException("No questions are found for the current session.");
+		}
+
+		return interposedQuestions;
+	}
+
+	/**
+	 * @param request
+	 * @return Statement
+	 */
+	public Statement buildForGetInterposedQuestion(HttpServletRequest request) {
+		String sessionKey = request.getParameter("sessionkey");
+
+		// Retrieve all question for session.
+		List<InterposedQuestion> interposedQuestions = this.getAllInterposedQuestionOfUserViaSessionKey(sessionKey);
+
 		Session activeSession = this.sessionService.getSession(sessionKey);
 
 		String activityId = this.activityBuilder.createActivityId(new String[]{
-				"interposedQuestions",
-				sessionKey,
-				activeSession.getCourseType(),
-				Long.toString(activeSession.getCreationTime())
+				"audienceQuestions/session",
+				activeSession.getName()
 		});
-		Result result = new Result(interposedQuestions.toArray());
+		Session session = this.sessionService.getSession(request.getParameter("sessionkey"));
+
+		Result result = new Result("interposedQuestions", interposedQuestions.toArray());
 		Activity activity = this.activityBuilder.createActivity(activityId, "interposedQuestions");
+		activity.getDefinition().getDescription().addNoLanguageTranslation(
+				"All questions asked in the session " + session.getName()
+		);
+
+		Context context = new Context();
+		context.setInstructor(session.getCreator());
 
 		return new Statement(
-				this.actorBuilderService.getActor(),
+				this.actorBuilder.getActor(),
 				this.verbBuilder.createVerb("retrieve"),
 				activity,
-				result
+				result,
+				context
 		);
 	}
 
 	/**
 	 * @param pathVariables The question id stored in the path variables.
-	 * @return
+	 * @return Statement
 	 */
 	public Statement buildForGetOneInterposedQuestion(Map pathVariables) {
 		String questionId = (String) pathVariables.get("questionId");
 		InterposedQuestion question = this.questionService.readInterposedQuestion(questionId);
 
+		String activityId = this.activityBuilder.createActivityId(new String[]{
+				"audienceQuestion",
+				questionId
+		});
+
+		Activity activity = this.activityBuilder.createActivity(activityId, "interposedQuestion");
+		activity.getDefinition().getDescription().addNoLanguageTranslation("Retrieve one question.");
+
 		return new Statement(
-				this.actorBuilderService.getActor(),
-				this.verbBuilder.createVerb("seen"),
-				this.activityBuilder.createActivity("question#"+questionId, "interposedQuestion"),
-				new Result(new InterposedQuestion[]{question})
+				this.actorBuilder.getActor(),
+				this.verbBuilder.createVerb("retrieve"),
+				this.activityBuilder.createActivity(activityId, "interposedQuestion"),
+				new Result("question", new InterposedQuestion[]{question})
 		);
 	}
 
@@ -126,16 +169,21 @@ public class AudienceQuestionStatementBuilderService extends AbstractStatementBu
 		Map pathVariables = (Map) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
 
 		String questionId = (String) pathVariables.get("questionId");
-		String question = "question#" + questionId;
 
-		Result result = new Result(new String[]{question});
-		Activity activity = this.activityBuilder.createActivity(questionId, "interposedQuestion");
+		String activityId = this.activityBuilder.createActivityId(new String[]{
+				"audienceQuestion",
+				questionId
+		});
+
+		Activity activity = this.activityBuilder.createActivity(activityId, "interposedQuestion");
+		activity.getDefinition().getDescription().addNoLanguageTranslation(
+				"Question was deleted from session"
+		);
 
 		return new Statement(
-				this.actorBuilderService.getActor(),
+				this.actorBuilder.getActor(),
 				this.verbBuilder.createVerb("deleted"),
-				activity,
-				result
+				activity
 		);
 	}
 
@@ -147,21 +195,25 @@ public class AudienceQuestionStatementBuilderService extends AbstractStatementBu
 		String sessionKey = request.getParameter("sessionkey");
 		String username = request.getParameter("user");
 
-		Session activeSession = this.sessionService.getSession(sessionKey);
+		Session session = this.sessionService.getSession(request.getParameter("sessionkey"));
 
 		InterposedReadingCount unredQuestionsCount = this.questionService.getInterposedReadingCount(sessionKey, username);
 		String activityId = this.activityBuilder.createActivityId(new String[]{
-				"interposedQuestionsCount",
-				sessionKey,
-				username,
-				Long.toString(activeSession.getCreationTime())
+				"audienceQuestionsCount/session",
+				session.getName(),
+				"forUser",
+				username
 		});
 
+		Context context = new Context();
+		context.setInstructor(session.getCreator());
+
 		return new Statement(
-				this.actorBuilderService.getActor(),
+				this.actorBuilder.getActor(),
 				this.verbBuilder.createVerb("unread"),
 				this.activityBuilder.createActivity(activityId, "unreadCount"),
-				new Result(new InterposedReadingCount[] {unredQuestionsCount})
+				new Result("unreadCount", new InterposedReadingCount[] {unredQuestionsCount}),
+				context
 		);
 
 	}

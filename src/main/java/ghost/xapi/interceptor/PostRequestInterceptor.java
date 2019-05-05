@@ -1,19 +1,16 @@
 package ghost.xapi.interceptor;
 
-import org.apache.log4j.Logger;
+import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class LoginInterceptor extends AbstractStatementBuilderInterceptor {
 
-	private static final Logger LOGGER = Logger.getLogger(LoginInterceptor.class);
-
+@Component
+public class PostRequestInterceptor extends AbstractStatementBuilderInterceptor {
 	/**
-	 * Store the Actor in the session.
-	 *
 	 * @param request
 	 * @param response
 	 * @param handler
@@ -21,9 +18,13 @@ public class LoginInterceptor extends AbstractStatementBuilderInterceptor {
 	 * @throws Exception
 	 */
 	@Override
-	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
-// TODO go throught one interceptor here
-		if (this.checkStatusCodeIsValid(response.getStatus())) {
+	public void postHandle(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			Object handler,
+			ModelAndView modelAndView
+	) throws Exception {
+		if (this.isXapiSupportActive && this.checkIfStatusCodeIsValid(response.getStatus())) {
 			this.prepareStatement(request, response, (HandlerMethod) handler);
 		}
 

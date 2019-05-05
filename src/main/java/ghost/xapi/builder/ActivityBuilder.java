@@ -4,15 +4,15 @@ import ghost.xapi.entities.activity.Activity;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 @Component
 public class ActivityBuilder {
 
-	// TODO create a activity config
-	@Value(value = "${xapi.activity.base-url: URL_MISSING}") private String rootUrl;
+	@Value(value = "${root-url}")
+	private String rootUrl;
+	@Value(value = "${xapi.activity.base-url}")
+	private String activityIdBaseUrl;
+	@Value(value = "${xapi.definition.type.base-url: http://adlnet.gov/expapi/activities/}")
+	private String definitionTypeBaseUrl;
 
 	/**
 	 * @copyright https://watershedlrs.zendesk.com/hc/en-us/articles/214880383-Get-the-Activity-ID-Right
@@ -37,7 +37,15 @@ public class ActivityBuilder {
 	 * @return Activity
 	 */
 	public Activity createActivity(String id, String type) {
-		return new Activity(this.rootUrl + ACTIVITY_URI + id, type);
+		this.activityIdBaseUrl = (this.activityIdBaseUrl != null && !this.activityIdBaseUrl.isEmpty()) ? this.activityIdBaseUrl : this.rootUrl;
+
+		Activity activity = new Activity(
+				this.activityIdBaseUrl + ACTIVITY_URI + id,
+				this.definitionTypeBaseUrl + type
+		);
+		activity.getDefinition().getName().addNoLanguageTranslationFromCamelCase(type);
+
+		return activity;
 	}
 
 	/**

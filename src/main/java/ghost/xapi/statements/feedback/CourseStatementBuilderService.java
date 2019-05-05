@@ -7,6 +7,7 @@ import de.thm.arsnova.entities.User;
 import de.thm.arsnova.services.IUserService;
 import ghost.xapi.entities.Result;
 import ghost.xapi.entities.Statement;
+import ghost.xapi.entities.activity.Activity;
 import ghost.xapi.statements.AbstractStatementBuilderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,24 +39,30 @@ public class CourseStatementBuilderService extends AbstractStatementBuilderServi
 
 		final List<Course> result = new ArrayList<>();
 		for (final Course course : this.connectorClient.getCourses(currentUser.getUsername()).getCourse()) {
-			if (
-					course.getMembership().isMember()
-							&& course.getMembership().getUserrole().equals(UserRole.TEACHER)
-			) {
+			if (course.getMembership().isMember() && course.getMembership().getUserrole().equals(UserRole.TEACHER)) {
 				result.add(course);
 			}
 		}
 
 		String activityId = this.activityBuilder.createActivityId(new String[]{
-				"myCourses",
-				this.generateUUID()
+				"courses/user",
+				currentUser.getUsername()
 		});
 
-		return new Statement(
-				this.actorBuilderService.getActor(),
+		Activity activity = this.activityBuilder.createActivity(activityId, "userCourses");
+		activity.getDefinition().getDescription().addNoLanguageTranslation(
+				"All courses from user " + currentUser.getUsername()
+		);
+
+		Statement statement = new Statement(
+				this.actorBuilder.getActor(),
 				this.verbBuilder.createVerb("retrieve"),
 				this.activityBuilder.createActivity(activityId, "userCourses"),
-				new Result(new Object[] { result })
+				new Result("courses", new Object[]{result})
 		);
+
+		statement.addUserRoleToContext(currentUser);
+
+		return statement;
 	}
 }

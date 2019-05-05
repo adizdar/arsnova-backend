@@ -1,55 +1,34 @@
 package ghost.xapi.entities;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Map;
+import java.util.*;
 
 public class Result {
 
-	private boolean success = true;
-	private boolean completion = true;
-	private Object[] response;
+	private Object[] extension;
 
 	/**
-	 * @param response
+	 * @param extension
 	 */
-	public Result(Object[] response) {
-		this.response = response;
+	public Result(Object[] extension) {
+		this.extension = extension;
 	}
 
 	/**
-	 * @return boolean
+	 * @param key
+	 * @param extension
 	 */
-	public boolean isSuccess() {
-		return success;
-	}
+	public Result(String key, Object[] extension) {
+		Map<String, Object> result = new HashMap<>();
+		result.put(key, extension);
 
-	/**
-	 * @return boolean
-	 */
-	public boolean isCompletion() {
-		return completion;
+		this.extension = new Object[]{ result };
 	}
 
 	/**
 	 * @return java.lang.Object[]
 	 */
-	public Object[] getResponse() {
-		return response;
-	}
-
-	/**
-	 * @param success
-	 */
-	public void setSuccess(boolean success) {
-		this.success = success;
-	}
-
-	/**
-	 * @param completion
-	 */
-	public void setCompletion(boolean completion) {
-		this.completion = completion;
+	public Object[] getExtension() {
+		return extension;
 	}
 
 	/**
@@ -58,8 +37,8 @@ public class Result {
 	 * @return
 	 */
 	public void appendValue(Object newObject) {
-		ArrayList<Object> temp = new ArrayList<Object>(Arrays.asList(this.response));
+		ArrayList<Object> temp = new ArrayList<Object>(Arrays.asList(this.extension));
 		temp.add(newObject);
-		this.response = temp.toArray();
+		this.extension = temp.toArray();
 	}
 }

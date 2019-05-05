@@ -15,7 +15,6 @@ public class Account {
 	 * @param type
 	 */
 	public Account(String name, String type) {
-		// TODO add role
 		this.name = name;
 		this.type = type;
 	}

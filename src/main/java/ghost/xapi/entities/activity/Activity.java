@@ -1,11 +1,16 @@
 package ghost.xapi.entities.activity;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 public class Activity {
 
 	private String id;
 	private Definition definition;
 	private String objectType = "Activity";
+
+	@JsonInclude(JsonInclude.Include.NON_NULL)
 	private String uri;
+	@JsonInclude(JsonInclude.Include.NON_NULL)
 	private String requestMethod;
 
 	/**
