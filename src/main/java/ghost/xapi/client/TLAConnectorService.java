@@ -33,9 +33,9 @@ public class TLAConnectorService {
 			throw new MissingFormatArgumentException("xapi.connector.base-url is not defined inside of the Arsnova properties file.");
 		}
 
-		RestTemplate restTemplate = this.restTemplateWithBasicAuthFactory.getObject();
-
 		try {
+			RestTemplate restTemplate = this.restTemplateWithBasicAuthFactory.getObject();
+
 			HttpEntity<Statement> requestToTLA = new HttpEntity<>(statement);
 			ResponseEntity<String> responseTLA = restTemplate.exchange(
 					this.url,
