@@ -43,12 +43,12 @@ public class SessionStatementBuilderService extends AbstractStatementBuilderServ
 
 		String activityId = this.activityBuilder.createActivityId(new String[]{
 				"session/name",
-				session.getName()
+				session.getShortName().replaceAll(" ", "_")
 		});
 
 		Activity activity = this.activityBuilder.createActivity(activityId, "session");
-		activity.getDefinition().getName().addNoLanguageTranslation("New session");
-		activity.getDefinition().getDescription().addNoLanguageTranslation(
+		activity.getDefinition().getName().addDefaultLanguageKey("New session");
+		activity.getDefinition().getDescription().addDefaultLanguageKey(
 				"New session created"
 		);
 
@@ -103,8 +103,8 @@ public class SessionStatementBuilderService extends AbstractStatementBuilderServ
 		result.put("sessions", sessions != null ? sessions.toArray() : "No result for search criteria.");
 
 		Activity activity = this.activityBuilder.createActivity(activityId, "sessions");
-		activity.getDefinition().getName().addNoLanguageTranslation("Session list");
-		activity.getDefinition().getDescription().addNoLanguageTranslation(
+		activity.getDefinition().getName().addDefaultLanguageKey("Session list");
+		activity.getDefinition().getDescription().addDefaultLanguageKey(
 				"Get session list"
 		);
 
@@ -147,8 +147,8 @@ public class SessionStatementBuilderService extends AbstractStatementBuilderServ
 		result.put("sessions", sessions != null ? sessions.toArray() : "No result for search criteria.");
 
 		Activity activity = this.activityBuilder.createActivity(activityId, "sessions");
-		activity.getDefinition().getName().addNoLanguageTranslation("Session list");
-		activity.getDefinition().getDescription().addNoLanguageTranslation(
+		activity.getDefinition().getName().addDefaultLanguageKey("Session list");
+		activity.getDefinition().getDescription().addDefaultLanguageKey(
 				"User session list"
 		);
 
@@ -175,7 +175,7 @@ public class SessionStatementBuilderService extends AbstractStatementBuilderServ
 		});
 
 		Activity activity = this.activityBuilder.createActivity(activityId, "session");
-		activity.getDefinition().getName().addNoLanguageTranslation("Delete session");
+		activity.getDefinition().getName().addDefaultLanguageKey("Delete session");
 
 		return new Statement(
 				this.actorBuilder.getActor(),
@@ -198,7 +198,7 @@ public class SessionStatementBuilderService extends AbstractStatementBuilderServ
 		});
 
 		Activity activity = this.activityBuilder.createActivity(activityId, "session");
-		activity.getDefinition().getName().addNoLanguageTranslation("Update session");
+		activity.getDefinition().getName().addDefaultLanguageKey("Update session");
 
 		return new Statement(
 				this.actorBuilder.getActor(),
@@ -223,8 +223,8 @@ public class SessionStatementBuilderService extends AbstractStatementBuilderServ
 		List<SessionInfo> sessions = this.sessionService.getMyPublicPoolSessionsInfo();
 
 		Activity activity = this.activityBuilder.createActivity(activityId, "sessions");
-		activity.getDefinition().getName().addNoLanguageTranslation("Public session pool");
-		activity.getDefinition().getDescription().addNoLanguageTranslation(
+		activity.getDefinition().getName().addDefaultLanguageKey("Public session pool");
+		activity.getDefinition().getDescription().addDefaultLanguageKey(
 				"Retrieve session pool"
 		);
 
@@ -290,7 +290,7 @@ public class SessionStatementBuilderService extends AbstractStatementBuilderServ
 		}
 
 		Activity activity = this.activityBuilder.createActivity(activityId, "sessions");
-		activity.getDefinition().getName().addNoLanguageTranslation("Export sessions");
+		activity.getDefinition().getName().addDefaultLanguageKey("Export sessions");
 
 		return new Statement(
 				this.actorBuilder.getActor(),
@@ -317,8 +317,8 @@ public class SessionStatementBuilderService extends AbstractStatementBuilderServ
 		});
 
 		Activity activity = this.activityBuilder.createActivity(activityId, "sessionCreator");
-		activity.getDefinition().getName().addNoLanguageTranslation("Session");
-		activity.getDefinition().getDescription().addNoLanguageTranslation("Update session creator");
+		activity.getDefinition().getName().addDefaultLanguageKey("Session");
+		activity.getDefinition().getDescription().addDefaultLanguageKey("Update session creator");
 
 		return new Statement(
 				this.actorBuilder.getActor(),
@@ -343,7 +343,7 @@ public class SessionStatementBuilderService extends AbstractStatementBuilderServ
 		});
 
 		Activity activity = this.activityBuilder.createActivity(activityId, "sessionToPublicPool");
-		activity.getDefinition().getDescription().addNoLanguageTranslation("Copy session to public pool");
+		activity.getDefinition().getDescription().addDefaultLanguageKey("Copy session to public pool");
 
 		return new Statement(
 				this.actorBuilder.getActor(),
@@ -401,7 +401,7 @@ public class SessionStatementBuilderService extends AbstractStatementBuilderServ
 		});
 
 		Activity activity = this.activityBuilder.createActivity(activityId, "learningProgress");
-		activity.getDefinition().getDescription().addNoLanguageTranslation("Learning progress retrieved");
+		activity.getDefinition().getDescription().addDefaultLanguageKey("Learning progress retrieved");
 
 		return new Statement(
 				this.actorBuilder.getActor(),
@@ -478,7 +478,7 @@ public class SessionStatementBuilderService extends AbstractStatementBuilderServ
 		});
 
 		Activity activity = this.activityBuilder.createActivity(activityId, "flashCards");
-		activity.getDefinition().getDescription().addNoLanguageTranslation(
+		activity.getDefinition().getDescription().addDefaultLanguageKey(
 				"Flash cards retrieved for session " + this.sessionService.getSession(sessionKey).getName()
 		);
 

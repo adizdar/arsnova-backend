@@ -1,5 +1,6 @@
 package ghost.xapi.builder;
 
+import ghost.xapi.entities.Translations;
 import ghost.xapi.entities.activity.Activity;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -43,7 +44,7 @@ public class ActivityBuilder {
 				this.activityIdBaseUrl + ACTIVITY_URI + id,
 				this.definitionTypeBaseUrl + type
 		);
-		activity.getDefinition().getName().addNoLanguageTranslationFromCamelCase(type);
+		activity.getDefinition().getName().addDefaultLanguageKey(Translations.convertCamelCaseToSpace(type));
 
 		return activity;
 	}

@@ -46,12 +46,12 @@ public class AudienceQuestionStatementBuilderService extends AbstractStatementBu
 		});
 
 		Activity activity = this.activityBuilder.createActivity(activityId, "interposedQuestion");
-		activity.getDefinition().getDescription().addNoLanguageTranslation(
+		activity.getDefinition().getDescription().addDefaultLanguageKey(
 				"An audience question asked during the session " + session.getName()
 		);
 
 		Context context = new Context();
-		context.setInstructor(session.getCreator());
+		context.setInstructor(!session.getPpAuthorName().isEmpty() ? session.getPpAuthorName() : null);
 
 		return new Statement(
 				this.actorBuilder.getActor(),
@@ -121,12 +121,12 @@ public class AudienceQuestionStatementBuilderService extends AbstractStatementBu
 
 		Result result = new Result("interposedQuestions", interposedQuestions.toArray());
 		Activity activity = this.activityBuilder.createActivity(activityId, "interposedQuestions");
-		activity.getDefinition().getDescription().addNoLanguageTranslation(
+		activity.getDefinition().getDescription().addDefaultLanguageKey(
 				"All questions asked in the session " + session.getName()
 		);
 
 		Context context = new Context();
-		context.setInstructor(session.getCreator());
+		context.setInstructor(!session.getPpAuthorName().isEmpty() ? session.getPpAuthorName() : null);
 
 		return new Statement(
 				this.actorBuilder.getActor(),
@@ -151,7 +151,7 @@ public class AudienceQuestionStatementBuilderService extends AbstractStatementBu
 		});
 
 		Activity activity = this.activityBuilder.createActivity(activityId, "interposedQuestion");
-		activity.getDefinition().getDescription().addNoLanguageTranslation("Retrieve one question.");
+		activity.getDefinition().getDescription().addDefaultLanguageKey("Retrieve one question.");
 
 		return new Statement(
 				this.actorBuilder.getActor(),
@@ -176,7 +176,7 @@ public class AudienceQuestionStatementBuilderService extends AbstractStatementBu
 		});
 
 		Activity activity = this.activityBuilder.createActivity(activityId, "interposedQuestion");
-		activity.getDefinition().getDescription().addNoLanguageTranslation(
+		activity.getDefinition().getDescription().addDefaultLanguageKey(
 				"Question was deleted from session"
 		);
 
@@ -206,7 +206,7 @@ public class AudienceQuestionStatementBuilderService extends AbstractStatementBu
 		});
 
 		Context context = new Context();
-		context.setInstructor(session.getCreator());
+		context.setInstructor(!session.getPpAuthorName().isEmpty() ? session.getPpAuthorName() : null);
 
 		return new Statement(
 				this.actorBuilder.getActor(),

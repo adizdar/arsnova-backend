@@ -17,7 +17,7 @@ import java.util.MissingFormatArgumentException;
 @Service
 public class TLAConnectorService {
 
-	@Value(value = "${xapi.connector.base-url}")
+	@Value(value = "${xapi.connector.base-url: https://tlacx311.edutec.guru/lrs-backend/resources/systems/xapi/statements}")
 	private String url;
 
 	@Autowired
@@ -33,9 +33,9 @@ public class TLAConnectorService {
 			throw new MissingFormatArgumentException("xapi.connector.base-url is not defined inside of the Arsnova properties file.");
 		}
 
-		RestTemplate restTemplate = this.restTemplateWithBasicAuthFactory.getObject();
-
 		try {
+			RestTemplate restTemplate = this.restTemplateWithBasicAuthFactory.getObject();
+
 			HttpEntity<Statement> requestToTLA = new HttpEntity<>(statement);
 			ResponseEntity<String> responseTLA = restTemplate.exchange(
 					this.url,

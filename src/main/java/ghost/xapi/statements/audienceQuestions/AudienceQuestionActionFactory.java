@@ -60,7 +60,7 @@ public class AudienceQuestionActionFactory {
 	 * @return Statement
 	 */
 	public Statement getStatementViaServiceName(HttpServletRequest request) {
-		Statement statement =  StatementBuilder.createFromRequest(request, this.block);
+		Statement statement = StatementBuilder.createFromRequest(request, this.block);
 		statement.addUserRoleToContext(this.userService.getCurrentUser());
 
 		return statement;

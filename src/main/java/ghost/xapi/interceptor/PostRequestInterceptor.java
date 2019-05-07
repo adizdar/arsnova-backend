@@ -30,5 +30,4 @@ public class PostRequestInterceptor extends AbstractStatementBuilderInterceptor 
 
 		super.postHandle(request, response, handler, modelAndView);
 	}
-
 }

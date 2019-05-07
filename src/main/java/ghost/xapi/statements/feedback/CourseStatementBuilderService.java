@@ -50,7 +50,7 @@ public class CourseStatementBuilderService extends AbstractStatementBuilderServi
 		});
 
 		Activity activity = this.activityBuilder.createActivity(activityId, "userCourses");
-		activity.getDefinition().getDescription().addNoLanguageTranslation(
+		activity.getDefinition().getDescription().addDefaultLanguageKey(
 				"All courses from user " + currentUser.getUsername()
 		);
 

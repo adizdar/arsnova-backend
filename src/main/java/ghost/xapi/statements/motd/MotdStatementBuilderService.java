@@ -67,7 +67,7 @@ public class MotdStatementBuilderService extends AbstractStatementBuilderService
 		});
 
 		Activity activity = this.activityBuilder.createActivity(activityId, "motd");
-		activity.getDefinition().getDescription().addNoLanguageTranslation(
+		activity.getDefinition().getDescription().addDefaultLanguageKey(
 				"Messages of the day for session " + session.getName()
 		);
 
@@ -97,7 +97,7 @@ public class MotdStatementBuilderService extends AbstractStatementBuilderService
 		});
 
 		Activity activity = this.activityBuilder.createActivity(activityId, "createMotd");
-		activity.getDefinition().getDescription().addNoLanguageTranslation(
+		activity.getDefinition().getDescription().addDefaultLanguageKey(
 				"Created message of the day for session " + session.getName()
 		);
 
@@ -169,7 +169,7 @@ public class MotdStatementBuilderService extends AbstractStatementBuilderService
 		});
 
 		Activity activity = this.activityBuilder.createActivity(activityId, "motd");
-		activity.getDefinition().getDescription().addNoLanguageTranslation(
+		activity.getDefinition().getDescription().addDefaultLanguageKey(
 				"All messages of the day for user " + username
 		);
 

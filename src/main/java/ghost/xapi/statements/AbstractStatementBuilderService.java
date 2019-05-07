@@ -1,5 +1,6 @@
 package ghost.xapi.statements;
 
+import de.thm.arsnova.dao.IDatabaseDao;
 import de.thm.arsnova.entities.Session;
 import de.thm.arsnova.entities.User;
 import de.thm.arsnova.services.ISessionService;
@@ -23,6 +24,8 @@ public class AbstractStatementBuilderService {
 	@Autowired
 	protected VerbBuilder verbBuilder;
 
+	@Autowired
+	private IDatabaseDao databaseDao;
 
 	/**
 	 * @param parameter
@@ -78,6 +81,18 @@ public class AbstractStatementBuilderService {
 		Session session = sessionService.getSession(sessionKey);
 
 		return session != null ? session.getName() : null;
+	}
+
+	/**
+	 * To overcome the anonymity of Arsnova for the creator.
+	 *
+	 * @param sessionKey
+	 * @return
+	 */
+	protected String getCreatorFromSessionDao(String sessionKey) {
+		Session session = this.databaseDao.getSessionFromKeyword(sessionKey);
+
+		return (session != null) ? session.getCreator() : null;
 	}
 
 }

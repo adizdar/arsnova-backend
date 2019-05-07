@@ -24,6 +24,8 @@ We provide separate documentations for lectures and students, administrators and
 	* [Upgrading](src/site/markdown/upgrade.md)
 * [For developers](src/site/markdown/development.md)
 
+## XAPI support
+Inside of the [arsnova.properties.example](../../main/resources/arsnova.properties.example) file the xAPI configuration options need to be uncommented and set.
 
 ## Credits
 
