@@ -5,6 +5,7 @@ import de.thm.arsnova.services.IUserService;
 import ghost.xapi.entities.actor.Actor;
 import ghost.xapi.log.XAPILogger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -12,6 +13,9 @@ public class ActorBuilder {
 
 	@Autowired
 	private IUserService userService;
+
+	@Value(value = "${root-url}")
+	private String rootUrl;
 
 	/**
 	 * @return Actor
@@ -26,7 +30,7 @@ public class ActorBuilder {
 
 		return new Actor(
 				currentUser.getUsername(),
-				currentUser.getType()
+				this.rootUrl
 		);
 	}
 }
